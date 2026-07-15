@@ -1,0 +1,3265 @@
+Senior AI Platform Engineer — Master Curriculum Tree
+0. Interview and role-ownership framework — P0
+0.1 Understanding the role
+AI Platform Engineer versus DevOps Engineer
+AI Platform Engineer versus MLOps Engineer
+Platform ownership versus project delivery
+Control plane versus data plane
+Product platform versus customer deployment
+Removing operational load from engineering leadership
+Enabling developer self-service
+0.2 Senior engineering expectations
+Requirement discovery
+Assumption identification
+Architecture decision records
+Build-versus-buy decisions
+Technical strategy
+Roadmap creation
+Prioritizing reliability, security, speed and cost
+Managing technical debt
+Creating operational standards and guardrails
+0.3 Taking ownership of an existing platform
+First 30, 60 and 90 days
+Platform and dependency inventory
+Identifying undocumented infrastructure
+Detecting configuration drift
+Establishing service ownership
+Assessing production risks
+Creating a platform backlog
+Identifying immediate safety improvements
+0.4 Operating model
+Production support
+On-call ownership
+Incident escalation
+Runbooks
+Change management
+Release approval
+Cross-team collaboration
+Communication with the Head of Engineering
+0.5 Contractor and remote-work readiness
+Full-time contractor expectations
+Working across EU time zones
+Asynchronous communication
+Berlin travel and initial platform build
+BYOD security
+Endpoint protection
+Secure access from personal devices
+Rate and contract discussions
+Part I — Core Systems and DevOps Foundations
+1. Computer science and distributed-systems foundations — P1
+1.1 Computing fundamentals
+CPU
+Memory
+Disk
+Network
+Processes
+Threads
+File descriptors
+Interrupts
+System calls
+1.2 Concurrency
+Processes versus threads
+Parallelism versus concurrency
+Locks and mutexes
+Semaphores
+Race conditions
+Deadlocks
+Thread pools
+Async I/O
+1.3 Distributed systems
+Partial failure
+Network partitions
+Timeouts
+Retries
+Backoff and jitter
+Idempotency
+Deduplication
+At-least-once delivery
+At-most-once delivery
+Exactly-once claims
+1.4 Data consistency
+Strong consistency
+Eventual consistency
+Read-after-write consistency
+Quorums
+Replication
+Leader election
+Split brain
+CAP theorem
+1.5 Resilience patterns
+Circuit breakers
+Bulkheads
+Rate limiting
+Load shedding
+Graceful degradation
+Backpressure
+Caching
+Failover
+1.6 API and service architecture
+REST
+gRPC
+WebSockets
+Streaming APIs
+Synchronous versus asynchronous communication
+API versioning
+Pagination
+Request correlation
+Service discovery
+1.7 Architecture styles
+Monolith
+Modular monolith
+Microservices
+Event-driven architecture
+Serverless
+Control-plane architecture
+Data-plane architecture
+Multi-tenant architecture
+2. Linux and operating systems — P1
+2.1 Linux architecture
+Kernel space versus user space
+System calls
+Linux boot process
+BIOS and UEFI
+Bootloader
+Kernel initialization
+Initramfs
+systemd startup
+Runlevels and systemd targets
+2.2 Filesystems
+Linux directory structure
+/etc, /var, /proc, /sys, /dev, /tmp
+ext4
+XFS
+NFS
+OverlayFS
+Mounts
+Bind mounts
+Inodes
+Hard links
+Symbolic links
+Filesystem permissions
+Filesystem corruption
+Filesystem expansion
+2.3 Users and permissions
+Users and groups
+UID and GID
+Root
+sudo
+File ownership
+chmod
+chown
+umask
+SUID
+SGID
+Sticky bit
+POSIX ACLs
+Linux capabilities
+PAM
+2.4 Process management
+Process lifecycle
+Parent and child processes
+PID and PPID
+Foreground and background jobs
+Signals
+Zombie processes
+Orphan processes
+Process priorities
+nice and renice
+CPU affinity
+ulimit
+File descriptor limits
+2.5 systemd
+Units
+Services
+Targets
+Timers
+Dependencies
+Unit overrides
+Service restart policies
+Environment files
+Journald integration
+Debugging failed services
+2.6 Memory
+Virtual memory
+Resident memory
+Shared memory
+Page cache
+Buffers
+Swap
+Memory pressure
+Out-of-memory killer
+Memory leaks
+Huge pages
+NUMA
+2.7 CPU performance
+Load average
+CPU utilization
+User time
+System time
+I/O wait
+Steal time
+Context switches
+Interrupts
+CPU saturation
+CPU throttling
+2.8 Storage and I/O
+Block devices
+Partitions
+LVM
+RAID
+IOPS
+Throughput
+Latency
+Queue depth
+Disk saturation
+Disk and inode exhaustion
+fsync
+Page cache behavior
+2.9 Linux networking
+Network interfaces
+Loopback
+Routes
+ARP and neighbor discovery
+DNS resolver configuration
+Network namespaces
+Bridges
+Virtual Ethernet pairs
+iptables
+nftables
+Connection tracking
+Socket states
+Ephemeral ports
+2.10 Linux security
+SELinux
+AppArmor
+Seccomp
+Linux capabilities
+Kernel hardening
+SSH hardening
+Auditd
+Package updates
+Vulnerability patching
+Host firewalling
+2.11 Linux logs and troubleshooting
+Journald
+Syslog
+Application logs
+Kernel logs
+Authentication logs
+Log rotation
+Core dumps
+Boot failure diagnosis
+Resource exhaustion diagnosis
+2.12 Essential Linux commands
+Navigation: pwd, cd, ls, find, locate
+Files: cp, mv, rm, touch, mkdir, stat
+Text: cat, less, head, tail, grep, awk, sed, cut, sort, uniq
+Permissions: chmod, chown, getfacl, setfacl
+Processes: ps, top, htop, pgrep, kill, pkill
+Services: systemctl, journalctl
+Storage: df, du, lsblk, mount, fdisk, lsof, iostat
+Memory: free, vmstat
+CPU: uptime, mpstat, pidstat
+Network: ip, ss, ping, traceroute, dig, nslookup, curl, wget, tcpdump
+Archives: tar, gzip, zip, rsync
+Security: sudo, ssh, scp, openssl
+Scheduling: cron, crontab, systemd timers
+3. Networking — P1
+3.1 OSI and TCP/IP models
+Physical, data-link, network and transport layers
+Application protocols
+Encapsulation
+Packets, frames and segments
+MTU
+Fragmentation
+Path MTU discovery
+3.2 IP addressing
+IPv4
+IPv6
+Public and private addresses
+CIDR
+Subnet masks
+Subnetting
+Supernetting
+Loopback addresses
+Link-local addresses
+Anycast
+3.3 Layer 2 networking
+Ethernet
+MAC addresses
+ARP
+VLANs
+Switching
+Broadcast domains
+Spanning Tree
+3.4 Routing
+Routing tables
+Static routing
+Dynamic routing
+Default routes
+Longest-prefix matching
+BGP fundamentals
+Equal-cost multipath
+Asymmetric routing
+Route propagation
+3.5 TCP and UDP
+TCP three-way handshake
+Sequence and acknowledgement numbers
+Flow control
+Congestion control
+Retransmission
+TCP keepalive
+TCP states
+TIME_WAIT
+Connection exhaustion
+UDP behavior
+QUIC
+3.6 DNS
+DNS hierarchy
+Recursive and authoritative resolvers
+A, AAAA, CNAME, MX, TXT, NS and SRV records
+TTL
+Negative caching
+Split-horizon DNS
+DNSSEC
+Service discovery
+DNS troubleshooting
+3.7 HTTP
+HTTP methods
+Headers
+Status codes
+Cookies
+Keep-alive
+HTTP/1.1
+HTTP/2
+HTTP/3
+Chunked encoding
+Streaming
+WebSockets
+Server-sent events
+3.8 TLS and certificates
+Symmetric and asymmetric cryptography
+TLS handshake
+Certificate authorities
+Certificate chains
+SANs
+SNI
+mTLS
+Certificate rotation
+Cipher suites
+TLS termination
+TLS passthrough
+3.9 Load balancing
+Layer 4 versus Layer 7
+Round robin
+Least connections
+Round robin
+Least- Weighted routing
+Consistent hashing
+Health checks
+Connection draining
+Sticky sessions
+Cross-zone distribution
+Global versus regional load balancing
+3.10 Proxies and gateways
+Forward proxies
+Reverse proxies
+API gateways
+Service gateways
+Transparent proxies
+Egress proxies
+Sidecar proxies
+Gateway API
+3.11 Firewalls and NAT
+Stateless versus stateful firewalls
+Ingress and egress rules
+NAT
+SNAT
+DNAT
+PAT
+Connection tracking
+Network address exhaustion
+3.12 Network troubleshooting
+Packet path analysis
+DNS lookup failures
+TLS failures
+Firewall failures
+Routing failures
+Port exhaustion
+MTU problems
+Intermittent latency
+Packet loss
+tcpdump and packet captures
+4. Git and software-delivery fundamentals — P1
+4.1 Git object model
+Commits
+Trees
+Blobs
+References
+HEAD
+Index
+4.2 Branching
+Feature branches
+Trunk-based development
+GitFlow
+Release branches
+4.3 Change integration
+Merge
+Rebase
+Cherry-pick
+Revert
+Reset
+4.4 Collaboration
+Pull requests
+Code review
+Branch protection
+Required checks
+CODEOWNERS
+4.5 Release management
+Semantic versioning
+Tags
+Changelogs
+Release artifacts
+Hotfixes
+4.6 Git security
+Signed commits
+Signed tags
+Secret detection
+Repository permissions
+Dependency updates
+Part II — Containers and Kubernetes
+5. Container fundamentals — P1
+5.1 Container internals
+Namespaces
+Control groups
+Capabilities
+Seccomp
+Union filesystems
+OverlayFS
+Container runtimes
+OCI specifications
+5.2 Docker images
+Image layers
+Dockerfiles
+Build context
+Build cache
+Multi-stage builds
+BuildKit
+.dockerignore
+Base-image selection
+Reproducible builds
+Multi-architecture images
+5.3 Docker runtime
+Container lifecycle
+Entrypoint versus command
+Environment variables
+Signals
+Graceful shutdown
+Health checks
+Restart policies
+Resource limits
+5.4 Container networking
+Bridge networking
+Host networking
+Port mapping
+DNS
+Overlay networks
+Network namespaces
+Service-to-service communication
+5.5 Container storage
+Writable layers
+Volumes
+Bind mounts
+Temporary storage
+Persistent storage
+Backup considerations
+5.6 Registries
+Amazon ECR
+Google Artifact Registry
+OCI registries
+Tags versus digests
+Image signing
+Retention policies
+Vulnerability scanning
+Replication
+5.7 Container security
+Non-root containers
+Read-only root filesystems
+Dropping capabilities
+Seccomp profiles
+Minimal images
+Distroless images
+SBOMs
+Image provenance
+Runtime security
+6. Kubernetes core platform — P0
+6.1 Kubernetes architecture
+API server
+etcd
+Scheduler
+Controller manager
+Cloud controller manager
+Kubelet
+Kube-proxy
+Container runtime
+Control plane versus worker nodes
+6.2 Kubernetes API model
+API groups
+API versions
+Kinds
+Metadata
+spec
+status
+Desired state
+Reconciliation
+Declarative operation
+Server-side apply
+Finalizers
+Owner references
+6.3 etcd
+Data storage
+Quorum
+Leader election
+Backups
+Restoration
+Compaction
+Defragmentation
+Encryption
+Failure recovery
+6.4 Pods
+Pod lifecycle
+Init containers
+Sidecars
+Ephemeral containers
+Pod conditions
+Restart policies
+Termination grace periods
+Lifecycle hooks
+Pod disruption
+6.5 Workload controllers
+ReplicaSets
+Deployments
+StatefulSets
+DaemonSets
+Jobs
+CronJobs
+Rolling updates
+Rollbacks
+Revision history
+6.6 Probes
+Startup probes
+Liveness probes
+Readiness probes
+HTTP probes
+TCP probes
+Command probes
+Misconfigured probe failure loops
+6.7 Kubernetes services
+ClusterIP
+NodePort
+LoadBalancer
+ExternalName
+Headless services
+EndpointSlices
+Session affinity
+Internal versus external services
+6.8 Kubernetes networking
+Pod network model
+CNI
+kube-proxy
+iptables mode
+IPVS mode
+eBPF networking
+CoreDNS
+Ingress
+Gateway API
+NetworkPolicy
+Service mesh fundamentals
+6.9 Ingress and Gateway API
+Ingress controllers
+Routes
+Gateways
+GatewayClasses
+HTTPRoute
+GRPCRoute
+TLS termination
+Traffic splitting
+Header-based routing
+Rate limiting
+6.10 Kubernetes storage
+Volumes
+PersistentVolumes
+PersistentVolumeClaims
+StorageClasses
+Dynamic provisioning
+CSI
+Access modes
+Reclaim policies
+Volume expansion
+Snapshots
+Stateful backup and restoration
+6.11 Configuration
+ConfigMaps
+Secrets
+Environment variables
+Mounted configuration
+Immutable configuration
+External secret systems
+Configuration reload
+6.12 Authentication and authorization
+Users
+ServiceAccounts
+Client certificates
+OIDC
+RBAC
+Roles
+ClusterRoles
+RoleBindings
+ClusterRoleBindings
+Impersonation
+Admission authorization
+6.13 Pod and workload security
+SecurityContext
+Pod Security Standards
+Privileged containers
+Host namespaces
+Capabilities
+Seccomp
+AppArmor
+SELinux
+Read-only filesystems
+Admission policies
+6.14 Scheduling
+Scheduler workflow
+Resource requests
+Resource limits
+Quality-of-Service classes
+Node selectors
+Node affinity
+Pod affinity
+Anti-affinity
+Taints
+Tolerations
+Topology spread constraints
+Priority classes
+Preemption
+6.15 Autoscaling
+Horizontal Pod Autoscaler
+Vertical Pod Autoscaler
+Cluster Autoscaler
+Karpenter
+KEDA
+Custom metrics
+External metrics
+Scaling stabilization
+Scale-to-zero
+Workload warm-up
+6.16 Availability and disruption
+PodDisruptionBudgets
+Multi-zone clusters
+Control-plane availability
+Node failure
+Zone failure
+Maintenance windows
+Graceful node draining
+Disruption budgets
+6.17 Kubernetes packaging
+Raw manifests
+Helm
+Helm charts
+Values
+Hooks
+Kustomize
+Overlays
+Jsonnet
+Package versioning
+6.18 CRDs and operators
+CustomResourceDefinitions
+Custom controllers
+Reconciliation loops
+Status conditions
+Finalizers
+Operator pattern
+Operator lifecycle
+Webhooks
+Conversion webhooks
+6.19 Multi-tenancy
+Namespace isolation
+Cluster-per-tenant
+Shared clusters
+Resource quotas
+Limit ranges
+RBAC boundaries
+Network isolation
+Secrets isolation
+Noisy-neighbor prevention
+6.20 Kubernetes upgrades
+Version-skew policy
+Control-plane upgrades
+Node upgrades
+Add-on compatibility
+API deprecations
+CRD compatibility
+Rollback planning
+Blue-green cluster migration
+6.21 Kubernetes backup and disaster recovery
+etcd backup
+Resource backup
+Persistent-volume backup
+Velero
+Application-consistent backup
+Cluster reconstruction
+Restore testing
+6.22 Kubernetes troubleshooting
+Pending Pods
+CrashLoopBackOff
+ImagePullBackOff
+OOMKilled
+Evicted Pods
+Failed mounts
+DNS failures
+Service-routing failures
+Admission failures
+Node NotReady
+Certificate problems
+API-server latency
+Resource pressure
+7. Kubernetes GPU and accelerator platform — P0
+
+Kubernetes supports accelerator access through device plugins and newer resource-allocation mechanisms. NVIDIA’s Kubernetes stack adds driver management, container runtime integration, GPU discovery, partitioning and DCGturn676270search37
+
+7.1 Accelerator hardware fundamentals
+GPUs
+TPUs
+AWS Inferentia
+AWS Trainium
+CPUs versus accelerators
+Accelerator generations
+Device memory
+Memory bandwidth
+Interconnect bandwidth
+PCIe
+NVLink
+NVSwitch
+RDMA
+7.2 GPU software stack
+NVIDIA drivers
+CUDA
+CUDA compatibility
+cuDNN
+NCCL
+NVIDIA Container Toolkit
+Container runtime integration
+Driver and runtime version compatibility
+7.3 Kubernetes device management
+Extended resources
+Device plugins
+Device discovery
+Device allocation
+Dynamic Resource Allocation
+ResourceClaims
+DeviceClasses
+Vendor-specific drivers
+Device health reporting
+7.4 NVIDIA GPU Operator
+Operator architecture
+Driver containers
+NVIDIA Container Toolkit
+NVIDIA device plugin
+GPU Feature Discovery
+Node labels
+DCGM
+DCGM Exporter
+MIG Manager
+Upgrade sequencing
+Troubleshooting operator components
+7.5 GPU node pools
+Dedicated GPU pools
+Instance-family selection
+Node labels
+Taints and tolerations
+GPU workload isolation
+CPU-to-GPU ratios
+Memory and ephemeral-storage sizing
+Node-image management
+7.6 GPU partitioning and sharing
+Whole-GPU allocation
+Multi-Instance GPU
+MIG profiles
+Time slicing
+CUDA MPS
+Fractional GPU concepts
+Isolation trade-offs
+Oversubscription
+Workload compatibility
+7.7 GPU scheduling
+GPU resource requests
+Accelerator labels
+Topology awareness
+NUMA awareness
+Gang scheduling
+Queueing
+Bin packing
+Fragmentation
+Priority and preemption
+Fair sharing
+Tenant quotas
+7.8 Distributed workload networking
+NCCL networking
+RDMA
+GPUDirect
+EFA
+High-bandwidth networking
+Placement constraints
+Network topology
+Multi-node communication failures
+7.9 GPU storage and model distribution
+Model artifact storage
+Object storage
+Shared filesystems
+Local NVMe
+Model download latency
+Image pull latency
+Model caching
+Persistent model cache
+Checkpoint storage
+7.10 GPU autoscaling
+Pod-level demand
+Request queue depth
+Token throughput
+GPU utilization
+Pending Pods
+Node provisioning latency
+Cluster Autoscaler
+Karpenter
+KEDA
+Scale-from-zero
+Capacity buffers
+7.11 GPU capacity management
+Cloud quotas
+Regional availability
+Capacity reservations
+Spot and preemptible GPUs
+Reserved capacity
+Diversifying instance types
+Multi-region capacity
+Fallback hardware
+Customer-owned capacity
+7.12 GPU observability
+GPU utilization
+GPU memory
+Power
+Temperature
+ECC errors
+Throttling
+SM occupancy
+Tensor-core utilization
+PCIe throughput
+NVLink throughput
+XID errors
+Per-Pod GPU attribution
+7.13 GPU failure modes
+Driver mismatch
+CUDA incompatibility
+Device-plugin failure
+GPU not advertised
+Failed MIG configuration
+Unhealthy GPU
+ECC errors
+Thermal throttling
+NCCL hangs
+GPU memory leaks
+GPU fragmentation
+Node provisioning failure
+Part III — AWS
+
+AWS’s official EKS AI/ML guidance includes accelerator configuration, GPU scheduling, network and operating-system tuning, autoscaling and cost optimization, while SageMaker provides multiple managed model-dturn589377search12
+
+8. AWS foundations and governance — P0
+8.1 AWS global infrastructure
+Regions
+Availability Zones
+Edge locations
+Local Zones
+Wavelength
+Regional versus global services
+Service quotas
+8.2 AWS accounts and Organizations
+Management account
+Member accounts
+Organizational units
+Service Control Policies
+Delegated administrators
+Consolidated billing
+AWS Control Tower
+Landing zones
+Account vending
+8.3 IAM
+Users
+Groups
+Roles
+Policies
+Identity policies
+Resource policies
+Permission boundaries
+Session policies
+Service Control Policies
+Explicit deny
+Policy evaluation
+IAM Access Analyzer
+Least privilege
+8.4 STS and federation
+AssumeRole
+Temporary credentials
+Role chaining
+External IDs
+Web identity
+OIDC federation
+SAML
+IAM Identity Center
+Cross-account access
+8.5 AWS tagging and governance
+Tag strategies
+Cost-allocation tags
+Resource ownership
+Policy enforcement
+Resource inventory
+Drift detection
+9. AWS networking — P0
+9.1 Amazon VPC
+CIDR planning
+Public subnets
+Private subnets
+Isolated subnets
+Route tables
+Internet gateways
+Egress-only internet gateways
+DHCP option sets
+9.2 Security groups and NACLs
+Stateful security groups
+Stateless network ACLs
+Inbound and outbound rules
+Rule evaluation
+Security-group referencing
+Network isolation
+9.3 NAT and egress
+NAT gateways
+NAT instances
+Egress proxies
+Centralized egress
+NAT gateway availability
+NAT gateway costs
+Port exhaustion
+9.4 VPC endpoints
+Gateway endpoints
+Interface endpoints
+PrivateLink
+Endpoint policies
+Private DNS
+Service-to-service private connectivity
+9.5 VPC connectivity
+VPC peering
+Transit Gateway
+Transit Gateway routing
+AWS Cloud WAN
+Shared VPCs
+Cross-account connectivity
+9.6 Hybrid networking
+Site-to-Site VPN
+Client VPN
+Direct Connect
+Direct Connect Gateway
+BGP
+Redundant links
+Hybrid DNS
+9.7 Route 53
+Hosted zones
+Public and private DNS
+Routing policies
+Weighted routing
+Latency routing
+Failover routing
+Geolocation
+Health checks
+Resolver endpoints
+DNSSEC
+9.8 VPC troubleshooting
+VPC Flow Logs
+Reachability Analyzer
+Route-table errors
+Security-group failures
+NACL failures
+DNS failures
+NAT failures
+Endpoint-policy failures
+Asymmetric routing
+10. AWS compute — P0
+10.1 Amazon EC2
+Instance families
+General-purpose instances
+Compute-optimized instances
+Memory-optimized instances
+Storage-optimized instances
+Accelerated-computing instances
+Graviton
+x86 versus ARM
+Bare metal
+10.2 EC2 lifecycle
+Launch
+Start
+Stop
+Reboot
+Hibernate
+Terminate
+Instance retirement
+Scheduled events
+Status checks
+10.3 AMIs and image pipelines
+AMIs
+EBS-backed images
+Instance-store images
+Image Builder
+Packer
+Golden images
+Image patching
+Image signing
+Multi-region copying
+10.4 EC2 networking
+ENIs
+Primary and secondary addresses
+Elastic IPs
+Source/destination checks
+Enhanced networking
+Elastic Network Adapter
+Placement groups
+10.5 EC2 security
+Instance profiles
+IMDSv2
+SSH access
+SSM Session Manager
+Encrypted volumes
+Nitro security
+Host hardening
+10.6 EC2 pricing and capacity
+On-Demand
+Reserved Instances
+Savings Plans
+Spot Instances
+Dedicated Hosts
+Dedicated Instances
+Capacity Reservations
+Capacity Blocks
+10.7 EC2 Auto Scaling
+Launch templates
+Minimum, maximum and desired capacity
+Target tracking
+Step scaling
+Scheduled scaling
+Predictive scaling
+Warm-up
+Cooldowns
+Lifecycle hooks
+Instance refresh
+Mixed-instance policies
+Capacity rebalance
+Scale-in protection
+11. AWS Elastic Load Balancing — P0
+11.1 Load-balancing foundations
+Listeners
+Listener rules
+Target groups
+Target types
+Health checks
+Deregistration delay
+Cross-zone load balancing
+Connection draining
+Access logs
+TLS certificates
+AWS Certificate Manager
+11.2 Application Load Balancer
+Layer 7 routing
+Host-based routing
+Path-based routing
+Header-based routing
+Query-string routing
+Weighted target groups
+HTTP and HTTPS
+HTTP/2
+WebSockets
+gRPC
+Redirects
+Fixed responses
+Authentication integration
+Sticky sessions
+Slow start
+Lambda targets
+ECS and EKS integration
+ALB Controller
+11.3 Network Load Balancer
+Layer 4 routing
+TCP
+UDP
+TLS
+Static IP addresses
+Elastic IPs
+Source-IP preservation
+TLS termination
+TLS passthrough
+Long-lived connections
+PrivateLink integration
+IP targets
+11.4 Gateway Load Balancer
+Virtual network appliances
+Transparent traffic inspection
+GENEVE
+Firewall fleets
+Intrusion-detection fleets
+Gateway Load Balancer endpoints
+Appliance scaling
+Symmetric routing
+11.5 Classic Load Balancer
+Legacy capabilities
+EC2-Classic history
+Migration to ALB or NLB
+Feature limitations
+11.6 Global Accelerator
+Anycast IP addresses
+Regional endpoint routing
+Health-based failover
+ALB and NLB integration
+Global traffic acceleration
+11.7 Load-balancer troubleshooting
+Unhealthy targets
+HTTP 502
+HTTP 503
+HTTP 504
+Target-port mismatch
+Security-group mismatch
+Certificate failure
+Idle timeout
+Connection resets
+Cross-zone imbalance
+Sticky-session problems
+12. AWS storage — P1
+12.1 Amazon S3
+Buckets
+Objects
+Keys and prefixes
+Versioning
+Delete markers
+Storage classes
+Lifecycle policies
+Intelligent-Tiering
+Multipart uploads
+Checksums
+Object Lock
+Replication
+Access Points
+Block Public Access
+Bucket policies
+Encryption
+Event notifications
+Inventory
+Storage Lens
+12.2 Amazon EBS
+gp3
+io2
+st1
+sc1
+Snapshots
+Encryption
+Multi-Attach
+Fast Snapshot Restore
+Volume expansion
+IOPS and throughput
+Queue depth
+12.3 Amazon EFS
+NFS
+Mount targets
+Access points
+Performance modes
+Throughput modes
+Lifecycle management
+Multi-AZ access
+12.4 Amazon FSx
+FSx for Lustre
+FSx for NetApp ONTAP
+FSx for Windows
+FSx for OpenZFS
+High-performance model and training storage
+12.5 AWS Backup
+Backup vaults
+Backup plans
+Cross-account backups
+Cross-region backups
+Vault Lock
+Restore testing
+13. AWS containers — P0
+13.1 Amazon ECR
+Repositories
+Image scanning
+Lifecycle policies
+Replication
+Immutable tags
+Image signing
+Pull-through cache
+13.2 Amazon ECS
+Clusters
+Task definitions
+Tasks
+Services
+EC2 launch type
+Fargate
+Capacity providers
+Service autoscaling
+Deployment circuit breaker
+Service discovery
+13.3 Amazon EKS
+Managed control plane
+Managed node groups
+Self-managed nodes
+Fargate profiles
+Add-ons
+EKS Pod Identity
+IRSA
+EKS networking
+VPC CNI
+Security groups for Pods
+EBS CSI
+EFS CSI
+Cluster upgrades
+EKS access entries
+13.4 EKS scaling
+Managed node-group scaling
+Cluster Autoscaler
+Karpenter
+Spot capacity
+Mixed node pools
+GPU node pools
+Scale-from-zero
+13.5 EKS load balancing
+AWS Load Balancer Controller
+ALB Ingress
+NLB Services
+Target type instance
+Target type ip
+Ingress groups
+TLS and certificates
+WAF integration
+14. AWS databases and data services — P1
+14.1 RDS
+PostgreSQL
+MySQL
+Multi-AZ
+Read replicas
+Parameter groups
+Backups
+Point-in-time recovery
+RDS Proxy
+Connection management
+14.2 Aurora
+Cluster architecture
+Readers and writers
+Failover
+Aurora Serverless
+Global Database
+Backtrack
+14.3 DynamoDB
+Partition keys
+Sort keys
+GSIs
+LSIs
+Capacity modes
+Hot partitions
+Streams
+Transactions
+Global Tables
+TTL
+14.4 ElastiCache
+Redis/Valkey
+Memcached
+Replication
+Cluster mode
+Eviction
+Persistence
+14.5 OpenSearch
+Indexing
+Sharding
+Replicas
+Search
+Vector search
+Snapshots
+Cluster scaling
+15. AWS messaging and streaming — P1
+SQS Standard
+SQS FIFO
+Visibility timeouts
+Dead-letter queues
+SNS
+EventBridge
+Event buses
+Event rules
+Event schemas
+Step Functions
+Kinesis Data Streams
+Kinesis Firehose
+Amazon MSK
+Kafka partitions
+Consumer groups
+Retry and replay strategies
+16. AWS serverless — P1
+Lambda lifecycle
+Cold starts
+Concurrency
+Reserved concurrency
+Provisioned concurrency
+Event sources
+Layers
+Lambda extensions
+VPC networking
+Dead-letter destinations
+Idempotency
+API Gateway REST APIs
+HTTP APIs
+WebSocket APIs
+Throttling
+Authorizers
+Usage plans
+17. AWS security — P0
+KMS
+Envelope encryption
+Key policies
+Grants
+Key rotation
+Secrets Manager
+Parameter Store
+Certificate Manager
+WAF
+Shield
+GuardDuty
+Security Hub
+Inspector
+Macie
+Detective
+CloudTrail
+AWS Config
+IAM Access Analyzer
+Organizations guardrails
+Multi-account security
+Incident response
+18. AWS observability and operations — P1
+CloudWatch metrics
+Logs
+Alarms
+Dashboards
+Composite alarms
+Embedded Metric Format
+Container Insights
+Application Signals
+X-Ray
+CloudTrail
+AWS Config
+Systems Manager
+Session Manager
+Patch Manager
+Automation documents
+OpsCenter
+Health Dashboard
+19. AWS infrastructure delivery — P1
+CloudFormation
+Stacks
+StackSets
+Change sets
+Drift detection
+Rollback
+Cloud Development Kit
+CodeBuild
+CodePipeline
+CodeDeploy
+Blue-green deployment
+Systems Manager
+Service Catalog
+Proton fundamentals
+20. AWS AI platform services — P0
+20.1 Amazon Bedrock
+Foundation-model access
+Model selection
+Provisioned throughput
+Guardrails
+Knowledge Bases
+Agents
+Model evaluation
+Prompt management
+Data privacy
+Cross-region inference
+Cost attribution
+20.2 Amazon SageMaker AI
+Training jobs
+Processing jobs
+Pipelines
+Model Registry
+Real-time endpoints
+Serverless inference
+Asynchronous inference
+Batch transform
+Multi-model endpoints
+Endpoint autoscaling
+Shadow testing
+Model Monitor
+Clarify
+Feature Store
+20.3 AI workloads on EKS
+GPU node groups
+GPU Operator
+Karpenter
+KServe
+vLLM
+Triton
+Distributed inference
+Model caching
+EFA and high-performance networking
+20.4 AWS accelerators
+NVIDIA GPU families
+Inferentia
+Trainium
+Neuron SDK
+Graviton for supporting services
+Cost and compatibility trade-offs
+Part IV — Google Cloud Platform
+
+GKE is positioned for both AI training and inference and includes accelerator-capacity planning, while Vertex AI provides managed generative-AI and model-platurn589377search29
+
+21. GCP foundations and governance — P0
+Organizations
+Folders
+Projects
+Billing accounts
+Resource hierarchy
+IAM principals
+Roles
+Service accounts
+Workload Identity Federation
+Organization policies
+Labels and tags
+Quotas
+Shared VPC
+Service perimeter fundamentals
+22. GCP networking — P1
+Global VPCs
+Subnets
+Routes
+Firewall rules
+Hierarchical firewall policies
+Cloud NAT
+Private Google Access
+Private Service Connect
+VPC peering
+Network Connectivity Center
+Cloud VPN
+Cloud Interconnect
+Cloud DNS
+Cloud CDN
+Cloud Armor
+23. GCP load balancing — P1
+Global external Application Load Balancer
+Regional external Application Load Balancer
+Internal Application Load Balancer
+External proxy Network Load Balancer
+Passthrough Network Load Balancer
+Internal passthrough Network Load Balancer
+Backend services
+URL maps
+Health checks
+Managed certificates
+Global anycast
+Session affinity
+24. GCP compute and containers — P0
+Compute Engine
+Machine families
+Managed Instance Groups
+Instance templates
+Autoscaling
+Spot VMs
+Reservations
+GPU VMs
+Local SSD
+GKE Standard
+GKE Autopilot
+Node pools
+GPU node pools
+Workload Identity
+Gateway and Ingress
+Artifact Registry
+Cloud Run
+25. GCP storage and databases — P1
+Cloud Storage
+Persistent Disk
+Hyperdisk
+Filestore
+Cloud SQL
+AlloyDB
+Spanner
+Firestore
+Memorystore
+Bigtable
+BigQuery
+Backup and DR
+26. GCP messaging and data processing — P1
+Pub/Sub
+Dataflow
+Dataproc
+Cloud Composer
+Eventarc
+Workflows
+Kafka integration
+Dead-letter handling
+Streaming and batch pipelines
+27. Vertex AI and GCP AI platform — P0
+Vertex AI Model Garden
+Managed foundation models
+Gemini models
+Custom training
+Training pipelines
+Model Registry
+Online prediction
+Batch prediction
+Private endpoints
+Endpoint autoscaling
+Feature Store
+Vector Search
+RAG Engine
+Pipelines
+Experiments
+Model monitoring
+Evaluation
+Responsible AI
+Vertex AI Agent Builder
+GPU and TPU consumption
+GKE-based model serving
+28. GCP operations, security and cost — P1
+Cloud Monitoring
+Cloud Logging
+Cloud Trace
+Cloud Profiler
+Audit Logs
+Security Command Center
+Secret Manager
+Cloud KMS
+Certificate Authority Service
+Binary Authorization
+Policy Controller
+Budgets and alerts
+Billing exports
+Recommender
+Quota management
+Part V — Infrastructure as Code and Delivery
+29. Terraform — P0
+
+Terraform uses state to map configuration to real resources, and its current workflow includes module composition 6turn589377search2
+
+29.1 Terraform fundamentals
+HCL
+Providers
+Resources
+Data sources
+Variables
+Local values
+Outputs
+Expressions
+Functions
+Dependency graph
+29.2 Terraform planning
+Initialization
+Provider installation
+Refresh
+Plan
+Apply
+Destroy
+Saved plans
+Exit codes
+Plan review
+29.3 Terraform state
+State purpose
+Resource addressing
+Remote state
+Backends
+State locking
+Encryption
+Sensitive state
+State recovery
+State migration
+State corruption
+29.4 Terraform resource lifecycle
+Create
+Update
+Replace
+Destroy
+create_before_destroy
+prevent_destroy
+ignore_changes
+replace_triggered_by
+Tainted resources
+Forced replacement
+29.5 Terraform modules
+Root modules
+Child modules
+Inputs and outputs
+Module composition
+Module versioning
+Module registries
+Module boundaries
+Opinionated versus flexible modules
+29.6 Terraform language depth
+count
+for_each
+Dynamic blocks
+for expressions
+Conditional expressions
+Type constraints
+Optional attributes
+Validation
+Preconditions
+Postconditions
+29.7 Import and refactoring
+Import blocks
+terraform import
+Moved blocks
+Removed blocks
+Resource renaming
+Module extraction
+State movement
+Zero-downtime refactoring
+29.8 Terraform environments
+Separate state files
+Directory-based environments
+Workspaces
+Account and project separation
+Environment promotion
+Variable management
+29.9 Terraform testing and validation
+terraform validate
+terraform test
+Unit-style module tests
+Integration tests
+Policy testing
+Terratest
+Static analysis
+Security scanning
+29.10 Terraform CI/CD
+Formatting
+Validation
+Plan generation
+Plan review
+Approval
+Apply
+OIDC authentication
+Drift detection
+Scheduled plans
+Failure recovery
+29.11 Terraform security
+Credential handling
+Secret values
+State protection
+Provider verification
+Module supply chain
+Policy as code
+Least-privilege deployment roles
+30. Pulumi — P0
+
+Pulumi supports general-purpose programming languages, state backends, policy enforcement, CI/CD workflows and Automation API-driven turn589377search39
+
+30.1 Pulumi concepts
+Projects
+Stacks
+Resources
+Inputs
+Outputs
+Providers
+Components
+Configuration
+Secrets
+30.2 Pulumi languages
+TypeScript
+Python
+Go
+C#
+Java
+YAML
+Language-selection trade-offs
+30.3 Pulumi state
+Pulumi Cloud backend
+DIY backends
+State encryption
+State locking
+State recovery
+Import
+Refresh
+Drift
+30.4 Component resources
+Reusable components
+Platform abstractions
+Inputs and outputs
+Resource parenting
+Provider inheritance
+Versioning
+30.5 Pulumi Automation API
+Programmatic deployments
+Embedded IaC
+Self-service platforms
+Stack creation
+Preview
+Update
+Destroy
+Event streaming
+Error handling
+30.6 Pulumi policies
+Policy as code
+Advisory policies
+Mandatory policies
+CrossGuard
+Organizational policies
+Compliance controls
+30.7 Pulumi CI/CD
+Preview on pull request
+Apply after approval
+OIDC
+Secret handling
+Drift detection
+Stack promotion
+Rollback
+30.8 Terraform versus Pulumi
+Declarative HCL versus general-purpose languages
+State models
+Testing
+Reuse
+Provider maturity
+Team skills
+Platform API integration
+Migration strategies
+31. CI/CD — P0
+31.1 CI fundamentals
+Source checkout
+Dependency installation
+Compilation
+Unit tests
+Integration tests
+Static analysis
+Artifact creation
+Artifact promotion
+Caching
+31.2 CD fundamentals
+Environment promotion
+Deployment approvals
+Release gates
+Rollback
+Database migrations
+Configuration changes
+Feature flags
+Change windows
+31.3 GitHub Actions
+Workflows
+Events
+Jobs
+Steps
+Actions
+Runners
+Matrices
+Reusable workflows
+Environments
+Secrets
+OIDC
+Caching
+Artifacts
+Concurrency controls
+31.4 GitLab CI
+Pipelines
+Jobs
+Stages
+Runners
+Includes
+Rules
+Environments
+Artifacts
+Caching
+Protected variables
+31.5 Jenkins
+Controller and agents
+Jenkinsfiles
+Declarative pipelines
+Scripted pipelines
+Shared libraries
+Credentials
+Plugins
+Agent security
+Scaling
+Backup and restoration
+31.6 Deployment strategies
+Recreate
+Rolling
+Blue-green
+Canary
+Traffic splitting
+Shadow deployment
+A/B testing
+Feature flags
+Progressive delivery
+31.7 GitOps
+Desired state
+Reconciliation
+Argo CD
+Flux
+ApplicationSets
+Multi-cluster GitOps
+Promotion
+Rollback
+Drift
+Secret handling
+31.8 CI/CD security
+OIDC instead of static credentials
+Least-privilege runners
+Ephemeral runners
+Dependency pinning
+Action pinning
+SBOM generation
+Artifact signing
+Provenance
+Secret scanning
+SAST
+DAST
+Container scanning
+Part VI — Observability, Reliability and Security
+32. Observability — P0
+
+OpenTelemetry provides common conventions for traces, metrics and logs, including GenAI-specific attributes for operations, models, token usage, evaluaturn660468search16
+
+32.1 Observability fundamentals
+Metrics
+Logs
+Traces
+Events
+Profiles
+Correlation
+Context propagation
+Structured telemetry
+32.2 Metrics
+Counters
+Gauges
+Histograms
+Summaries
+Labels
+Cardinality
+Aggregation
+Percentiles
+32.3 Prometheus
+Scraping
+Exporters
+Service discovery
+PromQL
+Recording rules
+Alerting rules
+Federation
+Remote write
+High availability
+Long-term storage
+32.4 Grafana
+Dashboards
+Variables
+Alerting
+Datasources
+Dashboard-as-code
+Operational views
+Executive views
+32.5 Logging
+Structured logs
+Log levels
+Correlation IDs
+Centralized logging
+OpenSearch/ELK
+Loki
+Retention
+Redaction
+Sampling
+Cost control
+32.6 Distributed tracing
+Spans
+Traces
+Trace context
+Baggage
+Sampling
+Tail-based sampling
+OpenTelemetry Collector
+Cross-service propagation
+32.7 AI observability
+Prompt and response metadata
+Model/provider
+Token counts
+Time to first token
+Time per output token
+Retrieval latency
+Retrieved-document identifiers
+Tool-call traces
+Evaluation scores
+Cost per request
+Tenant-level usage
+Privacy-aware telemetry
+33. SRE and reliability engineering — P0
+33.1 Reliability concepts
+Availability
+Durability
+Reliability
+Latency
+Throughput
+Correctness
+Freshness
+Quality
+33.2 Service indicators and objectives
+SLIs
+SLOs
+SLAs
+Error budgets
+Burn rates
+Multi-window alerts
+User-facing indicators
+AI-quality SLOs
+33.3 Alerting
+Symptom-based alerts
+Cause-based alerts
+Actionable alerts
+Alert fatigue
+Escalation
+Paging policies
+Runbook links
+33.4 Capacity planning
+Baselines
+Forecasts
+Headroom
+Seasonal demand
+Load testing
+Stress testing
+Saturation
+Queueing
+GPU capacity planning
+33.5 Incident response
+Incident commander
+Operations lead
+Communications lead
+Severity levels
+Impact assessment
+Timeline
+Mitigation
+Recovery validation
+Stakeholder updates
+Evidence preservation
+33.6 Post-incident work
+Blameless postmortems
+Root cause
+Contributing factors
+Corrective actions
+Preventive actions
+Ownership
+Deadlines
+Effectiveness reviews
+33.7 Disaster recovery
+RPO
+RTO
+Backup
+Restore
+Pilot light
+Warm standby
+Active-passive
+Active-active
+Regional failover
+Data reconciliation
+DR testing
+33.8 Chaos and resilience testing
+Failure injection
+Node failure
+Zone failure
+Dependency failure
+Network latency
+Packet loss
+Provider outage
+GPU failure
+Model-serving overload
+Game days
+34. Platform and cloud security — P0
+34.1 Identity security
+Human identities
+Workload identities
+Federation
+OIDC
+Short-lived credentials
+Least privilege
+Privileged access
+Break-glass access
+Access reviews
+34.2 Secret management
+Secret stores
+Secret rotation
+Dynamic secrets
+Envelope encryption
+KMS integration
+Secret injection
+Preventing secrets in source code
+Preventing secrets in logs
+34.3 Network security
+Segmentation
+Zero trust
+Private endpoints
+Egress controls
+mTLS
+NetworkPolicy
+Firewalls
+WAF
+DDoS protection
+34.4 Software supply chain
+SBOMs
+Dependency scanning
+Image scanning
+Provenance
+Artifact signing
+Admission verification
+SLSA
+Trusted build systems
+Registry controls
+34.5 Kubernetes security
+RBAC
+Pod Security Standards
+Admission control
+NetworkPolicy
+Runtime security
+Secrets encryption
+Audit logs
+Node hardening
+Multi-tenancy
+34.6 Vulnerability management
+Discovery
+Prioritization
+CVSS limitations
+Exploitability
+Patch management
+Exceptions
+Compensating controls
+Verification
+34.7 Compliance evidence
+Access logs
+Change logs
+IaC history
+Approval records
+Vulnerability reports
+Backup tests
+Restore tests
+Incident records
+Policy reports
+Part VII — AI, Machine Learning and LLM Engineering
+35. Machine-learning fundamentals for platform engineers — P0
+35.1 ML lifecycle
+Data collection
+Data preparation
+Feature engineering
+Training
+Validation
+Testing
+Deployment
+Monitoring
+Retraining
+Retirement
+35.2 Model types
+Classification
+Regression
+Ranking
+Recommendation
+Embedding models
+Rerankers
+Generative models
+Multimodal models
+35.3 Training fundamentals
+Training set
+Validation set
+Test set
+Epochs
+Batch size
+Learning rate
+Loss
+Optimizers
+Overfitting
+Underfitting
+Checkpoints
+35.4 Inference fundamentals
+Online inference
+Batch inference
+Streaming inference
+Synchronous inference
+Asynchronous inference
+Stateful versus stateless inference
+35.5 Model artifacts
+Weights
+Configuration
+Tokenizers
+Model formats
+ONNX
+Safetensors
+Checkpoints
+Model registries
+Artifact versioning
+Provenance
+36. LLM and transformer fundamentals — P0
+Tokens
+Tokenizers
+Vocabulary
+Embeddings
+Attention
+Self-attention
+Transformer blocks
+Parameters
+Context windows
+Positional encoding
+Encoder models
+Decoder models
+Encoder-decoder models
+Autoregressive generation
+KV cache
+Temperature
+Top-p
+Top-k
+Stop sequences
+Structured output
+Tool calling
+Function calling
+Hallucination
+Grounding
+Prompt engineering
+System prompts
+Few-shot prompting
+Fine-tuning
+LoRA
+QLoRA
+Distillation
+Quantization
+37. GPU-compute architecture — P0
+GPU cores and streaming multiprocessors
+Tensor cores
+GPU memory
+Memory bandwidth
+Compute capability
+Precision formats
+FP32
+FP16
+BF16
+FP8
+INT8
+INT4
+Quantization trade-offs
+Model-memory calculation
+KV-cache memory
+Batch-size effects
+Context-length effects
+Tensor parallelism
+Pipeline parallelism
+Data parallelism
+Expert parallelism
+Multi-node inference
+Hardware topology
+GPU utilization and fragmentation
+38. Model serving and inference platforms — P0
+
+KServe provides Kubernetes-native predictive and generative serving, while vLLM supports optimized LLM inference, continuous batching and distributed tensor/piturn676270search47
+
+38.1 Serving-platform choices
+Managed model APIs
+Managed cloud endpoints
+Self-hosted endpoints
+Kubernetes-based serving
+Serverless inference
+Dedicated endpoints
+Multi-model endpoints
+38.2 Serving runtimes
+vLLM
+NVIDIA Triton Inference Server
+Hugging Face TGI
+KServe
+Ray Serve
+TorchServe
+TensorFlow Serving
+ONNX Runtime
+SageMaker endpoints
+Vertex AI endpoints
+38.3 KServe
+InferenceService
+ServingRuntime
+ClusterServingRuntime
+Predictor
+Transformer
+Explainer
+Storage initializer
+Raw deployment
+Serverless deployment
+Generative inference
+Gateway integration
+Autoscaling
+Canary traffic
+38.4 vLLM
+Paged attention
+Continuous batching
+KV-cache management
+OpenAI-compatible API
+Tensor parallelism
+Pipeline parallelism
+Distributed serving
+Prefix caching
+Quantization
+LoRA serving
+Production metrics
+38.5 Triton
+Model repository
+Model configuration
+Dynamic batching
+Concurrent execution
+Model ensembles
+Instance groups
+Backend selection
+Metrics
+Model control modes
+38.6 Inference performance
+Time to first token
+Time per output token
+End-to-end latency
+Tokens per second
+Requests per second
+Concurrent requests
+Queue latency
+GPU utilization
+Memory utilization
+Batch efficiency
+38.7 Model-loading lifecycle
+Artifact download
+Validation
+Weight loading
+GPU allocation
+Warm-up
+Readiness
+Traffic admission
+Graceful shutdown
+Cache cleanup
+38.8 Scaling inference
+Replica scaling
+GPU-node scaling
+Queue-based scaling
+Token-based scaling
+Concurrency-based scaling
+Scale-to-zero
+Cold-start management
+Predictive scaling
+Capacity buffers
+38.9 Multi-model serving
+Dedicated deployment per model
+Shared runtime
+Dynamic loading
+Model caching
+Eviction
+Tenant isolation
+GPU-memory fragmentation
+Failure isolation
+38.10 Model release strategies
+Model versioning
+Blue-green
+Canary
+Shadow deployment
+A/B testing
+Champion/challenger
+Automated rollback
+Quality gates
+Latency gates
+Cost gates
+38.11 Serving failure modes
+Out-of-memory errors
+Model-loading failure
+CUDA errors
+Tokenizer mismatch
+Slow first token
+Queue growth
+Autoscaling lag
+Stuck streams
+Failed distributed workers
+Provider timeout
+Incorrect model version
+Silent quality regression
+39. LLM gateway — P0
+39.1 Gateway architecture
+Northbound application API
+Southbound provider and model APIs
+Control plane
+Data plane
+Provider adapters
+Model registry
+Routing policy
+Gateway configuration
+39.2 API normalization
+OpenAI-compatible interfaces
+Chat-completion APIs
+Response APIs
+Streaming
+Embeddings
+Reranking
+Tool calls
+Error normalization
+39.3 Identity and tenancy
+API keys
+OAuth/OIDC
+Workload identity
+Tenant identification
+Project identification
+User attribution
+Service attribution
+Tenant isolation
+39.4 Routing
+Model aliases
+Provider selection
+Weighted routing
+Latency-aware routing
+Cost-aware routing
+Region-aware routing
+Data-residency routing
+Capability-based routing
+Fallback routing
+39.5 Reliability
+Timeouts
+Retries
+Backoff and jitter
+Circuit breakers
+Health checking
+Provider failover
+Model failover
+Request hedging
+Graceful degradation
+39.6 Traffic control
+Rate limits
+Token-rate limits
+Concurrency limits
+Tenant quotas
+Provider quotas
+Load shedding
+Queueing
+Priority classes
+39.7 Security policies
+Prompt filtering
+Output filtering
+PII detection
+Redaction
+Data-loss prevention
+Provider allowlists
+Model allowlists
+Tool allowlists
+Egress restrictions
+39.8 Caching
+Exact-match caching
+Semantic caching
+Prompt-prefix caching
+Provider caching
+Cache keys
+Tenant isolation
+Invalidations
+Privacy risks
+39.9 Cost management
+Token metering
+Cost calculation
+Budget limits
+Tenant chargeback
+Model substitution
+Cost-aware fallback
+Spending alerts
+Anomaly detection
+39.10 Gateway observability
+Request count
+Provider
+Model
+Tokens
+Latency
+Time to first token
+Errors
+Retries
+Fallbacks
+Cache hits
+Policy decisions
+Cost
+39.11 Gateway technologies
+Envoy AI Gateway
+Kong AI Gateway
+Cloud-provider gateways
+LiteLLM-style gateways
+Custom gateways
+Service-mesh integration
+40. RAG engineering — P0
+40.1 RAG architecture
+Data sources
+Ingestion
+Parsing
+Chunking
+Embedding
+Indexing
+Retrieval
+Reranking
+Context assembly
+Generation
+Citation generation
+40.2 Data ingestion
+Files
+Object storage
+Websites
+Databases
+SaaS systems
+Message queues
+Batch ingestion
+Streaming ingestion
+Change-data capture
+40.3 Document processing
+Text extraction
+PDF processing
+OCR
+Table extraction
+Metadata extraction
+Language detection
+Deduplication
+Data cleaning
+PII detection
+40.4 Chunking
+Fixed-size chunking
+Token-based chunking
+Semantic chunking
+Structure-aware chunking
+Parent-child chunking
+Chunk overlap
+Metadata preservation
+40.5 Embeddings
+Embedding models
+Dimensions
+Normalization
+Similarity functions
+Model versioning
+Batch embedding
+Re-embedding
+Multilingual embeddings
+Multimodal embeddings
+40.6 Vector databases
+pgvector
+OpenSearch
+Milvus
+Qdrant
+Weaviate
+Pinecone
+Vertex AI Vector Search
+Managed versus self-hosted
+Index types
+HNSW
+IVF
+Filtering
+Replication
+Backup
+40.7 Retrieval
+Dense retrieval
+Sparse retrieval
+BM25
+Hybrid search
+Metadata filters
+Query expansion
+Query rewriting
+Multi-query retrieval
+Parent-document retrieval
+40.8 Reranking
+Cross-encoder rerankers
+LLM reranking
+Diversity
+Top-k selection
+Latency trade-offs
+Cost trade-offs
+40.9 Context construction
+Context windows
+Token budgets
+Ordering
+Deduplication
+Citation mapping
+Prompt templates
+Context compression
+40.10 RAG freshness and lifecycle
+Incremental updates
+Re-indexing
+Deletions
+Right-to-erasure
+Expiration
+Source-of-truth tracking
+Index-version migration
+Embedding-version migration
+40.11 RAG multi-tenancy
+Per-tenant indexes
+Shared indexes
+Metadata filtering
+Authorization filters
+Tenant encryption
+Data leakage prevention
+Noisy-neighbor control
+40.12 RAG security
+Poisoned documents
+Indirect prompt injection
+Malicious metadata
+Unauthorized retrieval
+Sensitive-data leakage
+Document provenance
+Content sanitization
+Egress control
+40.13 RAG operations
+Pipeline retries
+Failed-document queues
+Reprocessing
+Idempotency
+Ingestion observability
+Index health
+Retrieval latency
+Cost tracking
+41. AI evaluation infrastructure — P0
+41.1 Evaluation purposes
+Model selection
+Prompt selection
+RAG validation
+Regression detection
+Safety verification
+Release gating
+Production monitoring
+41.2 Evaluation datasets
+Golden datasets
+Synthetic datasets
+Production samples
+Adversarial datasets
+Edge cases
+Multilingual datasets
+Versioning
+Ownership
+Data lineage
+41.3 Evaluation types
+Offline evaluation
+Online evaluation
+Human evaluation
+Automated evaluation
+Model-as-judge
+Pairwise comparison
+A/B testing
+Shadow evaluation
+Red-team evaluation
+41.4 LLM quality metrics
+Correctness
+Relevance
+Completeness
+Faithfulness
+Groundedness
+Citation correctness
+Coherence
+Style
+Instruction adherence
+Tool-call accuracy
+41.5 RAG metrics
+Retrieval precision
+Retrieval recall
+Hit rate
+Mean reciprocal rank
+NDCG
+Context relevance
+Context recall
+Answer faithfulness
+Citation accuracy
+41.6 Safety metrics
+Toxicity
+Bias
+Prompt-injection resistance
+Data leakage
+Policy violation
+Harmful-content generation
+Jailbreak resistance
+Tool misuse
+41.7 Operational metrics
+Latency
+Time to first token
+Token throughput
+Error rate
+Cost per request
+GPU utilization
+Provider reliability
+Rate-limit failures
+41.8 Evaluation pipelines
+Dataset loading
+Test execution
+Parallelization
+Result persistence
+Comparison to baseline
+Threshold evaluation
+Approval
+Release
+Rollback
+41.9 Release gates
+Required metrics
+Regression thresholds
+Statistical significance
+Manual approval
+Exception workflows
+Audit trails
+Automatic rollback
+Environment promotion
+41.10 Evaluation reliability
+Judge-model bias
+Non-determinism
+Reproducibility
+Temperature control
+Prompt versioning
+Evaluator versioning
+Calibration
+Human agreement
+Evaluation contamination
+42. MLOps and LLMOps lifecycle — P0
+Experiment tracking
+Dataset versioning
+Prompt versioning
+Model versioning
+Feature and embedding versioning
+Model registry
+Artifact registry
+Lineage
+Reproducibility
+Training pipelines
+Evaluation pipelines
+Deployment pipelines
+Approval workflows
+Model monitoring
+Data drift
+Concept drift
+Quality drift
+Retraining
+Rollback
+Deprecation
+Model retirement
+43. Agents and tool-using AI — P1
+Agent loop
+Planning
+Tool selection
+Tool execution
+Memory
+State
+Multi-agent systems
+Human approval
+Sandboxing
+Tool permissions
+Credential delegation
+Timeouts
+Budget limits
+Recursive-loop prevention
+Unsafe action prevention
+Tool-result validation
+Agent observability
+Agent evaluation
+Part VIII — AI Security, Governance and Compliance
+44. AI and LLM security — P0
+
+OWASP’s GenAI guidance includes prompt injection, sensitive-information disclosure, supply-chain threats and risks across the application lifecycle, so AI security needs its own branch rather than being hidden insideturn660468search13
+
+44.1 Threat modeling
+Assets
+Actors
+Trust boundaries
+Entry points
+Data flows
+Control plane
+Inference plane
+Retrieval plane
+Tool-execution plane
+44.2 Prompt injection
+Direct prompt injection
+Indirect prompt injection
+Stored prompt injection
+Multimodal injection
+Retrieval-based injection
+Tool-oriented injection
+Detection and mitigation
+44.3 Sensitive-data exposure
+Prompt leakage
+Response leakage
+Cross-tenant leakage
+Training-data extraction
+Log leakage
+Trace leakage
+Secret exposure
+PII exposure
+44.4 Insecure output handling
+Code execution
+SQL execution
+Shell execution
+HTML and XSS
+Unsafe tool parameters
+Output validation
+Sandboxing
+44.5 Model and artifact security
+Model theft
+Artifact tampering
+Malicious model files
+Serialization attacks
+Model signing
+Hash verification
+Trusted registries
+Access control
+44.6 RAG security
+Poisoned knowledge bases
+Unauthorized retrieval
+Metadata attacks
+Tenant-boundary failures
+Source provenance
+Document sanitization
+44.7 Agent security
+Excessive agency
+Tool misuse
+Credential misuse
+Recursive actions
+Resource exhaustion
+Human-in-the-loop controls
+Action allowlists
+44.8 AI supply chain
+Base models
+Fine-tuned adapters
+Tokenizers
+Datasets
+Embedding models
+Python dependencies
+Container images
+Evaluation models
+Third-party APIs
+44.9 AI red teaming
+Jailbreak testing
+Prompt-injection testing
+Data-exfiltration testing
+Abuse testing
+Tool-misuse testing
+Multi-tenant isolation testing
+Regression suites
+45. AI governance — P0
+45.1 AI asset inventory
+Models
+Providers
+Datasets
+Prompts
+Embedding models
+Vector indexes
+Endpoints
+Agents
+Tools
+Owners
+45.2 Model governance
+Model cards
+Risk classification
+Approved models
+Restricted models
+Licensing
+Intended use
+Prohibited use
+Deployment status
+Retirement status
+45.3 Data governance
+Data classification
+Data ownership
+Consent
+Data residency
+Retention
+Deletion
+Lineage
+Access controls
+Encryption
+45.4 Prompt governance
+Prompt registry
+Prompt ownership
+Versioning
+Approval
+Testing
+Rollback
+Sensitive instructions
+Change history
+45.5 Policy enforcement
+Allowed providers
+Allowed regions
+Approved models
+Data-handling rules
+Token limits
+Tool permissions
+Human approval
+Policy as code
+45.6 Auditability
+Who called which model
+Which prompt version was used
+Which documents were retrieved
+Which tools were called
+Which policy decisions were made
+Which model version responded
+Which evaluation approved the release
+46. European AI and privacy regulation — P1
+
+Because the role is connected to Berlin and European customers, preparation should include the EU AI Act, GDPR, data residency, AI-system classification, provider/deployer responsibilities, human oversight and incident documentation. Regulation (EU) 2024/1689 is the AI Act’s legal basis, and current Commission guidance addresses provider, deployer and general-purposeturn180867search12
+
+EU AI Act fundamentals
+Risk-based classification
+Prohibited practices
+High-risk AI systems
+General-purpose AI models
+Provider versus deployer responsibilities
+Technical documentation
+Logging and traceability
+Human oversight
+Transparency
+Serious-incident reporting
+Model and system evaluation
+Cybersecurity requirements
+GDPR fundamentals
+Personal-data processing
+Data minimization
+Purpose limitation
+Data residency
+Data-subject rights
+Right to deletion
+Cross-border transfers
+Privacy impact assessments
+Retention and deletion
+Part IX — AI Platform Economics and Deployment Models
+47. AI FinOps and cost control — P0
+47.1 Cost model
+GPU purchase or rental cost
+Reserved capacity
+On-demand capacity
+Spot capacity
+Managed-model API cost
+Token cost
+Storage cost
+Network-egress cost
+Observability cost
+Licensing cost
+Support cost
+47.2 Inference unit economics
+Cost per request
+Cost per 1,000 tokens
+Cost per successful task
+Cost per tenant
+Cost per model
+Cost per GPU hour
+Tokens per GPU second
+Utilization-adjusted cost
+47.3 Cost allocation
+Tags
+Labels
+Tenant IDs
+Project IDs
+Model IDs
+Gateway metering
+Chargeback
+Showback
+47.4 Cost optimization
+Model right-sizing
+Quantization
+Continuous batching
+Higher utilization
+Model sharing
+Scale-to-zero
+Spot GPUs
+Reserved capacity
+Prompt caching
+Semantic caching
+Smaller-model routing
+Context reduction
+Output-token limits
+47.5 Budget controls
+Budgets
+Alerts
+Hard quotas
+Soft quotas
+Tenant limits
+Provider limits
+Anomaly detection
+Emergency shutdown
+Cost-related release gates
+48. Multi-cloud architecture — P0
+AWS and GCP abstraction boundaries
+Common platform API
+Cloud-specific implementations
+Portability versus lowest-common-denominator design
+Identity federation
+Network connectivity
+DNS strategy
+Artifact replication
+Model replication
+Data replication
+Terraform and Pulumi provider differences
+Cost comparison
+Cloud capacity failover
+Cloud-provider outage strategy
+Egress-cost implications
+Operational complexity
+49. SaaS deployment — P0
+Shared SaaS control plane
+Shared data plane
+Dedicated tenant data plane
+Tenant onboarding
+Identity
+Metering
+Quotas
+Tenant isolation
+Noisy neighbors
+Upgrades
+Backups
+Regional deployment
+Data residency
+Support access
+50. Customer private-cloud deployment — P0
+Customer-owned cloud account
+Vendor-managed deployment
+Customer-managed deployment
+Cross-account access
+Private networking
+Private registries
+Customer KMS
+Restricted egress
+Installation packaging
+Upgrade channels
+Telemetry boundaries
+Support bundles
+Break-glass access
+Shared-responsibility model
+51. On-premises deployment — P0
+Bare-metal Kubernetes
+Virtualized Kubernetes
+Air-gapped installation
+Private image registries
+Offline artifact bundles
+GPU driver management
+Hardware compatibility
+Storage integration
+Network integration
+Load-balancer integration
+DNS integration
+Identity integration
+Certificate management
+License management
+Upgrade orchestration
+Backup and restoration
+Remote diagnostics
+Limited or disconnected telemetry
+Customer support procedures
+52. Hybrid-cloud deployment — P0
+Cloud control plane with on-prem data plane
+On-prem control plane with cloud bursting
+Hybrid identity
+Hybrid networking
+VPN and private connectivity
+Artifact synchronization
+Data synchronization
+Model synchronization
+Central governance
+Local policy enforcement
+Failure during disconnection
+Eventual reconciliation
+53. Air-gapped and restricted environments — P1
+Offline installation media
+Dependency mirroring
+OCI registry mirroring
+Package repositories
+Model repositories
+Vulnerability-database updates
+License validation
+Certificate rotation
+Secret rotation
+Offline upgrades
+Support-data export
+Audit evidence
+Part X — Platform Engineering and Developer Experience
+54. Internal developer platform for AI — P0
+54.1 Platform users
+Application developers
+ML engineers
+Data scientists
+Security engineers
+Platform operators
+Customer deployment teams
+54.2 Golden paths
+Deploy an LLM
+Register a managed model
+Create a gateway route
+Build a RAG index
+Run an evaluation
+Create an environment
+Create a tenant
+Request GPU capacity
+54.3 Platform interfaces
+Developer portal
+CLI
+APIs
+Git-based workflows
+Templates
+SDKs
+Kubernetes CRDs
+Pulumi Automation API
+54.4 Platform APIs
+ModelDeployment
+ModelRoute
+RAGIndex
+EvaluationRun
+Tenant
+Environment
+GPUCapacityRequest
+BudgetPolicy
+54.5 Platform reconciliation
+Desired state
+Controllers
+Idempotency
+Retries
+Status conditions
+Long-running operations
+Partial failure
+Rollback
+Resource cleanup
+54.6 Developer experience
+Documentation
+Examples
+Quickstarts
+Local development
+Preview environments
+Meaningful errors
+Self-service troubleshooting
+Support channels
+54.7 Platform product management
+User research
+Adoption
+Time-to-first-deployment
+Deployment success rate
+Paved-road usage
+Toil reduction
+Developer satisfaction
+Deprecation
+Roadmaps
+55. Configuration and feature management — P1
+Environment configuration
+Feature flags
+Dynamic configuration
+Configuration schemas
+Validation
+Versioning
+Rollback
+Secret separation
+Tenant-specific configuration
+Drift detection
+Audit history
+56. Database, cache and messaging support for AI platforms — P1
+PostgreSQL
+pgvector
+Redis/Valkey
+OpenSearch
+Object storage
+Kafka
+RabbitMQ
+SQS/Pub/Sub
+Workflow engines
+Metadata databases
+Job queues
+Evaluation-result stores
+Usage-metering stores
+Audit-log stores
+Part XI — Coding and Automation
+57. Python for platform engineering — P1
+Language fundamentals
+Functions and classes
+Type hints
+Virtual environments
+Packaging
+Dependency management
+Async programming
+HTTP clients
+CLI applications
+Logging
+Testing
+Error handling
+Retries
+Cloud SDKs
+Kubernetes clients
+Automation scripts
+FastAPI fundamentals
+58. Go fundamentals — P2
+Types
+Interfaces
+Goroutines
+Channels
+Context
+Error handling
+HTTP servers
+Kubernetes controllers
+Prometheus exporters
+CLI tools
+Testing
+59. Shell scripting — P1
+Variables
+Conditions
+Loops
+Functions
+Exit codes
+Pipes
+Redirection
+Error handling
+set -euo pipefail
+Traps
+Temporary files
+JSON processing with jq
+YAML processing
+Automation safety
+Idempotent scripts
+60. SQL and data querying — P1
+SELECT
+JOINs
+Aggregation
+Indexes
+Transactions
+Locking
+Query plans
+Connection pools
+Schema migrations
+JSON columns
+Vector queries
+Time-series queries
+Part XII — Senior-Level Architecture and Procedural Preparation
+61. Architecture exercises — P0
+Design a portable AI platform across AWS, GCP and on-premises.
+Design a GPU capacity platform for unpredictable demand.
+Design an LLM gateway for several model providers.
+Design a self-hosted LLM serving platform on Kubernetes.
+Design a multi-tenant RAG platform.
+Design evaluation and release-gate infrastructure.
+Design a private-cloud customer deployment.
+Design an air-gapped AI deployment.
+Design an internal developer platform for AI teams.
+Design AI cost metering and chargeback.
+Design a multi-region AI platform.
+Design secure tool-using agents.
+Design observability from gateway through retrieval and model serving.
+Migrate from managed APIs to self-hosted open models.
+Migrate from manually managed infrastructure to Terraform or Pulumi.
+62. Troubleshooting scenarios — P0
+GPU unavailable
+GPU node cannot join
+CUDA-driver mismatch
+GPU Operator failure
+Model will not load
+GPU out-of-memory
+Inference latency spike
+Time-to-first-token regression
+Token throughput collapse
+vLLM worker crash
+Multi-node NCCL hang
+KServe endpoint unavailable
+Kubernetes Pod Pending
+Autoscaler not adding GPU nodes
+Cloud GPU quota exhausted
+Provider API outage
+LLM gateway retry storm
+Cost spike
+RAG retrieval-quality regression
+Stale vector index
+Cross-tenant document leakage
+Evaluation pipeline failure
+Incorrect model promoted
+Prompt change causes regression
+Kubernetes cluster failure
+Region outage
+Terraform state corruption
+Pulumi update failure
+Certificate expiration
+Secret exposure
+Prompt-injection incident
+Compromised model artifact
+Customer on-prem upgrade failure
+Air-gapped deployment missing dependencies
+63. Migration scenarios — P0
+EC2 to Kubernetes
+ECS to EKS
+Self-managed Kubernetes to EKS or GKE
+Terraform monolith to modules
+Terraform to Pulumi
+Manual infrastructure to IaC
+Ingress to Gateway API
+Single-cloud to multi-cloud
+Managed LLM API to self-hosted models
+One model server to KServe
+One provider to a gateway architecture
+Single-tenant RAG to multi-tenant RAG
+Shared GPU nodes to isolated pools
+Non-GitOps deployment to Argo CD
+Non-observable AI application to OpenTelemetry
+64. Security scenarios — P0
+Leaked cloud credentials
+Exposed Kubernetes credentials
+Public S3 bucket
+Over-permissive IAM role
+Compromised CI runner
+Unsigned model artifact
+Malicious container image
+Cross-tenant RAG leakage
+Prompt injection
+Sensitive-output disclosure
+Runaway agent
+Unauthorized model-provider usage
+Customer data sent to the wrong region
+Secrets written to AI traces
+BYOD device compromise
+65. Reliability scenarios — P0
+Availability Zone failure
+Region failure
+Cloud-provider failure
+GPU capacity shortage
+Queue overload
+Slow dependency
+Database failover
+Vector-database outage
+Object-storage outage
+Model-provider throttling
+Evaluation service unavailable
+Telemetry pipeline unavailable
+Partial customer-environment failure
+Backup restoration
+Silent data corruption
+66. Leadership and behavioural questions — P0
+Taking ownership without documentation
+Challenging an unsafe deadline
+Communicating risk to non-technical leaders
+Disagreeing with the Head of Engineering
+Deciding what not to build
+Mentoring engineers
+Handling a production incident
+Handling a failed migration
+Reducing operational toil
+Improving developer velocity
+Creating standards without blocking teams
+Managing technical debt
+Prioritizing competing customer requests
+Working independently as a contractor
+Handling uncertainty
+Explaining an architecture trade-off
+Estimating a platform build
+Communicating across remote teams
+Supporting customer-owned environments
+Balancing reliability and cost
+Document structure to use later
+
+Every lowest-level leaf should eventually follow this exact order:
+
+Purpose and mental model
+Detailed learning notes
+Architecture and lifecycle
+Security model
+Availability and failure modes
+Performance and scaling
+Observability
+Cost
+Commands, configuration and practical examples
+Normal conceptual questions with full answers
+Procedural questions with step-by-step answers
+Senior architecture and trade-off questions
+Hands-on exercises
+Common interview traps
+Revision summary
+
+This gives us 66 major branches and several hundred true study leaves. It is broad enough for a conventional Senior DevOps interview while also covering the specialized AI Platform, GPU, LLMOps and RAG responsibilities descried in the job post.
