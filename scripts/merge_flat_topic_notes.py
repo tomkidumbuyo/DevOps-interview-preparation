@@ -4,6 +4,8 @@
 from pathlib import Path
 import re
 
+from generate_leaf_library import numbered_path
+
 
 ROOT = Path(__file__).resolve().parents[1]
 MAPPINGS = {
@@ -39,7 +41,7 @@ def main() -> None:
     merged = 0
     for source_name, target_name in MAPPINGS.items():
         source = ROOT / source_name
-        target = ROOT / target_name
+        target = numbered_path(ROOT / target_name)
         if not source.exists():
             continue
         source_text = source.read_text(encoding="utf-8")

@@ -1,16 +1,15 @@
 # Interview and role-ownership framework
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 001 of 373 — 00**
+>
+> **Builds on:** [the handbook contents](../README.md)
+>
+> **Now:** Learn **Interview and role-ownership framework** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [Understanding the role](01-understanding-the-role/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [Contractor and remote-work readiness](contractor-and-remote-work-readiness/README.md) — [questions and answers](contractor-and-remote-work-readiness/questions-and-answers.md)
-- [Operating model](operating-model/README.md) — [questions and answers](operating-model/questions-and-answers.md)
-- [Senior engineering expectations](senior-engineering-expectations/README.md) — [questions and answers](senior-engineering-expectations/questions-and-answers.md)
-- [Taking ownership of an existing platform](taking-ownership-of-an-existing-platform/README.md) — [questions and answers](taking-ownership-of-an-existing-platform/questions-and-answers.md)
-- [Understanding the role](understanding-the-role/README.md) — [questions and answers](understanding-the-role/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 ## Role mental model
 
 An AI Platform Engineer owns the paved road from approved model/data/artifact to secure, observable, reliable and cost-controlled production use. Conventional DevOps builds delivery/operations capability; MLOps emphasizes model/data lifecycle; AI platform work integrates both with accelerator capacity, serving, gateways, RAG/evaluation and customer deployment. Titles overlap, so define outcomes and boundaries rather than arguing labels.
@@ -79,12 +78,13 @@ BYOD should use supported encrypted devices, automatic patching, EDR, screen loc
 - Measure platform adoption, reliability, security, unit cost and toil.
 - Prepare concrete stories with evidence, conflict and learning.
 
-<!-- generated-topic-index:start -->
-## Deep topic folders
+## Read further
 
-- [0.1 Understanding the role](understanding-the-role/README.md) — [Q&A](understanding-the-role/questions-and-answers.md)
-- [0.2 Senior engineering expectations](senior-engineering-expectations/README.md) — [Q&A](senior-engineering-expectations/questions-and-answers.md)
-- [0.3 Taking ownership of an existing platform](taking-ownership-of-an-existing-platform/README.md) — [Q&A](taking-ownership-of-an-existing-platform/questions-and-answers.md)
-- [0.4 Operating model](operating-model/README.md) — [Q&A](operating-model/questions-and-answers.md)
-- [0.5 Contractor and remote-work readiness](contractor-and-remote-work-readiness/README.md) — [Q&A](contractor-and-remote-work-readiness/questions-and-answers.md)
-<!-- generated-topic-index:end -->
+- [Google SRE Workbook: On-Call](https://sre.google/workbook/on-call/) — practical ownership, escalation, readiness, playbooks and sustainable operational load.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Contents](../README.md) · [Questions](questions-and-answers.md) · [Next: Understanding the role →](01-understanding-the-role/README.md)
+
+<!-- reading-navigation:end -->

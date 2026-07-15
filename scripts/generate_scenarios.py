@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "scenarios" / "120-cross-domain-scenarios.md"
+OUT = ROOT / "13-scenarios" / "120-cross-domain-scenarios.md"
 
 
 CATEGORIES = [

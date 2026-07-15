@@ -1,18 +1,15 @@
 # Container fundamentals
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 048 of 373 — 05**
+>
+> **Builds on:** [Git security](../04-git-delivery/06-git-security/README.md)
+>
+> **Now:** Learn **Container fundamentals** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [Container internals](01-container-internals/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [Container internals](container-internals/README.md) — [questions and answers](container-internals/questions-and-answers.md)
-- [Container networking](container-networking/README.md) — [questions and answers](container-networking/questions-and-answers.md)
-- [Container security](container-security/README.md) — [questions and answers](container-security/questions-and-answers.md)
-- [Container storage](container-storage/README.md) — [questions and answers](container-storage/questions-and-answers.md)
-- [Docker images](docker-images/README.md) — [questions and answers](docker-images/questions-and-answers.md)
-- [Docker runtime](docker-runtime/README.md) — [questions and answers](docker-runtime/questions-and-answers.md)
-- [Registries](registries/README.md) — [questions and answers](registries/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 ## Easy mode: the mental model
 
 A container is a normal host process with isolated views (namespaces), resource accounting/limits (cgroups), constrained privileges (capabilities/seccomp/LSM) and a layered root filesystem. An image is an OCI content-addressed manifest/config/layer graph; a registry distributes it. The runtime unpacks an image and asks a low-level runtime to create the process. Containers do not contain a kernel.
@@ -186,6 +183,8 @@ Debug path: image/architecture/digest → entrypoint/config/secret → process/s
 
 Build the sample image, run it rootless/read-only, send traffic, stop it during a long request, observe signal/drain, lower memory until OOM, inspect `memory.events`, fill `/tmp`, test DNS on an isolated bridge, scan/sign by digest, then document which control prevented each failure from becoming supply-chain or production risk.
 
+Cleanup: stop and remove only the named lab containers, network, volumes and locally built image; verify the runtime inventory and disk usage returned to baseline. Record latency, restarts, resource pressure and image size so reliability, observability and cost claims are evidence-based.
+
 ## Revision summary
 
 - Containers are isolated/constrained host processes; images are OCI content graphs.
@@ -194,14 +193,13 @@ Build the sample image, run it rootless/read-only, send traffic, stop it during 
 - Registry scanning is not enough: provenance, signing, admission and runtime policy matter.
 - Debug the host/runtime boundary with `crictl`, `nsenter`, cgroups and logs.
 
-<!-- generated-topic-index:start -->
-## Deep topic folders
+## Read further
 
-- [5.1 Container internals](container-internals/README.md) — [Q&A](container-internals/questions-and-answers.md)
-- [5.2 Docker images](docker-images/README.md) — [Q&A](docker-images/questions-and-answers.md)
-- [5.3 Docker runtime](docker-runtime/README.md) — [Q&A](docker-runtime/questions-and-answers.md)
-- [5.4 Container networking](container-networking/README.md) — [Q&A](container-networking/questions-and-answers.md)
-- [5.5 Container storage](container-storage/README.md) — [Q&A](container-storage/questions-and-answers.md)
-- [5.6 Registries](registries/README.md) — [Q&A](registries/questions-and-answers.md)
-- [5.7 Container security](container-security/README.md) — [Q&A](container-security/questions-and-answers.md)
-<!-- generated-topic-index:end -->
+- [Open Container Initiative](https://opencontainers.org/) — upstream image, runtime and distribution specifications and projects; confirm the specification/runtime versions assumed by an example.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Git security](../04-git-delivery/06-git-security/README.md) · [Questions](questions-and-answers.md) · [Next: Container internals →](01-container-internals/README.md)
+
+<!-- reading-navigation:end -->

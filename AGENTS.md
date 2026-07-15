@@ -6,10 +6,12 @@ This repository is a practical interview-preparation handbook, not a glossary. A
 
 Every study topic or branch is a folder containing:
 
-- `README.md` — the complete study note and local table of contents. Do not create a separate `notes.md` or command-reference file.
+- `README.md` — the complete study note. Do not create a separate `notes.md` or command-reference file.
 - `questions-and-answers.md` — the separate answered interview bank.
 
 Parent folders also have their own README and question bank because parent questions may combine several child topics. Folder depth is unlimited when a concept benefits from a narrower practice unit.
+
+Every study-topic folder is prefixed with its two-digit position among its siblings (`01-`, `02-`, and so on). The root `README.md` is the only table of contents and contains the complete numbered tree. Do not add local tables of contents or redundant index-only topic folders. Every note begins with the generated chapter bridge and ends with the generated Back / Questions / Next reading-path navigation.
 
 ## Required README learning flow
 
@@ -33,6 +35,7 @@ The note should also cover security, reliability/failure modes, observability, p
 ## Interview-bank contract
 
 - Every question begins with `- [ ]` so the learner can change it to `- [x]` after rehearsal.
+- Every question is immediately followed by a `> **Covered in:**` link to the most relevant heading in the study notes. The link must resolve, including its heading anchor.
 - Each topic has at least 20 answered junior, 20 answered mid-level, and 20 answered senior questions.
 - At each level, split the bank into at least 10 normal/conceptual/code-review questions and 10 procedural/troubleshooting/implementation questions.
 - Include command, configuration, code, architecture, failure, security, reliability, cost, and real-world questions where relevant.
@@ -40,4 +43,4 @@ The note should also cover security, reliability/failure modes, observability, p
 
 ## Completion checks
 
-Before considering a topic complete, verify that local relative links resolve, README is the note, the separate Q&A bank meets its counts, examples are syntactically plausible, practice steps include verification and cleanup, and external links point to authoritative material. Preserve every item in `curriculum/master-curriculum.txt`; additions may extend it but must not remove its scope.
+Before considering a topic complete, run `python3 scripts/organize_reading_path.py` and then `python3 scripts/validate_content.py`. Verify that numbering is contiguous, the root tree contains every topic, Back / Questions / Next links form one uninterrupted path, every question has a valid Covered-in anchor, local relative links resolve, README is the note, the separate Q&A bank meets its counts, examples are syntactically plausible, practice steps include verification and cleanup, and external links point to authoritative material. Preserve every item in `curriculum/master-curriculum.txt`; additions may extend it but must not remove its scope.

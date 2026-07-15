@@ -4,10 +4,12 @@
 from pathlib import Path
 import re
 
+from generate_leaf_library import numbered_path
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "09-iac-delivery" / "pulumi.md"
-TARGET = ROOT / "09-iac-delivery" / "pulumi" / "README.md"
+TARGET = numbered_path(ROOT / "09-iac-delivery" / "pulumi" / "README.md")
 START = "<!-- merged-practical-pulumi-note:start -->"
 END = "<!-- merged-practical-pulumi-note:end -->"
 

@@ -1,21 +1,14 @@
 # Operations, observability, reliability and security
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
-
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [Observability](observability/README.md) — [questions and answers](observability/questions-and-answers.md)
-- [Platform and cloud security](platform-and-cloud-security/README.md) — [questions and answers](platform-and-cloud-security/questions-and-answers.md)
-- [SRE and reliability engineering](sre-and-reliability-engineering/README.md) — [questions and answers](sre-and-reliability-engineering/questions-and-answers.md)
-<!-- child-topic-toc:end -->
-<!-- generated-topic-index:start -->
-## Deep topic branches
-
-- [Observability](observability/README.md) — [Q&A](observability/questions-and-answers.md)
-- [SRE and reliability engineering](sre-and-reliability-engineering/README.md) — [Q&A](sre-and-reliability-engineering/questions-and-answers.md)
-- [Platform and cloud security](platform-and-cloud-security/README.md) — [Q&A](platform-and-cloud-security/questions-and-answers.md)
-<!-- generated-topic-index:end -->
+<!-- chapter-guide:start -->
+> **Step 210 of 373 — 10**
+>
+> **Builds on:** [CircleCI](../09-iac-delivery/03-ci-cd/09-circleci/README.md)
+>
+> **Now:** Learn **Operations, observability, reliability and security** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [Observability](01-observability/README.md).
+<!-- chapter-guide:end -->
 
 ## Integrated operations mental model
 
@@ -30,4 +23,13 @@ trivy fs .
 
 Practise by selecting one disposable service, defining a user-facing SLI/SLO, adding a dashboard and multi-window burn alert, injecting a bounded latency or dependency failure, following metrics→trace→logs→change/audit evidence, restoring the SLO, and proving that the alert and runbook worked. Then test a restore rather than merely checking that a backup job is green.
 
+Cleanup the injected failure, temporary alerts, dashboards, test data and disposable service; confirm telemetry ingestion and billable resources returned to the intended baseline.
+
 Authoritative starting points: [OpenTelemetry](https://opentelemetry.io/docs/), [Google SRE books](https://sre.google/books/), and [SLSA](https://slsa.dev/).
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: CircleCI](../09-iac-delivery/03-ci-cd/09-circleci/README.md) · [Questions](questions-and-answers.md) · [Next: Observability →](01-observability/README.md)
+
+<!-- reading-navigation:end -->

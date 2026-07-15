@@ -1,20 +1,15 @@
 # Kubernetes core platform
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 056 of 373 — 06**
+>
+> **Builds on:** [Container security](../05-containers/07-container-security/README.md)
+>
+> **Now:** Learn **Kubernetes core platform** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [Architecture](01-architecture/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [Architecture](architecture/README.md) — [questions and answers](architecture/questions-and-answers.md)
-- [Gpu Llmops](gpu-llmops/README.md) — [questions and answers](gpu-llmops/questions-and-answers.md)
-- [Networking](networking/README.md) — [questions and answers](networking/questions-and-answers.md)
-- [Operations](operations/README.md) — [questions and answers](operations/questions-and-answers.md)
-- [Packaging Extensions](packaging-extensions/README.md) — [questions and answers](packaging-extensions/questions-and-answers.md)
-- [Scheduling Autoscaling](scheduling-autoscaling/README.md) — [questions and answers](scheduling-autoscaling/questions-and-answers.md)
-- [Security](security/README.md) — [questions and answers](security/questions-and-answers.md)
-- [Storage](storage/README.md) — [questions and answers](storage/questions-and-answers.md)
-- [Workloads](workloads/README.md) — [questions and answers](workloads/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 ## 1. Easy mode: architecture and reconciliation
 
 Kubernetes is an API-driven reconciliation system. You submit desired state; controllers compare it with observed state and make idempotent changes. The scheduler assigns unscheduled Pods to nodes; kubelet makes assigned Pods run through a CRI runtime; networking/storage plugins implement data-plane contracts.
@@ -679,3 +674,16 @@ Prefer declarative source for lasting changes. Imperative commands are excellent
 - Safe production manifests specify identity, resources, probes, security, topology, disruption and lifecycle.
 - Debug with read-only evidence first, then reversible mitigation and source reconciliation.
 - Kubernetes expertise is explaining why each field exists and how it fails, not memorizing YAML.
+
+Treat every lab as a reliability, observability and cost exercise: record workload and control-plane evidence, inject one bounded failure, verify the user path after recovery, and delete the namespace, cluster or cloud resources you created. A healthy object status without workload behavior, telemetry and billing verification is incomplete.
+
+## Read further
+
+- [Kubernetes documentation](https://kubernetes.io/docs/home/) — upstream concepts, tasks and reference material. Check the feature state and Kubernetes version for version-sensitive APIs before using them.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Container security](../05-containers/07-container-security/README.md) · [Questions](questions-and-answers.md) · [Next: Architecture →](01-architecture/README.md)
+
+<!-- reading-navigation:end -->

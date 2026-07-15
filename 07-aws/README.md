@@ -1,22 +1,15 @@
 # AWS interview curriculum tree
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 103 of 373 — 07**
+>
+> **Builds on:** [LLM gateway and RAG on Kubernetes](../06-kubernetes/09-gpu-llmops/06-gateway-rag/README.md)
+>
+> **Now:** Learn **AWS interview curriculum tree** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [Foundations](01-foundations/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [Ai Platform](ai-platform/README.md) — [questions and answers](ai-platform/questions-and-answers.md)
-- [Compute](compute/README.md) — [questions and answers](compute/questions-and-answers.md)
-- [Containers](containers/README.md) — [questions and answers](containers/questions-and-answers.md)
-- [Databases](databases/README.md) — [questions and answers](databases/questions-and-answers.md)
-- [Foundations](foundations/README.md) — [questions and answers](foundations/questions-and-answers.md)
-- [Infrastructure Delivery](infrastructure-delivery/README.md) — [questions and answers](infrastructure-delivery/questions-and-answers.md)
-- [Load Balancing](load-balancing/README.md) — [questions and answers](load-balancing/questions-and-answers.md)
-- [Messaging Serverless](messaging-serverless/README.md) — [questions and answers](messaging-serverless/questions-and-answers.md)
-- [Networking](networking/README.md) — [questions and answers](networking/questions-and-answers.md)
-- [Security Operations](security-operations/README.md) — [questions and answers](security-operations/questions-and-answers.md)
-- [Storage](storage/README.md) — [questions and answers](storage/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 AWS interview answers should connect a request to identities, network paths, compute, data, telemetry, failure domains, and cost. Do not answer with isolated service definitions. Begin with the shared-responsibility model and account boundary; choose a managed service only after stating requirements and operational trade-offs.
 
 ## Complete tree for this role
@@ -107,3 +100,14 @@ AWS
 - Spot discounts do not make interruption-sensitive stateful or tightly coupled inference automatically safe.
 - Cross-Region inference/replication can affect residency and policy even when marketed as a reliability feature.
 - Quotas and physical GPU capacity are different constraints; a raised quota does not guarantee available inventory.
+
+## Read further
+
+- [AWS documentation](https://docs.aws.amazon.com/) — authoritative service guides and API references. Confirm Region availability, quotas, pricing and feature behavior because those details are version- and location-sensitive.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: LLM gateway and RAG on Kubernetes](../06-kubernetes/09-gpu-llmops/06-gateway-rag/README.md) · [Questions](questions-and-answers.md) · [Next: Foundations →](01-foundations/README.md)
+
+<!-- reading-navigation:end -->

@@ -5,6 +5,7 @@ from pathlib import Path
 import re
 
 from generate_curriculum_topics import AREA_BY_MAJOR, parse_curriculum, slug
+from generate_leaf_library import numbered_path
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,9 +39,11 @@ SPECIAL = {
 
 def path_for(number: int, title: str) -> str:
     if number in SPECIAL:
-        return SPECIAL[number]
-    area = AREA_BY_MAJOR[number]
-    return f"{area}/{slug(title)}"
+        path = SPECIAL[number]
+    else:
+        area = AREA_BY_MAJOR[number]
+        path = f"{area}/{slug(title)}"
+    return numbered_path(ROOT / path).relative_to(ROOT).as_posix()
 
 
 def main() -> None:
@@ -64,7 +67,7 @@ Every numbered branch from the supplied master curriculum is preserved and mappe
 - CircleCI and expanded GitHub Actions/Pulumi file anatomy live under [Infrastructure as Code and delivery](../09-iac-delivery/README.md).
 - Twenty-six detailed MLOps/LLMOps operational leaves live under [MLOps and LLMOps lifecycle](../11-ai-platform/mlops-and-llmops-lifecycle/README.md).
 - AWS has individual service folders under each branch's `services/` directory; Kubernetes has subsystem/service leaves and GPU/LLMOps topics.
-- The [cross-domain bank](../scenarios/120-cross-domain-scenarios.md) contains 150 additional production procedures.
+- The [cross-domain bank](../13-scenarios/120-cross-domain-scenarios.md) contains 150 additional production procedures.
 
 Run `python3 scripts/validate_content.py` from the repository root to verify local links, folder contracts, parent child tables and minimum question counts.
 """

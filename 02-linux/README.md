@@ -1,23 +1,15 @@
 # Linux and operating systems
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 015 of 373 — 02**
+>
+> **Builds on:** [Architecture styles](../01-foundations/07-architecture-styles/README.md)
+>
+> **Now:** Learn **Linux and operating systems** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [Linux architecture](01-linux-architecture/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [CPU performance](cpu-performance/README.md) — [questions and answers](cpu-performance/questions-and-answers.md)
-- [Essential Linux commands](essential-linux-commands/README.md) — [questions and answers](essential-linux-commands/questions-and-answers.md)
-- [Filesystems](filesystems/README.md) — [questions and answers](filesystems/questions-and-answers.md)
-- [Linux architecture](linux-architecture/README.md) — [questions and answers](linux-architecture/questions-and-answers.md)
-- [Linux logs and troubleshooting](linux-logs-and-troubleshooting/README.md) — [questions and answers](linux-logs-and-troubleshooting/questions-and-answers.md)
-- [Linux networking](linux-networking/README.md) — [questions and answers](linux-networking/questions-and-answers.md)
-- [Linux security](linux-security/README.md) — [questions and answers](linux-security/questions-and-answers.md)
-- [Memory](memory/README.md) — [questions and answers](memory/questions-and-answers.md)
-- [Process management](process-management/README.md) — [questions and answers](process-management/questions-and-answers.md)
-- [Storage and I/O](storage-and-i-o/README.md) — [questions and answers](storage-and-i-o/questions-and-answers.md)
-- [systemd](systemd/README.md) — [questions and answers](systemd/questions-and-answers.md)
-- [Users and permissions](users-and-permissions/README.md) — [questions and answers](users-and-permissions/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 ## Architecture and boot
 
 The kernel schedules tasks, manages virtual memory, filesystems, devices, networking and security; user space interacts through system calls. Firmware (BIOS/UEFI) selects a bootloader, which loads kernel/initramfs; the kernel initializes hardware and mounts an early root; the init system (`systemd` commonly PID 1) mounts filesystems and starts targets/units. Diagnose boot by locating the earliest failed layer rather than editing random service files.
@@ -153,19 +145,17 @@ This is a starting point, not proof. Understand commands that legitimately retur
 - Security combines Unix permissions with capabilities, MAC, namespaces, mounts and identity.
 - Every command must answer a specific hypothesis; collect evidence before mutation.
 
-<!-- generated-topic-index:start -->
-## Deep topic folders
+## Practice this chapter
 
-- [2.1 Linux architecture](linux-architecture/README.md) — [Q&A](linux-architecture/questions-and-answers.md)
-- [2.2 Filesystems](filesystems/README.md) — [Q&A](filesystems/questions-and-answers.md)
-- [2.3 Users and permissions](users-and-permissions/README.md) — [Q&A](users-and-permissions/questions-and-answers.md)
-- [2.4 Process management](process-management/README.md) — [Q&A](process-management/questions-and-answers.md)
-- [2.5 systemd](systemd/README.md) — [Q&A](systemd/questions-and-answers.md)
-- [2.6 Memory](memory/README.md) — [Q&A](memory/questions-and-answers.md)
-- [2.7 CPU performance](cpu-performance/README.md) — [Q&A](cpu-performance/questions-and-answers.md)
-- [2.8 Storage and I/O](storage-and-i-o/README.md) — [Q&A](storage-and-i-o/questions-and-answers.md)
-- [2.9 Linux networking](linux-networking/README.md) — [Q&A](linux-networking/questions-and-answers.md)
-- [2.10 Linux security](linux-security/README.md) — [Q&A](linux-security/questions-and-answers.md)
-- [2.11 Linux logs and troubleshooting](linux-logs-and-troubleshooting/README.md) — [Q&A](linux-logs-and-troubleshooting/questions-and-answers.md)
-- [2.12 Essential Linux commands](essential-linux-commands/README.md) — [Q&A](essential-linux-commands/questions-and-answers.md)
-<!-- generated-topic-index:end -->
+Prerequisite: a disposable Linux VM or container where you can become root without affecting shared work. Record identity, kernel, distribution, cgroup and mount context; capture a healthy CPU, memory, disk, process, service and network observability baseline; then trigger one bounded failure mode such as a nonexistent unit, a low test-process memory limit or a filled temporary filesystem. Explain the reliability effect and evidence, reverse only the change you introduced, verify the original command path, and delete the disposable environment. The harder extension is to turn the diagnosis into a repeatable script that emits evidence without mutating the host.
+
+## Read further
+
+- [The Linux kernel documentation](https://docs.kernel.org/) — authoritative subsystem, administration, tracing, security and development documentation; check the running kernel version before applying version-sensitive guidance.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Architecture styles](../01-foundations/07-architecture-styles/README.md) · [Questions](questions-and-answers.md) · [Next: Linux architecture →](01-linux-architecture/README.md)
+
+<!-- reading-navigation:end -->

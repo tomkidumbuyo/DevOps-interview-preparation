@@ -1,23 +1,15 @@
 # Networking
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 028 of 373 — 03**
+>
+> **Builds on:** [Essential Linux commands](../02-linux/12-essential-linux-commands/README.md)
+>
+> **Now:** Learn **Networking** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [OSI and TCP/IP models](01-osi-and-tcp-ip-models/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [DNS](dns/README.md) — [questions and answers](dns/questions-and-answers.md)
-- [Firewalls and NAT](firewalls-and-nat/README.md) — [questions and answers](firewalls-and-nat/questions-and-answers.md)
-- [HTTP](http/README.md) — [questions and answers](http/questions-and-answers.md)
-- [IP addressing](ip-addressing/README.md) — [questions and answers](ip-addressing/questions-and-answers.md)
-- [Layer 2 networking](layer-2-networking/README.md) — [questions and answers](layer-2-networking/questions-and-answers.md)
-- [Load balancing](load-balancing/README.md) — [questions and answers](load-balancing/questions-and-answers.md)
-- [Network troubleshooting](network-troubleshooting/README.md) — [questions and answers](network-troubleshooting/questions-and-answers.md)
-- [OSI and TCP/IP models](osi-and-tcp-ip-models/README.md) — [questions and answers](osi-and-tcp-ip-models/questions-and-answers.md)
-- [Proxies and gateways](proxies-and-gateways/README.md) — [questions and answers](proxies-and-gateways/questions-and-answers.md)
-- [Routing](routing/README.md) — [questions and answers](routing/questions-and-answers.md)
-- [TCP and UDP](tcp-and-udp/README.md) — [questions and answers](tcp-and-udp/questions-and-answers.md)
-- [TLS and certificates](tls-and-certificates/README.md) — [questions and answers](tls-and-certificates/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 ## Packet mental model
 
 Applications write bytes/messages to sockets; transport segments/datagrams them; IP routes packets; links frame them. Encapsulation adds headers and MTU pressure. Every diagnosis should state source/destination address, port, protocol, namespace, expected path, return path and failure phase: name resolution, connect/handshake, TLS, request/response or application.
@@ -64,19 +56,17 @@ Common traps: ICMP success does not prove TCP; a listening socket does not prove
 - TLS identity validation is as important as encryption.
 - Stateful middleboxes and asymmetric paths are a frequent hidden failure.
 
-<!-- generated-topic-index:start -->
-## Deep topic folders
+## Practice this chapter
 
-- [3.1 OSI and TCP/IP models](osi-and-tcp-ip-models/README.md) — [Q&A](osi-and-tcp-ip-models/questions-and-answers.md)
-- [3.2 IP addressing](ip-addressing/README.md) — [Q&A](ip-addressing/questions-and-answers.md)
-- [3.3 Layer 2 networking](layer-2-networking/README.md) — [Q&A](layer-2-networking/questions-and-answers.md)
-- [3.4 Routing](routing/README.md) — [Q&A](routing/questions-and-answers.md)
-- [3.5 TCP and UDP](tcp-and-udp/README.md) — [Q&A](tcp-and-udp/questions-and-answers.md)
-- [3.6 DNS](dns/README.md) — [Q&A](dns/questions-and-answers.md)
-- [3.7 HTTP](http/README.md) — [Q&A](http/questions-and-answers.md)
-- [3.8 TLS and certificates](tls-and-certificates/README.md) — [Q&A](tls-and-certificates/questions-and-answers.md)
-- [3.9 Load balancing](load-balancing/README.md) — [Q&A](load-balancing/questions-and-answers.md)
-- [3.10 Proxies and gateways](proxies-and-gateways/README.md) — [Q&A](proxies-and-gateways/questions-and-answers.md)
-- [3.11 Firewalls and NAT](firewalls-and-nat/README.md) — [Q&A](firewalls-and-nat/questions-and-answers.md)
-- [3.12 Network troubleshooting](network-troubleshooting/README.md) — [Q&A](network-troubleshooting/questions-and-answers.md)
-<!-- generated-topic-index:end -->
+Prerequisite: a disposable container network. Create an isolated bridge and a small HTTP server, verify name resolution and a successful request, then test a wrong name, a closed port and one deliberately blocked path. For each failure, distinguish DNS, route, transport and application evidence before changing anything. Treat packet, flow, proxy and application signals as one network observability path. Roll back the rule you added, verify the original client path, remove the named containers and network, and confirm no listener or namespace remains. The harder extension is a packet-path diagram annotated with the exact observation available at each hop.
+
+## Read further
+
+- [RFC Editor](https://www.rfc-editor.org/) — the primary index for Internet standards and RFCs. Follow the specific protocol links in the child chapters and verify whether an RFC is current, updated or obsolete.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Essential Linux commands](../02-linux/12-essential-linux-commands/README.md) · [Questions](questions-and-answers.md) · [Next: OSI and TCP/IP models →](01-osi-and-tcp-ip-models/README.md)
+
+<!-- reading-navigation:end -->

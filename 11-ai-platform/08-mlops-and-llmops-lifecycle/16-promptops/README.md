@@ -1,0 +1,116 @@
+# PromptOps: prompt, template and policy lifecycle
+
+<!-- chapter-guide:start -->
+> **Step 310 of 373 — 11.08.16**
+>
+> **Builds on:** [Retraining and feedback loops](../15-retraining-feedback-loops/README.md)
+>
+> **Now:** Learn **PromptOps: prompt, template and policy lifecycle** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [LLM fine-tuning, PEFT and adapter operations](../17-llm-finetuning-peft/README.md).
+<!-- chapter-guide:end -->
+
+> Interview bank: [questions-and-answers.md](questions-and-answers.md) · Official documentation: <https://opentelemetry.io/docs/specs/semconv/gen-ai/>
+
+## Easy mode: purpose and mental model
+
+Version, evaluate, approve and observe prompts as executable production configuration.
+
+```mermaid
+flowchart LR
+  I[identity and desired state] --> C[PromptOps: prompt, template and policy lifecycle control plane]
+  C --> D[PromptOps: prompt, template and policy lifecycle data plane]
+  D --> U[user/workload outcome]
+  D --> O[metrics logs traces audit]
+  O --> R[reconcile scale recover optimize]
+```
+
+## Detailed learning notes
+
+| # | Concept | What you must be able to explain |
+|---:|---|---|
+| 1 | **Prompt asset** | system/developer/user templates, variables, examples and output schema are versioned independently from application code when needed. |
+| 2 | **Rendering** | typed variables, escaping, length limits and deterministic template engine prevent malformed or injected structure. |
+| 3 | **Model coupling** | a prompt version is qualified against specific model/tokenizer/provider capabilities and settings. |
+| 4 | **Prompt dataset** | expected tasks, edge cases, adversarial inputs and owner define regression evidence. |
+| 5 | **Change review** | semantic diff explains instruction/order/example/policy changes beyond line-level text. |
+| 6 | **Release** | immutable prompt digest/alias follows shadow/canary and quality/safety/latency/cost gates. |
+| 7 | **Caching** | cache keys include prompt/model/policy/tenant semantics and never cross authorization boundaries. |
+| 8 | **Observability** | prompt version, safe template ID, tokens, latency, route and evaluation join without logging sensitive rendered content. |
+| 9 | **Rollback** | previous prompt and compatible model/tool schema remain deployable with fast traffic reversal. |
+| 10 | **Governance** | owner, intended use, prohibited data/actions, approval, exception and retirement are auditable. |
+
+## Architecture and lifecycle
+
+Trace this service from request/authentication and desired configuration through provisioning, steady-state data path, scaling, change, failure, recovery and retirement. Bind every production resource to an owner, environment, data classification, source-of-truth revision, SLO, runbook, cost center and deletion/retention policy.
+
+For PromptOps: prompt, template and policy lifecycle, draw a real request/resource path and label where these mechanisms act: Prompt asset, Rendering, Model coupling, Prompt dataset, Change review, Release, Caching, Observability, Rollback, Governance. State which parts are control plane versus data plane, regional versus zonal/global, synchronous versus asynchronous, and customer versus provider responsibility.
+
+## Security model
+
+Start with the caller/workload identity and evaluate every applicable identity, resource, organization, network-endpoint, encryption-key and admission policy. Minimize public paths, long-lived credentials, wildcard actions/resources and unreviewed cross-account/tenant trust. Encrypt in transit/at rest where applicable, but include key/certificate rotation and recovery. Protect audit evidence and prevent secrets/customer content from entering command history, logs, traces or metric labels.
+
+## Availability and failure modes
+
+List dependencies and failure domains before claiming high availability. Test quota/capacity, identity/control-plane, DNS/network/TLS, configuration drift, downstream saturation, zonal/Regional/node failure and recovery from protected state. Use bounded timeout, retry budget, jitter, idempotency, backpressure, load shedding and graceful drain according to protocol. A green resource status is not a user-facing recovery check.
+
+## Performance, scaling and cost
+
+Measure workload distribution and SLI before sizing. Track rate/work units, latency distribution, errors, saturation/queue and service-specific limits. Separate replica/task scaling from infrastructure/capacity scaling and include cold-start/provisioning delay. Cost includes idle/provisioned capacity, requests/work units, storage/retention, cross-AZ/Region/egress/NAT, observability, licenses/support and failure headroom. Optimize cost per successful SLO/quality-controlled task.
+
+## Observability
+
+Correlate a request/change across user, route/resource, dependency and underlying compute/storage/network. Use stable owner/environment/region/service dimensions; put high-cardinality request/object IDs in sampled logs/traces rather than metric labels. Alert on actionable SLO burn and leading exhaustion. Monitor the telemetry path and keep a read-only diagnostic role.
+
+## Command lab
+
+Run in a sandbox with the correct account/context/Region. Read and explain output before mutation.
+
+```bash
+git diff -- prompts/
+python scripts/render_prompt.py --template prompts/support.yaml --fixture tests/fixture.json
+python -m evals.run --manifest release.yaml --dataset prompt-regression.jsonl
+sha256sum prompts/support.yaml
+```
+
+For each command, record: identity/context, exact resource, expected healthy fields, one failing output, the next command/query, and which mutation would be reversible. Never paste secrets/tokens into committed notes or shared terminal history.
+
+## Real-world exercise: easy → hard
+
+1. **Easy:** inventory one healthy PromptOps: prompt, template and policy lifecycle resource and draw identity/control/data/dependency paths.
+2. **Intermediate:** reproduce a safe configuration change with IaC, preview/diff, apply to a sandbox, verify and roll back.
+3. **Hard:** inject one policy/network/quota/capacity/dependency failure, diagnose from user symptom to root mechanism, mitigate without widening access, then add an alert/test/runbook.
+4. **Senior:** design the service for two tenants, multi-zone/Region failure, RPO/RTO, regulated data, 10× demand and a 30% cost reduction; quantify trade-offs.
+
+## Common interview traps
+
+- Naming a feature without explaining request/resource lifecycle or failure semantics.
+- Treating an allow, encryption checkbox, replica count or managed-service label as a complete security/reliability design.
+- Mutating production before capturing identity, status, events, metrics, logs, audit and recent changes.
+- Scaling the wrong layer or retrying overload/permanent errors.
+- Omitting quotas, cold start, deletion/restore, observability cost or customer/tenant boundaries.
+
+## Revision summary
+
+Explain PromptOps: prompt, template and policy lifecycle in five passes: purpose/selection, mechanism/lifecycle, security/failure, operation/commands, and architecture/economics. Then complete the separate [answered question bank](questions-and-answers.md) without looking at these notes.
+
+
+## Hands-on proof: easy → hard
+
+Use a disposable local environment, sandbox project/account or isolated Kubernetes namespace. Define all uppercase placeholders before running commands and confirm identity/context, data classification and cost boundary.
+
+1. **Inventory:** run the read-only commands above, capture exact versions/IDs and explain which desired or observed state each proves.
+2. **Build:** implement the smallest version-controlled example with an immutable input/artifact manifest and one automated test.
+3. **Failure:** inject one bounded invalid input, dependency outage, incompatible revision, quota or stale-state condition; preserve the error and distinguish its layer without restarting blindly.
+4. **Release:** generate evidence, compare a candidate with a baseline, make an explicit pass/fail decision and prove the deployed/run revision.
+5. **Recover:** roll back or resume from a protected artifact/checkpoint, re-run the original quality and operational verification, and reconcile the source of truth.
+6. **Cleanup:** delete only named lab resources and confirm no job, endpoint, volume, artifact, credential or billable accelerator remains. Retain only non-sensitive learning evidence allowed by policy.
+
+Hard extension: put the lab in CI with short-lived identity, policy/evaluation gates, bounded concurrency/cost, an artifact digest, a failure-path test and a five-step runbook.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Retraining and feedback loops](../15-retraining-feedback-loops/README.md) · [Questions](questions-and-answers.md) · [Next: LLM fine-tuning, PEFT and adapter operations →](../17-llm-finetuning-peft/README.md)
+
+<!-- reading-navigation:end -->

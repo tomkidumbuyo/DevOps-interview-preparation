@@ -1,0 +1,446 @@
+# Terraform fundamentals — interview questions and answers
+
+> Study first: [README.md](README.md) · Minimum: 20 answered questions per level, split into normal and procedural. Code/CLI prompts are marked **Code**.
+
+## Junior — normal conceptual and code questions
+
+### TERRAFORM-FUNDAMENTALS-JN-01
+
+- [ ] **Question:** What is HCL, and why does it matter in Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. In an interview, connect it to the request/resource lifecycle, name one limit or failure, and explain how you would observe it. Do not stop at the vendor definition.
+
+### TERRAFORM-FUNDAMENTALS-JN-02
+
+- [ ] **Question:** What is Providers, and why does it matter in Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. In an interview, connect it to the request/resource lifecycle, name one limit or failure, and explain how you would observe it. Do not stop at the vendor definition.
+
+### TERRAFORM-FUNDAMENTALS-JN-03
+
+- [ ] **Question:** What is Resources, and why does it matter in Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. In an interview, connect it to the request/resource lifecycle, name one limit or failure, and explain how you would observe it. Do not stop at the vendor definition.
+
+### TERRAFORM-FUNDAMENTALS-JN-04
+
+- [ ] **Question:** What is Data sources, and why does it matter in Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. In an interview, connect it to the request/resource lifecycle, name one limit or failure, and explain how you would observe it. Do not stop at the vendor definition.
+
+### TERRAFORM-FUNDAMENTALS-JN-05
+
+- [ ] **Question:** What is Variables, and why does it matter in Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. In an interview, connect it to the request/resource lifecycle, name one limit or failure, and explain how you would observe it. Do not stop at the vendor definition.
+
+### TERRAFORM-FUNDAMENTALS-JN-06
+
+- [ ] **Question:** What is Local values, and why does it matter in Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. In an interview, connect it to the request/resource lifecycle, name one limit or failure, and explain how you would observe it. Do not stop at the vendor definition.
+
+### TERRAFORM-FUNDAMENTALS-JN-07
+
+- [ ] **Question:** What is Outputs, and why does it matter in Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. In an interview, connect it to the request/resource lifecycle, name one limit or failure, and explain how you would observe it. Do not stop at the vendor definition.
+
+### TERRAFORM-FUNDAMENTALS-JN-08
+
+- [ ] **Code:** **Question:** What does `git diff --check` help you verify for Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** It is a read-oriented check in this leaf's command path. Run it only after confirming identity, account/context, Region/namespace and resource. Interpret it against the desired configuration and healthy baseline; then correlate events, metrics, logs and audit rather than changing state from one output. The relevant mechanism is: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off.
+
+### TERRAFORM-FUNDAMENTALS-JN-09
+
+- [ ] **Code:** **Question:** What does `terraform fmt -check -recursive` help you verify for Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** It is a read-oriented check in this leaf's command path. Run it only after confirming identity, account/context, Region/namespace and resource. Interpret it against the desired configuration and healthy baseline; then correlate events, metrics, logs and audit rather than changing state from one output. The relevant mechanism is: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off.
+
+### TERRAFORM-FUNDAMENTALS-JN-10
+
+- [ ] **Code:** **Question:** What does `terraform validate; terraform plan` help you verify for Terraform fundamentals?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** It is a read-oriented check in this leaf's command path. Run it only after confirming identity, account/context, Region/namespace and resource. Interpret it against the desired configuration and healthy baseline; then correlate events, metrics, logs and audit rather than changing state from one output. The relevant mechanism is: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off.
+
+## Junior — procedural and command questions
+
+### TERRAFORM-FUNDAMENTALS-JP-01
+
+- [ ] **Code:** **Question:** A basic HCL check fails. What would you do first using the CLI?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `terraform fmt -check -recursive` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-02
+
+- [ ] **Question:** A basic Providers check fails. What would you do first?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `terraform validate; terraform plan` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-03
+
+- [ ] **Question:** A basic Resources check fails. What would you do first?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `pulumi preview --diff` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-04
+
+- [ ] **Code:** **Question:** A basic Data sources check fails. What would you do first using the CLI?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `git diff --check` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-05
+
+- [ ] **Question:** A basic Variables check fails. What would you do first?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `terraform fmt -check -recursive` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-06
+
+- [ ] **Question:** A basic Local values check fails. What would you do first?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `terraform validate; terraform plan` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-07
+
+- [ ] **Code:** **Question:** A basic Outputs check fails. What would you do first using the CLI?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `pulumi preview --diff` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-08
+
+- [ ] **Question:** A basic Expressions check fails. What would you do first?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `git diff --check` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-09
+
+- [ ] **Question:** A basic Functions check fails. What would you do first?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `terraform fmt -check -recursive` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+### TERRAFORM-FUNDAMENTALS-JP-10
+
+- [ ] **Code:** **Question:** A basic Dependency graph check fails. What would you do first using the CLI?
+> **Covered in:** [Terraform fundamentals — Command and configuration lab](README.md#command-and-configuration-lab)
+
+**Answer:** Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `terraform validate; terraform plan` and capture exact status/reason/request ID. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.
+
+## Mid-level — normal, comparison and configuration questions
+
+### TERRAFORM-FUNDAMENTALS-MN-01
+
+- [ ] **Question:** Compare HCL with Providers. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** HCL: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Providers: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-02
+
+- [ ] **Question:** Compare Providers with Resources. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Providers: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Resources: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-03
+
+- [ ] **Question:** Compare Resources with Data sources. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Resources: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Data sources: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-04
+
+- [ ] **Configuration review:** **Question:** Compare Data sources with Variables. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Data sources: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Variables: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-05
+
+- [ ] **Question:** Compare Variables with Local values. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Variables: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Local values: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-06
+
+- [ ] **Question:** Compare Local values with Outputs. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Local values: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Outputs: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-07
+
+- [ ] **Configuration review:** **Question:** Compare Outputs with Expressions. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Outputs: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Expressions: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-08
+
+- [ ] **Question:** Compare Expressions with Functions. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Expressions: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Functions: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-09
+
+- [ ] **Question:** Compare Functions with Dependency graph. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Functions: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Dependency graph: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+### TERRAFORM-FUNDAMENTALS-MN-10
+
+- [ ] **Configuration review:** **Question:** Compare Dependency graph with HCL. When would each change your design?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Dependency graph: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. HCL: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.
+
+## Mid-level — procedural, CLI and troubleshooting questions
+
+### TERRAFORM-FUNDAMENTALS-MP-01
+
+- [ ] **CLI/debugging:** **Question:** Production is degraded around HCL; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `terraform fmt -check -recursive` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-02
+
+- [ ] **Question:** Production is degraded around Providers; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `terraform validate; terraform plan` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-03
+
+- [ ] **CLI/debugging:** **Question:** Production is degraded around Resources; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `pulumi preview --diff` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-04
+
+- [ ] **Question:** Production is degraded around Data sources; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `git diff --check` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-05
+
+- [ ] **CLI/debugging:** **Question:** Production is degraded around Variables; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `terraform fmt -check -recursive` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-06
+
+- [ ] **Question:** Production is degraded around Local values; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `terraform validate; terraform plan` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-07
+
+- [ ] **CLI/debugging:** **Question:** Production is degraded around Outputs; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `pulumi preview --diff` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-08
+
+- [ ] **Question:** Production is degraded around Expressions; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `git diff --check` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-09
+
+- [ ] **CLI/debugging:** **Question:** Production is degraded around Functions; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `terraform fmt -check -recursive` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+### TERRAFORM-FUNDAMENTALS-MP-10
+
+- [ ] **Question:** Production is degraded around Dependency graph; walk through diagnosis, mitigation and durable repair.
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `terraform validate; terraform plan` plus recent events/changes, then correlate the service-specific SLI. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.
+
+## Senior — architecture, trade-off and code-design questions
+
+### TERRAFORM-FUNDAMENTALS-SN-01
+
+- [ ] **Question:** Design a production Terraform fundamentals capability where HCL, Data sources and Outputs are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Senior design checklist](README.md#senior-design-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-02
+
+- [ ] **Architecture/configuration:** **Question:** Design a production Terraform fundamentals capability where Providers, Variables and Expressions are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Senior design checklist](README.md#senior-design-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-03
+
+- [ ] **Question:** Design a production Terraform fundamentals capability where Resources, Local values and Functions are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-04
+
+- [ ] **Architecture/configuration:** **Question:** Design a production Terraform fundamentals capability where Data sources, Outputs and Dependency graph are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-05
+
+- [ ] **Question:** Design a production Terraform fundamentals capability where Variables, Expressions and HCL are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Senior design checklist](README.md#senior-design-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-06
+
+- [ ] **Architecture/configuration:** **Question:** Design a production Terraform fundamentals capability where Local values, Functions and Providers are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-07
+
+- [ ] **Question:** Design a production Terraform fundamentals capability where Outputs, Dependency graph and Resources are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-08
+
+- [ ] **Architecture/configuration:** **Question:** Design a production Terraform fundamentals capability where Expressions, HCL and Data sources are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Senior design checklist](README.md#senior-design-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-09
+
+- [ ] **Question:** Design a production Terraform fundamentals capability where Functions, Providers and Variables are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Senior design checklist](README.md#senior-design-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+### TERRAFORM-FUNDAMENTALS-SN-10
+
+- [ ] **Architecture/configuration:** **Question:** Design a production Terraform fundamentals capability where Dependency graph, Resources and Local values are first-class requirements.
+> **Covered in:** [Terraform fundamentals — Complete curriculum checklist](README.md#complete-curriculum-checklist)
+
+**Answer:** Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.
+
+## Senior — procedural incident, migration and ownership questions
+
+### TERRAFORM-FUNDAMENTALS-SP-01
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving HCL. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `terraform fmt -check -recursive` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-02
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Providers. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `terraform validate; terraform plan` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-03
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Resources. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `pulumi preview --diff` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-04
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Data sources. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `git diff --check` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-05
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Variables. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `terraform fmt -check -recursive` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-06
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Local values. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `terraform validate; terraform plan` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-07
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Outputs. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `pulumi preview --diff` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-08
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Expressions. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `git diff --check` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-09
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Functions. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `terraform fmt -check -recursive` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+### TERRAFORM-FUNDAMENTALS-SP-10
+
+- [ ] **Incident/migration:** **Question:** You own a high-severity failure or migration involving Dependency graph. How do you lead it end to end?
+> **Covered in:** [Terraform fundamentals — Beginner → mid-level → senior learning path](README.md#beginner-mid-level-senior-learning-path)
+
+**Answer:** Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `terraform validate; terraform plan` as one read-only checkpoint, not the whole diagnosis. is part of Terraform fundamentals; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.
+
+## Self-grading
+
+A complete spoken answer names the mechanism, scope/assumptions, one concrete command or configuration field, a failure mode, security/recovery, an SLI and a cost/trade-off. For procedural answers, explicitly separate immediate reversible mitigation from durable source-of-truth repair.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Terraform](../README.md) · [Study note](README.md) · [Next: Terraform planning →](../02-terraform-planning/README.md)
+
+<!-- reading-navigation:end -->

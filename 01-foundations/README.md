@@ -1,18 +1,15 @@
 # Computer science and distributed-systems foundations
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 007 of 373 — 01**
+>
+> **Builds on:** [Contractor and remote-work readiness](../00-role-ownership/05-contractor-and-remote-work-readiness/README.md)
+>
+> **Now:** Learn **Computer science and distributed-systems foundations** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [Computing fundamentals](01-computing-fundamentals/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [API and service architecture](api-and-service-architecture/README.md) — [questions and answers](api-and-service-architecture/questions-and-answers.md)
-- [Architecture styles](architecture-styles/README.md) — [questions and answers](architecture-styles/questions-and-answers.md)
-- [Computing fundamentals](computing-fundamentals/README.md) — [questions and answers](computing-fundamentals/questions-and-answers.md)
-- [Concurrency](concurrency/README.md) — [questions and answers](concurrency/questions-and-answers.md)
-- [Data consistency](data-consistency/README.md) — [questions and answers](data-consistency/questions-and-answers.md)
-- [Distributed systems](distributed-systems/README.md) — [questions and answers](distributed-systems/questions-and-answers.md)
-- [Resilience patterns](resilience-patterns/README.md) — [questions and answers](resilience-patterns/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 ## Computing model
 
 CPU executes instructions; memory holds addressable working state; storage persists blocks/files/objects; networks move bounded packets with latency/loss/reordering; processes own isolated virtual address spaces/resources; threads share a process. System calls cross user/kernel boundary. Interrupts signal hardware; file descriptors name open files, sockets, pipes and devices. Limits on descriptors, processes, memory, disk, ports and queues often appear as application failures.
@@ -47,14 +44,17 @@ Set a total deadline and retry budget across hops; otherwise layered retries amp
 - State consistency and availability claims with scope and failure assumptions.
 - Architecture is a trade of coupling, ownership, failure and operational cost.
 
-<!-- generated-topic-index:start -->
-## Deep topic folders
+## Practice checkpoint
 
-- [1.1 Computing fundamentals](computing-fundamentals/README.md) — [Q&A](computing-fundamentals/questions-and-answers.md)
-- [1.2 Concurrency](concurrency/README.md) — [Q&A](concurrency/questions-and-answers.md)
-- [1.3 Distributed systems](distributed-systems/README.md) — [Q&A](distributed-systems/questions-and-answers.md)
-- [1.4 Data consistency](data-consistency/README.md) — [Q&A](data-consistency/questions-and-answers.md)
-- [1.5 Resilience patterns](resilience-patterns/README.md) — [Q&A](resilience-patterns/questions-and-answers.md)
-- [1.6 API and service architecture](api-and-service-architecture/README.md) — [Q&A](api-and-service-architecture/questions-and-answers.md)
-- [1.7 Architecture styles](architecture-styles/README.md) — [Q&A](architecture-styles/questions-and-answers.md)
-<!-- generated-topic-index:end -->
+Use a disposable local process or container to observe one bounded queue, timeout, retry and cancellation path. Inject one delayed or duplicated request, explain the resulting failure mode and reliability effect, then stop the process and remove the temporary files, network and test data. Cleanup is part of the proof: no background worker, listener or generated state should remain.
+
+## Read further
+
+- [Google SRE: Handling Overload](https://sre.google/sre-book/handling-overload/) — primary production guidance connecting capacity, request cost, throttling, criticality and graceful degradation.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Contractor and remote-work readiness](../00-role-ownership/05-contractor-and-remote-work-readiness/README.md) · [Questions](questions-and-answers.md) · [Next: Computing fundamentals →](01-computing-fundamentals/README.md)
+
+<!-- reading-navigation:end -->

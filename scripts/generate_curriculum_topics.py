@@ -12,7 +12,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from generate_leaf_library import Leaf, qna, safe_id, write
+from generate_leaf_library import Leaf, numbered_path, qna, safe_id, write
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -31,7 +31,7 @@ AREA_BY_MAJOR = {
     **{n: "10-operations" for n in range(32, 35)},
     **{n: "11-ai-platform" for n in range(35, 47)},
     **{n: "12-platform-engineering" for n in range(47, 61)},
-    **{n: "scenarios" for n in range(61, 67)},
+    **{n: "13-scenarios" for n in range(61, 67)},
 }
 
 
@@ -97,7 +97,7 @@ COMMANDS_BY_AREA = {
     "10-operations": ("curl -s http://SERVICE/metrics", "promtool check rules rules.yml", "kubectl get events -A --sort-by=.lastTimestamp", "trivy fs ."),
     "11-ai-platform": ("nvidia-smi", "kubectl get pods -A -o wide", "curl -s http://MODEL/metrics", "python -m pytest -q"),
     "12-platform-engineering": ("python -m pytest -q", "go test ./...", "shellcheck scripts/*.sh", "git diff --check"),
-    "scenarios": ("date -u; whoami; hostname", "kubectl get events -A --sort-by=.lastTimestamp", "terraform plan", "git log --since='2 hours ago' --oneline"),
+    "13-scenarios": ("date -u; whoami; hostname", "kubectl get events -A --sort-by=.lastTimestamp", "terraform plan", "git log --since='2 hours ago' --oneline"),
 }
 
 
@@ -330,10 +330,9 @@ def render_note(
     for idx, concept in enumerate(concepts, 1):
         name, _, desc = concept.partition(" — ")
         rows.append(f"| {idx} | **{name}** | {desc} |")
+    # Child order and navigation live only in the root reading tree. Keep the
+    # argument for generator-call compatibility, but do not emit a local TOC.
     children_text = ""
-    if children:
-        links = "\n".join(f"- [{name}]({path}/README.md) — [Q&A]({path}/questions-and-answers.md)" for name, path in children)
-        children_text = f"\n## Deeper topic folders\n\n{links}\n"
     commands = COMMANDS_BY_TOPIC.get(title.lower(), commands)
     command_text = "\n".join(commands)
     lab = LABS_BY_AREA.get(
@@ -402,14 +401,21 @@ def topic_leaf(area: str, title: str, purpose: str, items: list[str], commands: 
 
 
 def replace_generated_index(path: Path, block: str) -> None:
+    """Remove legacy local indexes; the root README owns the complete tree."""
+    path = numbered_path(path)
     start = "<!-- generated-topic-index:start -->"
     end = "<!-- generated-topic-index:end -->"
-    if path.exists():
-        existing = path.read_text(encoding="utf-8")
-        existing = re.sub(rf"\n?{re.escape(start)}.*?{re.escape(end)}\n?", "\n", existing, flags=re.S).rstrip()
-    else:
-        existing = f"# {path.parent.name.replace('-', ' ').title()}\n"
-    path.write_text(existing + f"\n\n{start}\n{block.rstrip()}\n{end}\n", encoding="utf-8")
+    if not path.exists():
+        return
+    existing = path.read_text(encoding="utf-8")
+    updated = re.sub(
+        rf"\n?{re.escape(start)}.*?{re.escape(end)}\n?",
+        "\n",
+        existing,
+        flags=re.S,
+    ).rstrip() + "\n"
+    if updated != existing:
+        path.write_text(updated, encoding="utf-8")
 
 
 def generate() -> tuple[int, int]:
@@ -421,7 +427,7 @@ def generate() -> tuple[int, int]:
         by_area.setdefault(AREA_BY_MAJOR[major.number], []).append(major)
 
     for area, area_majors in by_area.items():
-        area_path = ROOT / area
+        area_path = numbered_path(ROOT / area)
         commands = COMMANDS_BY_AREA[area]
         area_children: list[tuple[str, str]] = []
         area_concepts: list[str] = []
@@ -429,7 +435,7 @@ def generate() -> tuple[int, int]:
         for major in area_majors:
             docs = DOCS_BY_MAJOR.get(major.number, "https://sre.google/books/")
             # Areas 0–5 already correspond one-to-one with the numbered major.
-            major_path = area_path if len(area_majors) == 1 else area_path / slug(major.title)
+            major_path = area_path if len(area_majors) == 1 else numbered_path(area_path / slug(major.title))
             major_rel = "." if major_path == area_path else major_path.name
             if major_path != area_path:
                 area_children.append((major.title, major_rel))
@@ -438,7 +444,8 @@ def generate() -> tuple[int, int]:
             all_major_items = list(major.items)
             for section in major.sections:
                 section_slug = slug(section.title)
-                section_children.append((f"{section.number} {section.title}", section_slug))
+                section_path = numbered_path(major_path / section_slug)
+                section_children.append((f"{section.number} {section.title}", section_path.name))
                 all_major_items.extend(section.items)
                 leaf = topic_leaf(
                     area,
@@ -448,7 +455,6 @@ def generate() -> tuple[int, int]:
                     commands,
                     docs,
                 )
-                section_path = major_path / section_slug
                 master_link = Path(*([".."] * len(section_path.relative_to(ROOT).parts))) / "curriculum" / "master-curriculum.txt"
                 write(section_path / "README.md", render_note(leaf.title, leaf.purpose, leaf.concepts, leaf.commands, leaf.docs, master_link.as_posix(), area))
                 write(section_path / "questions-and-answers.md", qna(leaf))

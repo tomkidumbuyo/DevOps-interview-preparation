@@ -1,28 +1,8 @@
 # Senior AI Platform Engineer (DevOps) Interview Handbook
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
-
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [Interview and role-ownership framework](00-role-ownership/README.md) — [questions and answers](00-role-ownership/questions-and-answers.md)
-- [Computer science and distributed-systems foundations](01-foundations/README.md) — [questions and answers](01-foundations/questions-and-answers.md)
-- [Linux and operating systems](02-linux/README.md) — [questions and answers](02-linux/questions-and-answers.md)
-- [Networking](03-networking/README.md) — [questions and answers](03-networking/questions-and-answers.md)
-- [Git and software-delivery fundamentals](04-git-delivery/README.md) — [questions and answers](04-git-delivery/questions-and-answers.md)
-- [Container fundamentals](05-containers/README.md) — [questions and answers](05-containers/questions-and-answers.md)
-- [Kubernetes core platform](06-kubernetes/README.md) — [questions and answers](06-kubernetes/questions-and-answers.md)
-- [AWS interview curriculum tree](07-aws/README.md) — [questions and answers](07-aws/questions-and-answers.md)
-- [Google Cloud Platform](08-gcp/README.md) — [questions and answers](08-gcp/questions-and-answers.md)
-- [Infrastructure as Code and delivery](09-iac-delivery/README.md) — [questions and answers](09-iac-delivery/questions-and-answers.md)
-- [Operations, observability, reliability and security](10-operations/README.md) — [questions and answers](10-operations/questions-and-answers.md)
-- [AI/ML platform, LLMOps, security and governance](11-ai-platform/README.md) — [questions and answers](11-ai-platform/questions-and-answers.md)
-- [Platform engineering, deployment models, FinOps and coding](12-platform-engineering/README.md) — [questions and answers](12-platform-engineering/questions-and-answers.md)
-- [Procedural, architecture and leadership scenarios](scenarios/README.md) — [questions and answers](scenarios/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 This repository is the study hub for a Senior AI Platform Engineer interview focused on production AI infrastructure: Kubernetes and GPU compute, model serving, an LLM gateway, evaluation and RAG infrastructure, governance, reliability, security, cost control, and deployment across AWS, GCP, SaaS, customer cloud, on-premises, and restricted environments.
 
-The curriculum supplied for this project is preserved without removing any item in [`curriculum/master-curriculum.txt`](curriculum/master-curriculum.txt). This README is the main table of contents. Start with P0 material, practise the scenario bank aloud, then fill gaps using P1 and P2 material.
+The curriculum supplied for this project is preserved without removing any item in [`curriculum/master-curriculum.txt`](curriculum/master-curriculum.txt). This README is the only table of contents. Follow the numbered reading sequence from start to finish, and use each topic's question bank after studying its note.
 
 The root [mega DevOps and AI Platform question bank](questions-and-answers.md) contains 180 answered, checkbox-tracked questions that combine domains; every parent and child topic adds its own 60-question bank.
 
@@ -40,95 +20,410 @@ Difficulty labels:
 - **Mid:** independent implementation, troubleshooting, automation, and production trade-offs.
 - **Senior:** ambiguous requirements, architecture, risk ownership, multi-team operation, economics, and failure recovery.
 
-## Master table of contents
 
-### 0. Interview and role ownership — P0
 
-- [`00-role-ownership/README.md`](00-role-ownership/README.md) — role boundaries, platform ownership, 30/60/90 days, operating model, contractor/BYOD readiness, leadership questions.
 
-### Part I — Core systems and DevOps foundations
 
-- [`01-foundations/README.md`](01-foundations/README.md) — computing, concurrency, distributed systems, consistency, resilience, APIs, architecture styles.
-- [`02-linux/README.md`](02-linux/README.md) — kernel/boot, filesystems, processes, systemd, memory/CPU/storage/network/security, troubleshooting.
-- The Linux README also contains the essential command reference and diagnostic command paths; notes and commands intentionally live together.
-- [`03-networking/README.md`](03-networking/README.md) — OSI/TCP-IP, IP/subnetting, routing, TCP/UDP/QUIC, DNS, HTTP/TLS, load balancing, proxies, NAT, packet-path troubleshooting.
-- [`04-git-delivery/README.md`](04-git-delivery/README.md) — Git internals, branching, change integration, collaboration, releases, and repository security.
 
-### Part II — Containers and Kubernetes
+<!-- complete-reading-path:start -->
+## Complete table of contents and reading sequence
 
-- [`05-containers/README.md`](05-containers/README.md) — namespaces/cgroups, OCI images, runtimes, networking, storage, registries, and supply-chain/runtime security.
-- [`06-kubernetes/README.md`](06-kubernetes/README.md) — control plane, API reconciliation, etcd, workloads, services/networking/storage/security/scheduling, autoscaling, upgrades, DR, troubleshooting.
-- [`06-kubernetes/gpu-llmops/README.md`](06-kubernetes/gpu-llmops/README.md) — accelerators, CUDA/NCCL, device plugins and DRA, GPU Operator, MIG/time-slicing, queues, autoscaling, telemetry, model serving and LLMOps.
+Start at **Step 001** and follow each page's **Next** link through **Step 373**. Read a parent overview before its indented children. The **Questions** link is practice for that note and does not change your place in the main sequence.
 
-### Part III — AWS
+**Start:** [Step 001 — Interview and role-ownership framework](00-role-ownership/README.md)
 
-- [`07-aws/README.md`](07-aws/README.md) — complete AWS interview tree and service-selection map.
-- [`07-aws/foundations/README.md`](07-aws/foundations/README.md) — global infrastructure, Organizations, Control Tower, IAM, STS/federation, tagging, quotas, governance.
-- [`07-aws/networking/README.md`](07-aws/networking/README.md) — VPC/subnets/routes, SG/NACL, NAT/egress, endpoints, peering/TGW/Cloud WAN, hybrid networking, Route 53, troubleshooting.
-- [`07-aws/compute/README.md`](07-aws/compute/README.md) — instance families, lifecycle, AMIs, ENIs, security, purchase/capacity models, Auto Scaling.
-- [`07-aws/load-balancing/README.md`](07-aws/load-balancing/README.md) — ALB, NLB, GWLB, Global Accelerator, health and failure diagnosis.
-- [`07-aws/storage/services/s3/README.md`](07-aws/storage/services/s3/README.md) — object model, consistency, storage classes, lifecycle, versioning, replication, encryption, authorization, events, performance and recovery.
-- [`07-aws/storage/README.md`](07-aws/storage/README.md) — EBS, EFS, FSx, AWS Backup and cross-account/region recovery.
-- [`07-aws/containers/README.md`](07-aws/containers/README.md) — ECR, ECS, EKS, identities, networking/storage add-ons, upgrades, Karpenter/Auto Mode and AWS Load Balancer Controller.
-- [`07-aws/databases/README.md`](07-aws/databases/README.md) and [`07-aws/messaging-serverless/README.md`](07-aws/messaging-serverless/README.md) — RDS/Aurora/DynamoDB/ElastiCache/OpenSearch, SQS/SNS/EventBridge/Kinesis/MSK, Lambda/API Gateway/Step Functions.
-- [`07-aws/security-operations/README.md`](07-aws/security-operations/README.md) — KMS/secrets/ACM/WAF/Shield/detection, CloudWatch/X-Ray/CloudTrail/Config/SSM and incident response.
-- [`07-aws/infrastructure-delivery/README.md`](07-aws/infrastructure-delivery/README.md) — CloudFormation/CDK, StackSets/change sets, delivery services, Service Catalog/Proton, drift and rollback.
-- [`07-aws/ai-platform/README.md`](07-aws/ai-platform/README.md) — Bedrock, SageMaker AI, EKS inference/training, NVIDIA GPUs, Inferentia/Trainium/Neuron, capacity and cost.
+**End:** Step 373 — Leadership and behavioural questions
 
-### Part IV — Google Cloud Platform
+### Numbered study tree
 
-- [`08-gcp/README.md`](08-gcp/README.md) — resource hierarchy/IAM, networking and load balancing, Compute/GKE/Cloud Run, storage/data/messaging, operations/security/cost.
-- [`08-gcp/vertex-ai-and-gcp-ai-platform/README.md`](08-gcp/vertex-ai-and-gcp-ai-platform/README.md) — Vertex AI, GKE AI/ML, GPU/TPU, serving, RAG/vector search, evaluation, pipelines and responsible AI.
+- **001.** [`00` Interview and role-ownership framework](00-role-ownership/README.md) · [Questions](00-role-ownership/questions-and-answers.md)
+  - **002.** [`00.01` Understanding the role](00-role-ownership/01-understanding-the-role/README.md) · [Questions](00-role-ownership/01-understanding-the-role/questions-and-answers.md)
+  - **003.** [`00.02` Senior engineering expectations](00-role-ownership/02-senior-engineering-expectations/README.md) · [Questions](00-role-ownership/02-senior-engineering-expectations/questions-and-answers.md)
+  - **004.** [`00.03` Taking ownership of an existing platform](00-role-ownership/03-taking-ownership-of-an-existing-platform/README.md) · [Questions](00-role-ownership/03-taking-ownership-of-an-existing-platform/questions-and-answers.md)
+  - **005.** [`00.04` Operating model](00-role-ownership/04-operating-model/README.md) · [Questions](00-role-ownership/04-operating-model/questions-and-answers.md)
+  - **006.** [`00.05` Contractor and remote-work readiness](00-role-ownership/05-contractor-and-remote-work-readiness/README.md) · [Questions](00-role-ownership/05-contractor-and-remote-work-readiness/questions-and-answers.md)
+- **007.** [`01` Computer science and distributed-systems foundations](01-foundations/README.md) · [Questions](01-foundations/questions-and-answers.md)
+  - **008.** [`01.01` Computing fundamentals](01-foundations/01-computing-fundamentals/README.md) · [Questions](01-foundations/01-computing-fundamentals/questions-and-answers.md)
+  - **009.** [`01.02` Concurrency](01-foundations/02-concurrency/README.md) · [Questions](01-foundations/02-concurrency/questions-and-answers.md)
+  - **010.** [`01.03` Distributed systems](01-foundations/03-distributed-systems/README.md) · [Questions](01-foundations/03-distributed-systems/questions-and-answers.md)
+  - **011.** [`01.04` Data consistency](01-foundations/04-data-consistency/README.md) · [Questions](01-foundations/04-data-consistency/questions-and-answers.md)
+  - **012.** [`01.05` Resilience patterns](01-foundations/05-resilience-patterns/README.md) · [Questions](01-foundations/05-resilience-patterns/questions-and-answers.md)
+  - **013.** [`01.06` API and service architecture](01-foundations/06-api-and-service-architecture/README.md) · [Questions](01-foundations/06-api-and-service-architecture/questions-and-answers.md)
+  - **014.** [`01.07` Architecture styles](01-foundations/07-architecture-styles/README.md) · [Questions](01-foundations/07-architecture-styles/questions-and-answers.md)
+- **015.** [`02` Linux and operating systems](02-linux/README.md) · [Questions](02-linux/questions-and-answers.md)
+  - **016.** [`02.01` Linux architecture](02-linux/01-linux-architecture/README.md) · [Questions](02-linux/01-linux-architecture/questions-and-answers.md)
+  - **017.** [`02.02` Filesystems](02-linux/02-filesystems/README.md) · [Questions](02-linux/02-filesystems/questions-and-answers.md)
+  - **018.** [`02.03` Users and permissions](02-linux/03-users-and-permissions/README.md) · [Questions](02-linux/03-users-and-permissions/questions-and-answers.md)
+  - **019.** [`02.04` Process management](02-linux/04-process-management/README.md) · [Questions](02-linux/04-process-management/questions-and-answers.md)
+  - **020.** [`02.05` systemd](02-linux/05-systemd/README.md) · [Questions](02-linux/05-systemd/questions-and-answers.md)
+  - **021.** [`02.06` Memory](02-linux/06-memory/README.md) · [Questions](02-linux/06-memory/questions-and-answers.md)
+  - **022.** [`02.07` CPU performance](02-linux/07-cpu-performance/README.md) · [Questions](02-linux/07-cpu-performance/questions-and-answers.md)
+  - **023.** [`02.08` Storage and I/O](02-linux/08-storage-and-i-o/README.md) · [Questions](02-linux/08-storage-and-i-o/questions-and-answers.md)
+  - **024.** [`02.09` Linux networking](02-linux/09-linux-networking/README.md) · [Questions](02-linux/09-linux-networking/questions-and-answers.md)
+  - **025.** [`02.10` Linux security](02-linux/10-linux-security/README.md) · [Questions](02-linux/10-linux-security/questions-and-answers.md)
+  - **026.** [`02.11` Linux logs and troubleshooting](02-linux/11-linux-logs-and-troubleshooting/README.md) · [Questions](02-linux/11-linux-logs-and-troubleshooting/questions-and-answers.md)
+  - **027.** [`02.12` Essential Linux commands](02-linux/12-essential-linux-commands/README.md) · [Questions](02-linux/12-essential-linux-commands/questions-and-answers.md)
+- **028.** [`03` Networking](03-networking/README.md) · [Questions](03-networking/questions-and-answers.md)
+  - **029.** [`03.01` OSI and TCP/IP models](03-networking/01-osi-and-tcp-ip-models/README.md) · [Questions](03-networking/01-osi-and-tcp-ip-models/questions-and-answers.md)
+  - **030.** [`03.02` IP addressing](03-networking/02-ip-addressing/README.md) · [Questions](03-networking/02-ip-addressing/questions-and-answers.md)
+  - **031.** [`03.03` Layer 2 networking](03-networking/03-layer-2-networking/README.md) · [Questions](03-networking/03-layer-2-networking/questions-and-answers.md)
+  - **032.** [`03.04` Routing](03-networking/04-routing/README.md) · [Questions](03-networking/04-routing/questions-and-answers.md)
+  - **033.** [`03.05` TCP and UDP](03-networking/05-tcp-and-udp/README.md) · [Questions](03-networking/05-tcp-and-udp/questions-and-answers.md)
+  - **034.** [`03.06` DNS](03-networking/06-dns/README.md) · [Questions](03-networking/06-dns/questions-and-answers.md)
+  - **035.** [`03.07` HTTP](03-networking/07-http/README.md) · [Questions](03-networking/07-http/questions-and-answers.md)
+  - **036.** [`03.08` TLS and certificates](03-networking/08-tls-and-certificates/README.md) · [Questions](03-networking/08-tls-and-certificates/questions-and-answers.md)
+  - **037.** [`03.09` Load balancing](03-networking/09-load-balancing/README.md) · [Questions](03-networking/09-load-balancing/questions-and-answers.md)
+  - **038.** [`03.10` Proxies and gateways](03-networking/10-proxies-and-gateways/README.md) · [Questions](03-networking/10-proxies-and-gateways/questions-and-answers.md)
+  - **039.** [`03.11` Firewalls and NAT](03-networking/11-firewalls-and-nat/README.md) · [Questions](03-networking/11-firewalls-and-nat/questions-and-answers.md)
+  - **040.** [`03.12` Network troubleshooting](03-networking/12-network-troubleshooting/README.md) · [Questions](03-networking/12-network-troubleshooting/questions-and-answers.md)
+- **041.** [`04` Git and software-delivery fundamentals](04-git-delivery/README.md) · [Questions](04-git-delivery/questions-and-answers.md)
+  - **042.** [`04.01` Git object model](04-git-delivery/01-git-object-model/README.md) · [Questions](04-git-delivery/01-git-object-model/questions-and-answers.md)
+  - **043.** [`04.02` Branching](04-git-delivery/02-branching/README.md) · [Questions](04-git-delivery/02-branching/questions-and-answers.md)
+  - **044.** [`04.03` Change integration](04-git-delivery/03-change-integration/README.md) · [Questions](04-git-delivery/03-change-integration/questions-and-answers.md)
+  - **045.** [`04.04` Collaboration](04-git-delivery/04-collaboration/README.md) · [Questions](04-git-delivery/04-collaboration/questions-and-answers.md)
+  - **046.** [`04.05` Release management](04-git-delivery/05-release-management/README.md) · [Questions](04-git-delivery/05-release-management/questions-and-answers.md)
+  - **047.** [`04.06` Git security](04-git-delivery/06-git-security/README.md) · [Questions](04-git-delivery/06-git-security/questions-and-answers.md)
+- **048.** [`05` Container fundamentals](05-containers/README.md) · [Questions](05-containers/questions-and-answers.md)
+  - **049.** [`05.01` Container internals](05-containers/01-container-internals/README.md) · [Questions](05-containers/01-container-internals/questions-and-answers.md)
+  - **050.** [`05.02` Docker images](05-containers/02-docker-images/README.md) · [Questions](05-containers/02-docker-images/questions-and-answers.md)
+  - **051.** [`05.03` Docker runtime](05-containers/03-docker-runtime/README.md) · [Questions](05-containers/03-docker-runtime/questions-and-answers.md)
+  - **052.** [`05.04` Container networking](05-containers/04-container-networking/README.md) · [Questions](05-containers/04-container-networking/questions-and-answers.md)
+  - **053.** [`05.05` Container storage](05-containers/05-container-storage/README.md) · [Questions](05-containers/05-container-storage/questions-and-answers.md)
+  - **054.** [`05.06` Registries](05-containers/06-registries/README.md) · [Questions](05-containers/06-registries/questions-and-answers.md)
+  - **055.** [`05.07` Container security](05-containers/07-container-security/README.md) · [Questions](05-containers/07-container-security/questions-and-answers.md)
+- **056.** [`06` Kubernetes core platform](06-kubernetes/README.md) · [Questions](06-kubernetes/questions-and-answers.md)
+  - **057.** [`06.01` Architecture](06-kubernetes/01-architecture/README.md) · [Questions](06-kubernetes/01-architecture/questions-and-answers.md)
+    - **058.** [`06.01.01` Kubernetes API server and etcd](06-kubernetes/01-architecture/01-api-server-etcd/README.md) · [Questions](06-kubernetes/01-architecture/01-api-server-etcd/questions-and-answers.md)
+    - **059.** [`06.01.02` Scheduler, controllers and kubelet](06-kubernetes/01-architecture/02-scheduler-controllers-kubelet/README.md) · [Questions](06-kubernetes/01-architecture/02-scheduler-controllers-kubelet/questions-and-answers.md)
+  - **060.** [`06.02` Workloads](06-kubernetes/02-workloads/README.md) · [Questions](06-kubernetes/02-workloads/questions-and-answers.md)
+    - **061.** [`06.02.01` Kubernetes Pods](06-kubernetes/02-workloads/01-pods/README.md) · [Questions](06-kubernetes/02-workloads/01-pods/questions-and-answers.md)
+    - **062.** [`06.02.02` Deployments and ReplicaSets](06-kubernetes/02-workloads/02-deployments/README.md) · [Questions](06-kubernetes/02-workloads/02-deployments/questions-and-answers.md)
+    - **063.** [`06.02.03` StatefulSets and DaemonSets](06-kubernetes/02-workloads/03-statefulsets-daemonsets/README.md) · [Questions](06-kubernetes/02-workloads/03-statefulsets-daemonsets/questions-and-answers.md)
+    - **064.** [`06.02.04` Jobs and CronJobs](06-kubernetes/02-workloads/04-jobs-cronjobs/README.md) · [Questions](06-kubernetes/02-workloads/04-jobs-cronjobs/questions-and-answers.md)
+    - **065.** [`06.02.05` Probes and container lifecycle](06-kubernetes/02-workloads/05-probes-lifecycle/README.md) · [Questions](06-kubernetes/02-workloads/05-probes-lifecycle/questions-and-answers.md)
+  - **066.** [`06.03` Networking](06-kubernetes/03-networking/README.md) · [Questions](06-kubernetes/03-networking/questions-and-answers.md)
+    - **067.** [`06.03.01` Services, EndpointSlices and CoreDNS](06-kubernetes/03-networking/01-services-endpoints-dns/README.md) · [Questions](06-kubernetes/03-networking/01-services-endpoints-dns/questions-and-answers.md)
+    - **068.** [`06.03.02` CNI, kube-proxy and eBPF data planes](06-kubernetes/03-networking/02-cni-kubeproxy-ebpf/README.md) · [Questions](06-kubernetes/03-networking/02-cni-kubeproxy-ebpf/questions-and-answers.md)
+    - **069.** [`06.03.03` Kubernetes NetworkPolicy](06-kubernetes/03-networking/03-networkpolicy/README.md) · [Questions](06-kubernetes/03-networking/03-networkpolicy/questions-and-answers.md)
+    - **070.** [`06.03.04` Ingress and Gateway API](06-kubernetes/03-networking/04-ingress-gateway-api/README.md) · [Questions](06-kubernetes/03-networking/04-ingress-gateway-api/questions-and-answers.md)
+    - **071.** [`06.03.05` Service mesh](06-kubernetes/03-networking/05-service-mesh/README.md) · [Questions](06-kubernetes/03-networking/05-service-mesh/questions-and-answers.md)
+  - **072.** [`06.04` Storage](06-kubernetes/04-storage/README.md) · [Questions](06-kubernetes/04-storage/questions-and-answers.md)
+    - **073.** [`06.04.01` PersistentVolumes, PVCs and StorageClasses](06-kubernetes/04-storage/01-pv-pvc-storageclass/README.md) · [Questions](06-kubernetes/04-storage/01-pv-pvc-storageclass/questions-and-answers.md)
+    - **074.** [`06.04.02` CSI, snapshots and Kubernetes backup](06-kubernetes/04-storage/02-csi-snapshots-backup/README.md) · [Questions](06-kubernetes/04-storage/02-csi-snapshots-backup/questions-and-answers.md)
+  - **075.** [`06.05` Security](06-kubernetes/05-security/README.md) · [Questions](06-kubernetes/05-security/questions-and-answers.md)
+    - **076.** [`06.05.01` Kubernetes authentication, RBAC and ServiceAccounts](06-kubernetes/05-security/01-authn-rbac-serviceaccounts/README.md) · [Questions](06-kubernetes/05-security/01-authn-rbac-serviceaccounts/questions-and-answers.md)
+    - **077.** [`06.05.02` Pod and node workload security](06-kubernetes/05-security/02-pod-security/README.md) · [Questions](06-kubernetes/05-security/02-pod-security/questions-and-answers.md)
+    - **078.** [`06.05.03` Kubernetes Secrets and ConfigMaps](06-kubernetes/05-security/03-secrets-configmaps/README.md) · [Questions](06-kubernetes/05-security/03-secrets-configmaps/questions-and-answers.md)
+    - **079.** [`06.05.04` Kubernetes admission policies and webhooks](06-kubernetes/05-security/04-admission-policies-webhooks/README.md) · [Questions](06-kubernetes/05-security/04-admission-policies-webhooks/questions-and-answers.md)
+    - **080.** [`06.05.05` Kubernetes multi-tenancy](06-kubernetes/05-security/05-multitenancy/README.md) · [Questions](06-kubernetes/05-security/05-multitenancy/questions-and-answers.md)
+  - **081.** [`06.06` Scheduling Autoscaling](06-kubernetes/06-scheduling-autoscaling/README.md) · [Questions](06-kubernetes/06-scheduling-autoscaling/questions-and-answers.md)
+    - **082.** [`06.06.01` Resource requests, limits and QoS](06-kubernetes/06-scheduling-autoscaling/01-requests-limits-qos/README.md) · [Questions](06-kubernetes/06-scheduling-autoscaling/01-requests-limits-qos/questions-and-answers.md)
+    - **083.** [`06.06.02` Affinity, taints and topology placement](06-kubernetes/06-scheduling-autoscaling/02-placement/README.md) · [Questions](06-kubernetes/06-scheduling-autoscaling/02-placement/questions-and-answers.md)
+    - **084.** [`06.06.03` HPA, VPA and KEDA](06-kubernetes/06-scheduling-autoscaling/03-hpa-vpa-keda/README.md) · [Questions](06-kubernetes/06-scheduling-autoscaling/03-hpa-vpa-keda/questions-and-answers.md)
+    - **085.** [`06.06.04` Cluster Autoscaler, Karpenter and node lifecycle](06-kubernetes/06-scheduling-autoscaling/04-node-autoscaling/README.md) · [Questions](06-kubernetes/06-scheduling-autoscaling/04-node-autoscaling/questions-and-answers.md)
+    - **086.** [`06.06.05` PDB, priority, preemption and eviction](06-kubernetes/06-scheduling-autoscaling/05-disruption-priority/README.md) · [Questions](06-kubernetes/06-scheduling-autoscaling/05-disruption-priority/questions-and-answers.md)
+  - **087.** [`06.07` Packaging Extensions](06-kubernetes/07-packaging-extensions/README.md) · [Questions](06-kubernetes/07-packaging-extensions/questions-and-answers.md)
+    - **088.** [`06.07.01` Helm and Kustomize](06-kubernetes/07-packaging-extensions/01-helm-kustomize/README.md) · [Questions](06-kubernetes/07-packaging-extensions/01-helm-kustomize/questions-and-answers.md)
+    - **089.** [`06.07.02` CRDs and operators](06-kubernetes/07-packaging-extensions/02-crds-operators/README.md) · [Questions](06-kubernetes/07-packaging-extensions/02-crds-operators/questions-and-answers.md)
+    - **090.** [`06.07.03` Argo CD, Flux and GitOps](06-kubernetes/07-packaging-extensions/03-gitops/README.md) · [Questions](06-kubernetes/07-packaging-extensions/03-gitops/questions-and-answers.md)
+  - **091.** [`06.08` Operations](06-kubernetes/08-operations/README.md) · [Questions](06-kubernetes/08-operations/questions-and-answers.md)
+    - **092.** [`06.08.01` Kubernetes observability](06-kubernetes/08-operations/01-observability/README.md) · [Questions](06-kubernetes/08-operations/01-observability/questions-and-answers.md)
+    - **093.** [`06.08.02` Kubernetes upgrades and API deprecations](06-kubernetes/08-operations/02-upgrades/README.md) · [Questions](06-kubernetes/08-operations/02-upgrades/questions-and-answers.md)
+    - **094.** [`06.08.03` Kubernetes backup and disaster recovery](06-kubernetes/08-operations/03-backup-dr-etcd/README.md) · [Questions](06-kubernetes/08-operations/03-backup-dr-etcd/questions-and-answers.md)
+    - **095.** [`06.08.04` Kubernetes troubleshooting and kubectl](06-kubernetes/08-operations/04-troubleshooting-kubectl/README.md) · [Questions](06-kubernetes/08-operations/04-troubleshooting-kubectl/questions-and-answers.md)
+  - **096.** [`06.09` Gpu Llmops](06-kubernetes/09-gpu-llmops/README.md) · [Questions](06-kubernetes/09-gpu-llmops/questions-and-answers.md)
+    - **097.** [`06.09.01` GPU Operator, device plugins and DRA](06-kubernetes/09-gpu-llmops/01-gpu-operator-dra/README.md) · [Questions](06-kubernetes/09-gpu-llmops/01-gpu-operator-dra/questions-and-answers.md)
+    - **098.** [`06.09.02` GPU sharing, scheduling and queueing](06-kubernetes/09-gpu-llmops/02-gpu-sharing-scheduling/README.md) · [Questions](06-kubernetes/09-gpu-llmops/02-gpu-sharing-scheduling/questions-and-answers.md)
+    - **099.** [`06.09.03` KServe, vLLM and Triton on Kubernetes](06-kubernetes/09-gpu-llmops/03-model-serving/README.md) · [Questions](06-kubernetes/09-gpu-llmops/03-model-serving/questions-and-answers.md)
+    - **100.** [`06.09.04` Inference autoscaling and capacity](06-kubernetes/09-gpu-llmops/04-inference-autoscaling/README.md) · [Questions](06-kubernetes/09-gpu-llmops/04-inference-autoscaling/questions-and-answers.md)
+    - **101.** [`06.09.05` LLMOps release and evaluation on Kubernetes](06-kubernetes/09-gpu-llmops/05-llmops-release-evaluation/README.md) · [Questions](06-kubernetes/09-gpu-llmops/05-llmops-release-evaluation/questions-and-answers.md)
+    - **102.** [`06.09.06` LLM gateway and RAG on Kubernetes](06-kubernetes/09-gpu-llmops/06-gateway-rag/README.md) · [Questions](06-kubernetes/09-gpu-llmops/06-gateway-rag/questions-and-answers.md)
+- **103.** [`07` AWS interview curriculum tree](07-aws/README.md) · [Questions](07-aws/questions-and-answers.md)
+  - **104.** [`07.01` Foundations](07-aws/01-foundations/README.md) · [Questions](07-aws/01-foundations/questions-and-answers.md)
+    - **105.** [`07.01.01` AWS IAM](07-aws/01-foundations/01-iam/README.md) · [Questions](07-aws/01-foundations/01-iam/questions-and-answers.md)
+    - **106.** [`07.01.02` AWS Organizations](07-aws/01-foundations/02-organizations/README.md) · [Questions](07-aws/01-foundations/02-organizations/questions-and-answers.md)
+    - **107.** [`07.01.03` AWS STS, federation and IAM Identity Center](07-aws/01-foundations/03-sts-identity-center/README.md) · [Questions](07-aws/01-foundations/03-sts-identity-center/questions-and-answers.md)
+    - **108.** [`07.01.04` AWS Control Tower, tagging, quotas and governance](07-aws/01-foundations/04-control-tower-governance/README.md) · [Questions](07-aws/01-foundations/04-control-tower-governance/questions-and-answers.md)
+  - **109.** [`07.02` Networking](07-aws/02-networking/README.md) · [Questions](07-aws/02-networking/questions-and-answers.md)
+    - **110.** [`07.02.01` Amazon VPC](07-aws/02-networking/01-vpc/README.md) · [Questions](07-aws/02-networking/01-vpc/questions-and-answers.md)
+    - **111.** [`07.02.02` Security groups and network ACLs](07-aws/02-networking/02-security-groups-nacls/README.md) · [Questions](07-aws/02-networking/02-security-groups-nacls/questions-and-answers.md)
+    - **112.** [`07.02.03` NAT and egress architecture](07-aws/02-networking/03-nat-egress/README.md) · [Questions](07-aws/02-networking/03-nat-egress/questions-and-answers.md)
+    - **113.** [`07.02.04` VPC endpoints and AWS PrivateLink](07-aws/02-networking/04-endpoints-privatelink/README.md) · [Questions](07-aws/02-networking/04-endpoints-privatelink/questions-and-answers.md)
+    - **114.** [`07.02.05` VPC peering, Transit Gateway and Cloud WAN](07-aws/02-networking/05-peering-tgw-cloudwan/README.md) · [Questions](07-aws/02-networking/05-peering-tgw-cloudwan/questions-and-answers.md)
+    - **115.** [`07.02.06` AWS hybrid networking](07-aws/02-networking/06-hybrid-networking/README.md) · [Questions](07-aws/02-networking/06-hybrid-networking/questions-and-answers.md)
+    - **116.** [`07.02.07` Amazon Route 53](07-aws/02-networking/07-route53/README.md) · [Questions](07-aws/02-networking/07-route53/questions-and-answers.md)
+  - **117.** [`07.03` Compute](07-aws/03-compute/README.md) · [Questions](07-aws/03-compute/questions-and-answers.md)
+    - **118.** [`07.03.01` Amazon EC2](07-aws/03-compute/01-ec2/README.md) · [Questions](07-aws/03-compute/01-ec2/questions-and-answers.md)
+    - **119.** [`07.03.02` AMIs, Image Builder and golden images](07-aws/03-compute/02-amis-image-builder/README.md) · [Questions](07-aws/03-compute/02-amis-image-builder/questions-and-answers.md)
+    - **120.** [`07.03.03` EC2 Auto Scaling](07-aws/03-compute/03-ec2-auto-scaling/README.md) · [Questions](07-aws/03-compute/03-ec2-auto-scaling/questions-and-answers.md)
+  - **121.** [`07.04` Load Balancing](07-aws/04-load-balancing/README.md) · [Questions](07-aws/04-load-balancing/questions-and-answers.md)
+    - **122.** [`07.04.01` Application Load Balancer](07-aws/04-load-balancing/01-alb/README.md) · [Questions](07-aws/04-load-balancing/01-alb/questions-and-answers.md)
+    - **123.** [`07.04.02` Network Load Balancer](07-aws/04-load-balancing/02-nlb/README.md) · [Questions](07-aws/04-load-balancing/02-nlb/questions-and-answers.md)
+    - **124.** [`07.04.03` Gateway Load Balancer](07-aws/04-load-balancing/03-gwlb/README.md) · [Questions](07-aws/04-load-balancing/03-gwlb/questions-and-answers.md)
+    - **125.** [`07.04.04` AWS Global Accelerator](07-aws/04-load-balancing/04-global-accelerator/README.md) · [Questions](07-aws/04-load-balancing/04-global-accelerator/questions-and-answers.md)
+  - **126.** [`07.05` Storage](07-aws/05-storage/README.md) · [Questions](07-aws/05-storage/questions-and-answers.md)
+    - **127.** [`07.05.01` Amazon S3](07-aws/05-storage/01-s3/README.md) · [Questions](07-aws/05-storage/01-s3/questions-and-answers.md)
+    - **128.** [`07.05.02` Amazon EBS](07-aws/05-storage/02-ebs/README.md) · [Questions](07-aws/05-storage/02-ebs/questions-and-answers.md)
+    - **129.** [`07.05.03` Amazon EFS](07-aws/05-storage/03-efs/README.md) · [Questions](07-aws/05-storage/03-efs/questions-and-answers.md)
+    - **130.** [`07.05.04` Amazon FSx](07-aws/05-storage/04-fsx/README.md) · [Questions](07-aws/05-storage/04-fsx/questions-and-answers.md)
+    - **131.** [`07.05.05` AWS Backup](07-aws/05-storage/05-aws-backup/README.md) · [Questions](07-aws/05-storage/05-aws-backup/questions-and-answers.md)
+  - **132.** [`07.06` Containers](07-aws/06-containers/README.md) · [Questions](07-aws/06-containers/questions-and-answers.md)
+    - **133.** [`07.06.01` Amazon ECR](07-aws/06-containers/01-ecr/README.md) · [Questions](07-aws/06-containers/01-ecr/questions-and-answers.md)
+    - **134.** [`07.06.02` Amazon ECS](07-aws/06-containers/02-ecs/README.md) · [Questions](07-aws/06-containers/02-ecs/questions-and-answers.md)
+    - **135.** [`07.06.03` Amazon EKS](07-aws/06-containers/03-eks/README.md) · [Questions](07-aws/06-containers/03-eks/questions-and-answers.md)
+    - **136.** [`07.06.04` Karpenter and EKS Auto Mode](07-aws/06-containers/04-karpenter-auto-mode/README.md) · [Questions](07-aws/06-containers/04-karpenter-auto-mode/questions-and-answers.md)
+    - **137.** [`07.06.05` AWS Load Balancer Controller](07-aws/06-containers/05-aws-load-balancer-controller/README.md) · [Questions](07-aws/06-containers/05-aws-load-balancer-controller/questions-and-answers.md)
+  - **138.** [`07.07` Databases](07-aws/07-databases/README.md) · [Questions](07-aws/07-databases/questions-and-answers.md)
+    - **139.** [`07.07.01` Amazon RDS](07-aws/07-databases/01-rds/README.md) · [Questions](07-aws/07-databases/01-rds/questions-and-answers.md)
+    - **140.** [`07.07.02` Amazon Aurora](07-aws/07-databases/02-aurora/README.md) · [Questions](07-aws/07-databases/02-aurora/questions-and-answers.md)
+    - **141.** [`07.07.03` Amazon DynamoDB](07-aws/07-databases/03-dynamodb/README.md) · [Questions](07-aws/07-databases/03-dynamodb/questions-and-answers.md)
+    - **142.** [`07.07.04` Amazon ElastiCache](07-aws/07-databases/04-elasticache/README.md) · [Questions](07-aws/07-databases/04-elasticache/questions-and-answers.md)
+    - **143.** [`07.07.05` Amazon OpenSearch Service](07-aws/07-databases/05-opensearch/README.md) · [Questions](07-aws/07-databases/05-opensearch/questions-and-answers.md)
+  - **144.** [`07.08` Messaging Serverless](07-aws/08-messaging-serverless/README.md) · [Questions](07-aws/08-messaging-serverless/questions-and-answers.md)
+    - **145.** [`07.08.01` Amazon SQS](07-aws/08-messaging-serverless/01-sqs/README.md) · [Questions](07-aws/08-messaging-serverless/01-sqs/questions-and-answers.md)
+    - **146.** [`07.08.02` Amazon SNS and EventBridge](07-aws/08-messaging-serverless/02-sns-eventbridge/README.md) · [Questions](07-aws/08-messaging-serverless/02-sns-eventbridge/questions-and-answers.md)
+    - **147.** [`07.08.03` AWS Step Functions](07-aws/08-messaging-serverless/03-step-functions/README.md) · [Questions](07-aws/08-messaging-serverless/03-step-functions/questions-and-answers.md)
+    - **148.** [`07.08.04` Kinesis Data Streams and Amazon MSK](07-aws/08-messaging-serverless/04-kinesis-msk/README.md) · [Questions](07-aws/08-messaging-serverless/04-kinesis-msk/questions-and-answers.md)
+    - **149.** [`07.08.05` AWS Lambda](07-aws/08-messaging-serverless/05-lambda/README.md) · [Questions](07-aws/08-messaging-serverless/05-lambda/questions-and-answers.md)
+    - **150.** [`07.08.06` Amazon API Gateway](07-aws/08-messaging-serverless/06-api-gateway/README.md) · [Questions](07-aws/08-messaging-serverless/06-api-gateway/questions-and-answers.md)
+  - **151.** [`07.09` Security Operations](07-aws/09-security-operations/README.md) · [Questions](07-aws/09-security-operations/questions-and-answers.md)
+    - **152.** [`07.09.01` AWS KMS](07-aws/09-security-operations/01-kms/README.md) · [Questions](07-aws/09-security-operations/01-kms/questions-and-answers.md)
+    - **153.** [`07.09.02` AWS Secrets Manager and Parameter Store](07-aws/09-security-operations/02-secrets-manager/README.md) · [Questions](07-aws/09-security-operations/02-secrets-manager/questions-and-answers.md)
+    - **154.** [`07.09.03` ACM, AWS WAF and Shield](07-aws/09-security-operations/03-acm-waf-shield/README.md) · [Questions](07-aws/09-security-operations/03-acm-waf-shield/questions-and-answers.md)
+    - **155.** [`07.09.04` GuardDuty, Security Hub, Inspector, Macie and Detective](07-aws/09-security-operations/04-security-detection/README.md) · [Questions](07-aws/09-security-operations/04-security-detection/questions-and-answers.md)
+    - **156.** [`07.09.05` Amazon CloudWatch and X-Ray](07-aws/09-security-operations/05-cloudwatch-xray/README.md) · [Questions](07-aws/09-security-operations/05-cloudwatch-xray/questions-and-answers.md)
+    - **157.** [`07.09.06` AWS CloudTrail and Config](07-aws/09-security-operations/06-cloudtrail-config/README.md) · [Questions](07-aws/09-security-operations/06-cloudtrail-config/questions-and-answers.md)
+    - **158.** [`07.09.07` AWS Systems Manager](07-aws/09-security-operations/07-systems-manager/README.md) · [Questions](07-aws/09-security-operations/07-systems-manager/questions-and-answers.md)
+  - **159.** [`07.10` Infrastructure Delivery](07-aws/10-infrastructure-delivery/README.md) · [Questions](07-aws/10-infrastructure-delivery/questions-and-answers.md)
+    - **160.** [`07.10.01` AWS CloudFormation](07-aws/10-infrastructure-delivery/01-cloudformation/README.md) · [Questions](07-aws/10-infrastructure-delivery/01-cloudformation/questions-and-answers.md)
+    - **161.** [`07.10.02` AWS CDK](07-aws/10-infrastructure-delivery/02-cdk/README.md) · [Questions](07-aws/10-infrastructure-delivery/02-cdk/questions-and-answers.md)
+    - **162.** [`07.10.03` CodeBuild, CodePipeline and CodeDeploy](07-aws/10-infrastructure-delivery/03-code-services/README.md) · [Questions](07-aws/10-infrastructure-delivery/03-code-services/questions-and-answers.md)
+    - **163.** [`07.10.04` AWS Service Catalog and Proton](07-aws/10-infrastructure-delivery/04-service-catalog-proton/README.md) · [Questions](07-aws/10-infrastructure-delivery/04-service-catalog-proton/questions-and-answers.md)
+  - **164.** [`07.11` Ai Platform](07-aws/11-ai-platform/README.md) · [Questions](07-aws/11-ai-platform/questions-and-answers.md)
+    - **165.** [`07.11.01` Amazon Bedrock](07-aws/11-ai-platform/01-bedrock/README.md) · [Questions](07-aws/11-ai-platform/01-bedrock/questions-and-answers.md)
+    - **166.** [`07.11.02` Amazon SageMaker AI](07-aws/11-ai-platform/02-sagemaker-ai/README.md) · [Questions](07-aws/11-ai-platform/02-sagemaker-ai/questions-and-answers.md)
+    - **167.** [`07.11.03` AI/ML workloads on Amazon EKS](07-aws/11-ai-platform/03-eks-ai-inference/README.md) · [Questions](07-aws/11-ai-platform/03-eks-ai-inference/questions-and-answers.md)
+    - **168.** [`07.11.04` AWS GPUs, Inferentia and Trainium](07-aws/11-ai-platform/04-aws-accelerators/README.md) · [Questions](07-aws/11-ai-platform/04-aws-accelerators/questions-and-answers.md)
+- **169.** [`08` Google Cloud Platform](08-gcp/README.md) · [Questions](08-gcp/questions-and-answers.md)
+  - **170.** [`08.01` GCP foundations and governance](08-gcp/01-gcp-foundations-and-governance/README.md) · [Questions](08-gcp/01-gcp-foundations-and-governance/questions-and-answers.md)
+  - **171.** [`08.02` GCP networking](08-gcp/02-gcp-networking/README.md) · [Questions](08-gcp/02-gcp-networking/questions-and-answers.md)
+  - **172.** [`08.03` GCP load balancing](08-gcp/03-gcp-load-balancing/README.md) · [Questions](08-gcp/03-gcp-load-balancing/questions-and-answers.md)
+  - **173.** [`08.04` GCP compute and containers](08-gcp/04-gcp-compute-and-containers/README.md) · [Questions](08-gcp/04-gcp-compute-and-containers/questions-and-answers.md)
+  - **174.** [`08.05` GCP storage and databases](08-gcp/05-gcp-storage-and-databases/README.md) · [Questions](08-gcp/05-gcp-storage-and-databases/questions-and-answers.md)
+  - **175.** [`08.06` GCP messaging and data processing](08-gcp/06-gcp-messaging-and-data-processing/README.md) · [Questions](08-gcp/06-gcp-messaging-and-data-processing/questions-and-answers.md)
+  - **176.** [`08.07` Vertex AI and GCP AI platform](08-gcp/07-vertex-ai-and-gcp-ai-platform/README.md) · [Questions](08-gcp/07-vertex-ai-and-gcp-ai-platform/questions-and-answers.md)
+  - **177.** [`08.08` GCP operations, security and cost](08-gcp/08-gcp-operations-security-and-cost/README.md) · [Questions](08-gcp/08-gcp-operations-security-and-cost/questions-and-answers.md)
+- **178.** [`09` Infrastructure as Code and delivery](09-iac-delivery/README.md) · [Questions](09-iac-delivery/questions-and-answers.md)
+  - **179.** [`09.01` Terraform](09-iac-delivery/01-terraform/README.md) · [Questions](09-iac-delivery/01-terraform/questions-and-answers.md)
+    - **180.** [`09.01.01` Terraform fundamentals](09-iac-delivery/01-terraform/01-terraform-fundamentals/README.md) · [Questions](09-iac-delivery/01-terraform/01-terraform-fundamentals/questions-and-answers.md)
+    - **181.** [`09.01.02` Terraform planning](09-iac-delivery/01-terraform/02-terraform-planning/README.md) · [Questions](09-iac-delivery/01-terraform/02-terraform-planning/questions-and-answers.md)
+    - **182.** [`09.01.03` Terraform state](09-iac-delivery/01-terraform/03-terraform-state/README.md) · [Questions](09-iac-delivery/01-terraform/03-terraform-state/questions-and-answers.md)
+    - **183.** [`09.01.04` Terraform resource lifecycle](09-iac-delivery/01-terraform/04-terraform-resource-lifecycle/README.md) · [Questions](09-iac-delivery/01-terraform/04-terraform-resource-lifecycle/questions-and-answers.md)
+    - **184.** [`09.01.05` Terraform modules](09-iac-delivery/01-terraform/05-terraform-modules/README.md) · [Questions](09-iac-delivery/01-terraform/05-terraform-modules/questions-and-answers.md)
+    - **185.** [`09.01.06` Terraform language depth](09-iac-delivery/01-terraform/06-terraform-language-depth/README.md) · [Questions](09-iac-delivery/01-terraform/06-terraform-language-depth/questions-and-answers.md)
+    - **186.** [`09.01.07` Import and refactoring](09-iac-delivery/01-terraform/07-import-and-refactoring/README.md) · [Questions](09-iac-delivery/01-terraform/07-import-and-refactoring/questions-and-answers.md)
+    - **187.** [`09.01.08` Terraform environments](09-iac-delivery/01-terraform/08-terraform-environments/README.md) · [Questions](09-iac-delivery/01-terraform/08-terraform-environments/questions-and-answers.md)
+    - **188.** [`09.01.09` Terraform testing and validation](09-iac-delivery/01-terraform/09-terraform-testing-and-validation/README.md) · [Questions](09-iac-delivery/01-terraform/09-terraform-testing-and-validation/questions-and-answers.md)
+    - **189.** [`09.01.10` Terraform CI/CD](09-iac-delivery/01-terraform/10-terraform-ci-cd/README.md) · [Questions](09-iac-delivery/01-terraform/10-terraform-ci-cd/questions-and-answers.md)
+    - **190.** [`09.01.11` Terraform security](09-iac-delivery/01-terraform/11-terraform-security/README.md) · [Questions](09-iac-delivery/01-terraform/11-terraform-security/questions-and-answers.md)
+  - **191.** [`09.02` Pulumi](09-iac-delivery/02-pulumi/README.md) · [Questions](09-iac-delivery/02-pulumi/questions-and-answers.md)
+    - **192.** [`09.02.01` Pulumi concepts](09-iac-delivery/02-pulumi/01-pulumi-concepts/README.md) · [Questions](09-iac-delivery/02-pulumi/01-pulumi-concepts/questions-and-answers.md)
+    - **193.** [`09.02.02` Pulumi languages](09-iac-delivery/02-pulumi/02-pulumi-languages/README.md) · [Questions](09-iac-delivery/02-pulumi/02-pulumi-languages/questions-and-answers.md)
+    - **194.** [`09.02.03` Pulumi state](09-iac-delivery/02-pulumi/03-pulumi-state/README.md) · [Questions](09-iac-delivery/02-pulumi/03-pulumi-state/questions-and-answers.md)
+    - **195.** [`09.02.04` Component resources](09-iac-delivery/02-pulumi/04-component-resources/README.md) · [Questions](09-iac-delivery/02-pulumi/04-component-resources/questions-and-answers.md)
+    - **196.** [`09.02.05` Pulumi Automation API](09-iac-delivery/02-pulumi/05-pulumi-automation-api/README.md) · [Questions](09-iac-delivery/02-pulumi/05-pulumi-automation-api/questions-and-answers.md)
+    - **197.** [`09.02.06` Pulumi policies](09-iac-delivery/02-pulumi/06-pulumi-policies/README.md) · [Questions](09-iac-delivery/02-pulumi/06-pulumi-policies/questions-and-answers.md)
+    - **198.** [`09.02.07` Pulumi CI/CD](09-iac-delivery/02-pulumi/07-pulumi-ci-cd/README.md) · [Questions](09-iac-delivery/02-pulumi/07-pulumi-ci-cd/questions-and-answers.md)
+    - **199.** [`09.02.08` Terraform versus Pulumi](09-iac-delivery/02-pulumi/08-terraform-versus-pulumi/README.md) · [Questions](09-iac-delivery/02-pulumi/08-terraform-versus-pulumi/questions-and-answers.md)
+  - **200.** [`09.03` CI/CD](09-iac-delivery/03-ci-cd/README.md) · [Questions](09-iac-delivery/03-ci-cd/questions-and-answers.md)
+    - **201.** [`09.03.01` CI fundamentals](09-iac-delivery/03-ci-cd/01-ci-fundamentals/README.md) · [Questions](09-iac-delivery/03-ci-cd/01-ci-fundamentals/questions-and-answers.md)
+    - **202.** [`09.03.02` CD fundamentals](09-iac-delivery/03-ci-cd/02-cd-fundamentals/README.md) · [Questions](09-iac-delivery/03-ci-cd/02-cd-fundamentals/questions-and-answers.md)
+    - **203.** [`09.03.03` GitHub Actions](09-iac-delivery/03-ci-cd/03-github-actions/README.md) · [Questions](09-iac-delivery/03-ci-cd/03-github-actions/questions-and-answers.md)
+    - **204.** [`09.03.04` GitLab CI](09-iac-delivery/03-ci-cd/04-gitlab-ci/README.md) · [Questions](09-iac-delivery/03-ci-cd/04-gitlab-ci/questions-and-answers.md)
+    - **205.** [`09.03.05` Jenkins](09-iac-delivery/03-ci-cd/05-jenkins/README.md) · [Questions](09-iac-delivery/03-ci-cd/05-jenkins/questions-and-answers.md)
+    - **206.** [`09.03.06` Deployment strategies](09-iac-delivery/03-ci-cd/06-deployment-strategies/README.md) · [Questions](09-iac-delivery/03-ci-cd/06-deployment-strategies/questions-and-answers.md)
+    - **207.** [`09.03.07` GitOps](09-iac-delivery/03-ci-cd/07-gitops/README.md) · [Questions](09-iac-delivery/03-ci-cd/07-gitops/questions-and-answers.md)
+    - **208.** [`09.03.08` CI/CD security](09-iac-delivery/03-ci-cd/08-ci-cd-security/README.md) · [Questions](09-iac-delivery/03-ci-cd/08-ci-cd-security/questions-and-answers.md)
+    - **209.** [`09.03.09` CircleCI](09-iac-delivery/03-ci-cd/09-circleci/README.md) · [Questions](09-iac-delivery/03-ci-cd/09-circleci/questions-and-answers.md)
+- **210.** [`10` Operations, observability, reliability and security](10-operations/README.md) · [Questions](10-operations/questions-and-answers.md)
+  - **211.** [`10.01` Observability](10-operations/01-observability/README.md) · [Questions](10-operations/01-observability/questions-and-answers.md)
+    - **212.** [`10.01.01` Observability fundamentals](10-operations/01-observability/01-observability-fundamentals/README.md) · [Questions](10-operations/01-observability/01-observability-fundamentals/questions-and-answers.md)
+    - **213.** [`10.01.02` Metrics](10-operations/01-observability/02-metrics/README.md) · [Questions](10-operations/01-observability/02-metrics/questions-and-answers.md)
+    - **214.** [`10.01.03` Prometheus](10-operations/01-observability/03-prometheus/README.md) · [Questions](10-operations/01-observability/03-prometheus/questions-and-answers.md)
+    - **215.** [`10.01.04` Grafana](10-operations/01-observability/04-grafana/README.md) · [Questions](10-operations/01-observability/04-grafana/questions-and-answers.md)
+    - **216.** [`10.01.05` Logging](10-operations/01-observability/05-logging/README.md) · [Questions](10-operations/01-observability/05-logging/questions-and-answers.md)
+    - **217.** [`10.01.06` Distributed tracing](10-operations/01-observability/06-distributed-tracing/README.md) · [Questions](10-operations/01-observability/06-distributed-tracing/questions-and-answers.md)
+    - **218.** [`10.01.07` AI observability](10-operations/01-observability/07-ai-observability/README.md) · [Questions](10-operations/01-observability/07-ai-observability/questions-and-answers.md)
+  - **219.** [`10.02` SRE and reliability engineering](10-operations/02-sre-and-reliability-engineering/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/questions-and-answers.md)
+    - **220.** [`10.02.01` Reliability concepts](10-operations/02-sre-and-reliability-engineering/01-reliability-concepts/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/01-reliability-concepts/questions-and-answers.md)
+    - **221.** [`10.02.02` Service indicators and objectives](10-operations/02-sre-and-reliability-engineering/02-service-indicators-and-objectives/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/02-service-indicators-and-objectives/questions-and-answers.md)
+    - **222.** [`10.02.03` Alerting](10-operations/02-sre-and-reliability-engineering/03-alerting/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/03-alerting/questions-and-answers.md)
+    - **223.** [`10.02.04` Capacity planning](10-operations/02-sre-and-reliability-engineering/04-capacity-planning/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/04-capacity-planning/questions-and-answers.md)
+    - **224.** [`10.02.05` Incident response](10-operations/02-sre-and-reliability-engineering/05-incident-response/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/05-incident-response/questions-and-answers.md)
+    - **225.** [`10.02.06` Post-incident work](10-operations/02-sre-and-reliability-engineering/06-post-incident-work/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/06-post-incident-work/questions-and-answers.md)
+    - **226.** [`10.02.07` Disaster recovery](10-operations/02-sre-and-reliability-engineering/07-disaster-recovery/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/07-disaster-recovery/questions-and-answers.md)
+    - **227.** [`10.02.08` Chaos and resilience testing](10-operations/02-sre-and-reliability-engineering/08-chaos-and-resilience-testing/README.md) · [Questions](10-operations/02-sre-and-reliability-engineering/08-chaos-and-resilience-testing/questions-and-answers.md)
+  - **228.** [`10.03` Platform and cloud security](10-operations/03-platform-and-cloud-security/README.md) · [Questions](10-operations/03-platform-and-cloud-security/questions-and-answers.md)
+    - **229.** [`10.03.01` Identity security](10-operations/03-platform-and-cloud-security/01-identity-security/README.md) · [Questions](10-operations/03-platform-and-cloud-security/01-identity-security/questions-and-answers.md)
+    - **230.** [`10.03.02` Secret management](10-operations/03-platform-and-cloud-security/02-secret-management/README.md) · [Questions](10-operations/03-platform-and-cloud-security/02-secret-management/questions-and-answers.md)
+    - **231.** [`10.03.03` Network security](10-operations/03-platform-and-cloud-security/03-network-security/README.md) · [Questions](10-operations/03-platform-and-cloud-security/03-network-security/questions-and-answers.md)
+    - **232.** [`10.03.04` Software supply chain](10-operations/03-platform-and-cloud-security/04-software-supply-chain/README.md) · [Questions](10-operations/03-platform-and-cloud-security/04-software-supply-chain/questions-and-answers.md)
+    - **233.** [`10.03.05` Kubernetes security](10-operations/03-platform-and-cloud-security/05-kubernetes-security/README.md) · [Questions](10-operations/03-platform-and-cloud-security/05-kubernetes-security/questions-and-answers.md)
+    - **234.** [`10.03.06` Vulnerability management](10-operations/03-platform-and-cloud-security/06-vulnerability-management/README.md) · [Questions](10-operations/03-platform-and-cloud-security/06-vulnerability-management/questions-and-answers.md)
+    - **235.** [`10.03.07` Compliance evidence](10-operations/03-platform-and-cloud-security/07-compliance-evidence/README.md) · [Questions](10-operations/03-platform-and-cloud-security/07-compliance-evidence/questions-and-answers.md)
+- **236.** [`11` AI/ML platform, LLMOps, security and governance](11-ai-platform/README.md) · [Questions](11-ai-platform/questions-and-answers.md)
+  - **237.** [`11.01` Machine-learning fundamentals for platform engineers](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/README.md) · [Questions](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/questions-and-answers.md)
+    - **238.** [`11.01.01` ML lifecycle](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/01-ml-lifecycle/README.md) · [Questions](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/01-ml-lifecycle/questions-and-answers.md)
+    - **239.** [`11.01.02` Model types](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/02-model-types/README.md) · [Questions](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/02-model-types/questions-and-answers.md)
+    - **240.** [`11.01.03` Training fundamentals](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/03-training-fundamentals/README.md) · [Questions](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/03-training-fundamentals/questions-and-answers.md)
+    - **241.** [`11.01.04` Inference fundamentals](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/04-inference-fundamentals/README.md) · [Questions](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/04-inference-fundamentals/questions-and-answers.md)
+    - **242.** [`11.01.05` Model artifacts](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/05-model-artifacts/README.md) · [Questions](11-ai-platform/01-machine-learning-fundamentals-for-platform-engineers/05-model-artifacts/questions-and-answers.md)
+  - **243.** [`11.02` LLM and transformer fundamentals](11-ai-platform/02-llm-and-transformer-fundamentals/README.md) · [Questions](11-ai-platform/02-llm-and-transformer-fundamentals/questions-and-answers.md)
+  - **244.** [`11.03` GPU-compute architecture](11-ai-platform/03-gpu-compute-architecture/README.md) · [Questions](11-ai-platform/03-gpu-compute-architecture/questions-and-answers.md)
+  - **245.** [`11.04` Model serving and inference platforms](11-ai-platform/04-model-serving-and-inference-platforms/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/questions-and-answers.md)
+    - **246.** [`11.04.01` Serving-platform choices](11-ai-platform/04-model-serving-and-inference-platforms/01-serving-platform-choices/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/01-serving-platform-choices/questions-and-answers.md)
+    - **247.** [`11.04.02` Serving runtimes](11-ai-platform/04-model-serving-and-inference-platforms/02-serving-runtimes/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/02-serving-runtimes/questions-and-answers.md)
+    - **248.** [`11.04.03` KServe](11-ai-platform/04-model-serving-and-inference-platforms/03-kserve/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/03-kserve/questions-and-answers.md)
+    - **249.** [`11.04.04` vLLM](11-ai-platform/04-model-serving-and-inference-platforms/04-vllm/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/04-vllm/questions-and-answers.md)
+    - **250.** [`11.04.05` Triton](11-ai-platform/04-model-serving-and-inference-platforms/05-triton/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/05-triton/questions-and-answers.md)
+    - **251.** [`11.04.06` Inference performance](11-ai-platform/04-model-serving-and-inference-platforms/06-inference-performance/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/06-inference-performance/questions-and-answers.md)
+    - **252.** [`11.04.07` Model-loading lifecycle](11-ai-platform/04-model-serving-and-inference-platforms/07-model-loading-lifecycle/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/07-model-loading-lifecycle/questions-and-answers.md)
+    - **253.** [`11.04.08` Scaling inference](11-ai-platform/04-model-serving-and-inference-platforms/08-scaling-inference/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/08-scaling-inference/questions-and-answers.md)
+    - **254.** [`11.04.09` Multi-model serving](11-ai-platform/04-model-serving-and-inference-platforms/09-multi-model-serving/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/09-multi-model-serving/questions-and-answers.md)
+    - **255.** [`11.04.10` Model release strategies](11-ai-platform/04-model-serving-and-inference-platforms/10-model-release-strategies/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/10-model-release-strategies/questions-and-answers.md)
+    - **256.** [`11.04.11` Serving failure modes](11-ai-platform/04-model-serving-and-inference-platforms/11-serving-failure-modes/README.md) · [Questions](11-ai-platform/04-model-serving-and-inference-platforms/11-serving-failure-modes/questions-and-answers.md)
+  - **257.** [`11.05` LLM gateway](11-ai-platform/05-llm-gateway/README.md) · [Questions](11-ai-platform/05-llm-gateway/questions-and-answers.md)
+    - **258.** [`11.05.01` Gateway architecture](11-ai-platform/05-llm-gateway/01-gateway-architecture/README.md) · [Questions](11-ai-platform/05-llm-gateway/01-gateway-architecture/questions-and-answers.md)
+    - **259.** [`11.05.02` API normalization](11-ai-platform/05-llm-gateway/02-api-normalization/README.md) · [Questions](11-ai-platform/05-llm-gateway/02-api-normalization/questions-and-answers.md)
+    - **260.** [`11.05.03` Identity and tenancy](11-ai-platform/05-llm-gateway/03-identity-and-tenancy/README.md) · [Questions](11-ai-platform/05-llm-gateway/03-identity-and-tenancy/questions-and-answers.md)
+    - **261.** [`11.05.04` Routing](11-ai-platform/05-llm-gateway/04-routing/README.md) · [Questions](11-ai-platform/05-llm-gateway/04-routing/questions-and-answers.md)
+    - **262.** [`11.05.05` Reliability](11-ai-platform/05-llm-gateway/05-reliability/README.md) · [Questions](11-ai-platform/05-llm-gateway/05-reliability/questions-and-answers.md)
+    - **263.** [`11.05.06` Traffic control](11-ai-platform/05-llm-gateway/06-traffic-control/README.md) · [Questions](11-ai-platform/05-llm-gateway/06-traffic-control/questions-and-answers.md)
+    - **264.** [`11.05.07` Security policies](11-ai-platform/05-llm-gateway/07-security-policies/README.md) · [Questions](11-ai-platform/05-llm-gateway/07-security-policies/questions-and-answers.md)
+    - **265.** [`11.05.08` Caching](11-ai-platform/05-llm-gateway/08-caching/README.md) · [Questions](11-ai-platform/05-llm-gateway/08-caching/questions-and-answers.md)
+    - **266.** [`11.05.09` Cost management](11-ai-platform/05-llm-gateway/09-cost-management/README.md) · [Questions](11-ai-platform/05-llm-gateway/09-cost-management/questions-and-answers.md)
+    - **267.** [`11.05.10` Gateway observability](11-ai-platform/05-llm-gateway/10-gateway-observability/README.md) · [Questions](11-ai-platform/05-llm-gateway/10-gateway-observability/questions-and-answers.md)
+    - **268.** [`11.05.11` Gateway technologies](11-ai-platform/05-llm-gateway/11-gateway-technologies/README.md) · [Questions](11-ai-platform/05-llm-gateway/11-gateway-technologies/questions-and-answers.md)
+  - **269.** [`11.06` RAG engineering](11-ai-platform/06-rag-engineering/README.md) · [Questions](11-ai-platform/06-rag-engineering/questions-and-answers.md)
+    - **270.** [`11.06.01` RAG architecture](11-ai-platform/06-rag-engineering/01-rag-architecture/README.md) · [Questions](11-ai-platform/06-rag-engineering/01-rag-architecture/questions-and-answers.md)
+    - **271.** [`11.06.02` Data ingestion](11-ai-platform/06-rag-engineering/02-data-ingestion/README.md) · [Questions](11-ai-platform/06-rag-engineering/02-data-ingestion/questions-and-answers.md)
+    - **272.** [`11.06.03` Document processing](11-ai-platform/06-rag-engineering/03-document-processing/README.md) · [Questions](11-ai-platform/06-rag-engineering/03-document-processing/questions-and-answers.md)
+    - **273.** [`11.06.04` Chunking](11-ai-platform/06-rag-engineering/04-chunking/README.md) · [Questions](11-ai-platform/06-rag-engineering/04-chunking/questions-and-answers.md)
+    - **274.** [`11.06.05` Embeddings](11-ai-platform/06-rag-engineering/05-embeddings/README.md) · [Questions](11-ai-platform/06-rag-engineering/05-embeddings/questions-and-answers.md)
+    - **275.** [`11.06.06` Vector databases](11-ai-platform/06-rag-engineering/06-vector-databases/README.md) · [Questions](11-ai-platform/06-rag-engineering/06-vector-databases/questions-and-answers.md)
+    - **276.** [`11.06.07` Retrieval](11-ai-platform/06-rag-engineering/07-retrieval/README.md) · [Questions](11-ai-platform/06-rag-engineering/07-retrieval/questions-and-answers.md)
+    - **277.** [`11.06.08` Reranking](11-ai-platform/06-rag-engineering/08-reranking/README.md) · [Questions](11-ai-platform/06-rag-engineering/08-reranking/questions-and-answers.md)
+    - **278.** [`11.06.09` Context construction](11-ai-platform/06-rag-engineering/09-context-construction/README.md) · [Questions](11-ai-platform/06-rag-engineering/09-context-construction/questions-and-answers.md)
+    - **279.** [`11.06.10` RAG freshness and lifecycle](11-ai-platform/06-rag-engineering/10-rag-freshness-and-lifecycle/README.md) · [Questions](11-ai-platform/06-rag-engineering/10-rag-freshness-and-lifecycle/questions-and-answers.md)
+    - **280.** [`11.06.11` RAG multi-tenancy](11-ai-platform/06-rag-engineering/11-rag-multi-tenancy/README.md) · [Questions](11-ai-platform/06-rag-engineering/11-rag-multi-tenancy/questions-and-answers.md)
+    - **281.** [`11.06.12` RAG security](11-ai-platform/06-rag-engineering/12-rag-security/README.md) · [Questions](11-ai-platform/06-rag-engineering/12-rag-security/questions-and-answers.md)
+    - **282.** [`11.06.13` RAG operations](11-ai-platform/06-rag-engineering/13-rag-operations/README.md) · [Questions](11-ai-platform/06-rag-engineering/13-rag-operations/questions-and-answers.md)
+  - **283.** [`11.07` AI evaluation infrastructure](11-ai-platform/07-ai-evaluation-infrastructure/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/questions-and-answers.md)
+    - **284.** [`11.07.01` Evaluation purposes](11-ai-platform/07-ai-evaluation-infrastructure/01-evaluation-purposes/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/01-evaluation-purposes/questions-and-answers.md)
+    - **285.** [`11.07.02` Evaluation datasets](11-ai-platform/07-ai-evaluation-infrastructure/02-evaluation-datasets/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/02-evaluation-datasets/questions-and-answers.md)
+    - **286.** [`11.07.03` Evaluation types](11-ai-platform/07-ai-evaluation-infrastructure/03-evaluation-types/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/03-evaluation-types/questions-and-answers.md)
+    - **287.** [`11.07.04` LLM quality metrics](11-ai-platform/07-ai-evaluation-infrastructure/04-llm-quality-metrics/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/04-llm-quality-metrics/questions-and-answers.md)
+    - **288.** [`11.07.05` RAG metrics](11-ai-platform/07-ai-evaluation-infrastructure/05-rag-metrics/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/05-rag-metrics/questions-and-answers.md)
+    - **289.** [`11.07.06` Safety metrics](11-ai-platform/07-ai-evaluation-infrastructure/06-safety-metrics/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/06-safety-metrics/questions-and-answers.md)
+    - **290.** [`11.07.07` Operational metrics](11-ai-platform/07-ai-evaluation-infrastructure/07-operational-metrics/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/07-operational-metrics/questions-and-answers.md)
+    - **291.** [`11.07.08` Evaluation pipelines](11-ai-platform/07-ai-evaluation-infrastructure/08-evaluation-pipelines/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/08-evaluation-pipelines/questions-and-answers.md)
+    - **292.** [`11.07.09` Release gates](11-ai-platform/07-ai-evaluation-infrastructure/09-release-gates/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/09-release-gates/questions-and-answers.md)
+    - **293.** [`11.07.10` Evaluation reliability](11-ai-platform/07-ai-evaluation-infrastructure/10-evaluation-reliability/README.md) · [Questions](11-ai-platform/07-ai-evaluation-infrastructure/10-evaluation-reliability/questions-and-answers.md)
+  - **294.** [`11.08` MLOps and LLMOps lifecycle](11-ai-platform/08-mlops-and-llmops-lifecycle/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/questions-and-answers.md)
+    - **295.** [`11.08.01` MLOps/LLMOps platform architecture](11-ai-platform/08-mlops-and-llmops-lifecycle/01-lifecycle-platform-architecture/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/01-lifecycle-platform-architecture/questions-and-answers.md)
+    - **296.** [`11.08.02` Experiment tracking and comparison](11-ai-platform/08-mlops-and-llmops-lifecycle/02-experiment-tracking/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/02-experiment-tracking/questions-and-answers.md)
+    - **297.** [`11.08.03` Data versioning, quality and lineage](11-ai-platform/08-mlops-and-llmops-lifecycle/03-data-versioning-quality-lineage/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/03-data-versioning-quality-lineage/questions-and-answers.md)
+    - **298.** [`11.08.04` Feature stores and training-serving consistency](11-ai-platform/08-mlops-and-llmops-lifecycle/04-feature-store-training-serving/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/04-feature-store-training-serving/questions-and-answers.md)
+    - **299.** [`11.08.05` ML pipeline orchestration](11-ai-platform/08-mlops-and-llmops-lifecycle/05-pipeline-orchestration/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/05-pipeline-orchestration/questions-and-answers.md)
+    - **300.** [`11.08.06` Training platform operations](11-ai-platform/08-mlops-and-llmops-lifecycle/06-training-platform/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/06-training-platform/questions-and-answers.md)
+    - **301.** [`11.08.07` Distributed training and checkpoint recovery](11-ai-platform/08-mlops-and-llmops-lifecycle/07-distributed-training/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/07-distributed-training/questions-and-answers.md)
+    - **302.** [`11.08.08` Hyperparameter tuning and experiment search](11-ai-platform/08-mlops-and-llmops-lifecycle/08-hyperparameter-tuning/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/08-hyperparameter-tuning/questions-and-answers.md)
+    - **303.** [`11.08.09` Reproducibility and environment capture](11-ai-platform/08-mlops-and-llmops-lifecycle/09-reproducibility-environments/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/09-reproducibility-environments/questions-and-answers.md)
+    - **304.** [`11.08.10` Model registry, artifacts and lineage](11-ai-platform/08-mlops-and-llmops-lifecycle/10-model-registry-artifact-lineage/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/10-model-registry-artifact-lineage/questions-and-answers.md)
+    - **305.** [`11.08.11` LLM release manifests and compatibility](11-ai-platform/08-mlops-and-llmops-lifecycle/11-llm-release-manifest/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/11-llm-release-manifest/questions-and-answers.md)
+    - **306.** [`11.08.12` Model validation and release gates](11-ai-platform/08-mlops-and-llmops-lifecycle/12-model-validation-release-gates/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/12-model-validation-release-gates/questions-and-answers.md)
+    - **307.** [`11.08.13` ML/LLM deployment and progressive release](11-ai-platform/08-mlops-and-llmops-lifecycle/13-deployment-progressive-release/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/13-deployment-progressive-release/questions-and-answers.md)
+    - **308.** [`11.08.14` ML monitoring, drift and data quality](11-ai-platform/08-mlops-and-llmops-lifecycle/14-monitoring-drift/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/14-monitoring-drift/questions-and-answers.md)
+    - **309.** [`11.08.15` Retraining and feedback loops](11-ai-platform/08-mlops-and-llmops-lifecycle/15-retraining-feedback-loops/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/15-retraining-feedback-loops/questions-and-answers.md)
+    - **310.** [`11.08.16` PromptOps: prompt, template and policy lifecycle](11-ai-platform/08-mlops-and-llmops-lifecycle/16-promptops/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/16-promptops/questions-and-answers.md)
+    - **311.** [`11.08.17` LLM fine-tuning, PEFT and adapter operations](11-ai-platform/08-mlops-and-llmops-lifecycle/17-llm-finetuning-peft/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/17-llm-finetuning-peft/questions-and-answers.md)
+    - **312.** [`11.08.18` RAGOps and index lifecycle](11-ai-platform/08-mlops-and-llmops-lifecycle/18-ragops-index-lifecycle/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/18-ragops-index-lifecycle/questions-and-answers.md)
+    - **313.** [`11.08.19` EvalOps: continuous AI evaluation infrastructure](11-ai-platform/08-mlops-and-llmops-lifecycle/19-evalops/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/19-evalops/questions-and-answers.md)
+    - **314.** [`11.08.20` LLM gateway and ProviderOps](11-ai-platform/08-mlops-and-llmops-lifecycle/20-gateway-providerops/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/20-gateway-providerops/questions-and-answers.md)
+    - **315.** [`11.08.21` AgentOps and tool-using system operations](11-ai-platform/08-mlops-and-llmops-lifecycle/21-agentops/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/21-agentops/questions-and-answers.md)
+    - **316.** [`11.08.22` LLM observability and quality telemetry](11-ai-platform/08-mlops-and-llmops-lifecycle/22-llm-observability/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/22-llm-observability/questions-and-answers.md)
+    - **317.** [`11.08.23` LLM safety, red teaming and guardrail operations](11-ai-platform/08-mlops-and-llmops-lifecycle/23-safety-redteam-guardrails/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/23-safety-redteam-guardrails/questions-and-answers.md)
+    - **318.** [`11.08.24` AI governance, approval and evidence automation](11-ai-platform/08-mlops-and-llmops-lifecycle/24-governance-approval-evidence/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/24-governance-approval-evidence/questions-and-answers.md)
+    - **319.** [`11.08.25` AI supply chain, signing and provenance](11-ai-platform/08-mlops-and-llmops-lifecycle/25-ai-supply-chain/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/25-ai-supply-chain/questions-and-answers.md)
+    - **320.** [`11.08.26` MLOps/LLMOps FinOps and capacity](11-ai-platform/08-mlops-and-llmops-lifecycle/26-ai-finops-capacity/README.md) · [Questions](11-ai-platform/08-mlops-and-llmops-lifecycle/26-ai-finops-capacity/questions-and-answers.md)
+  - **321.** [`11.09` Agents and tool-using AI](11-ai-platform/09-agents-and-tool-using-ai/README.md) · [Questions](11-ai-platform/09-agents-and-tool-using-ai/questions-and-answers.md)
+  - **322.** [`11.10` AI and LLM security](11-ai-platform/10-ai-and-llm-security/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/questions-and-answers.md)
+    - **323.** [`11.10.01` Threat modeling](11-ai-platform/10-ai-and-llm-security/01-threat-modeling/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/01-threat-modeling/questions-and-answers.md)
+    - **324.** [`11.10.02` Prompt injection](11-ai-platform/10-ai-and-llm-security/02-prompt-injection/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/02-prompt-injection/questions-and-answers.md)
+    - **325.** [`11.10.03` Sensitive-data exposure](11-ai-platform/10-ai-and-llm-security/03-sensitive-data-exposure/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/03-sensitive-data-exposure/questions-and-answers.md)
+    - **326.** [`11.10.04` Insecure output handling](11-ai-platform/10-ai-and-llm-security/04-insecure-output-handling/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/04-insecure-output-handling/questions-and-answers.md)
+    - **327.** [`11.10.05` Model and artifact security](11-ai-platform/10-ai-and-llm-security/05-model-and-artifact-security/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/05-model-and-artifact-security/questions-and-answers.md)
+    - **328.** [`11.10.06` RAG security](11-ai-platform/10-ai-and-llm-security/06-rag-security/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/06-rag-security/questions-and-answers.md)
+    - **329.** [`11.10.07` Agent security](11-ai-platform/10-ai-and-llm-security/07-agent-security/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/07-agent-security/questions-and-answers.md)
+    - **330.** [`11.10.08` AI supply chain](11-ai-platform/10-ai-and-llm-security/08-ai-supply-chain/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/08-ai-supply-chain/questions-and-answers.md)
+    - **331.** [`11.10.09` AI red teaming](11-ai-platform/10-ai-and-llm-security/09-ai-red-teaming/README.md) · [Questions](11-ai-platform/10-ai-and-llm-security/09-ai-red-teaming/questions-and-answers.md)
+  - **332.** [`11.11` AI governance](11-ai-platform/11-ai-governance/README.md) · [Questions](11-ai-platform/11-ai-governance/questions-and-answers.md)
+    - **333.** [`11.11.01` AI asset inventory](11-ai-platform/11-ai-governance/01-ai-asset-inventory/README.md) · [Questions](11-ai-platform/11-ai-governance/01-ai-asset-inventory/questions-and-answers.md)
+    - **334.** [`11.11.02` Model governance](11-ai-platform/11-ai-governance/02-model-governance/README.md) · [Questions](11-ai-platform/11-ai-governance/02-model-governance/questions-and-answers.md)
+    - **335.** [`11.11.03` Data governance](11-ai-platform/11-ai-governance/03-data-governance/README.md) · [Questions](11-ai-platform/11-ai-governance/03-data-governance/questions-and-answers.md)
+    - **336.** [`11.11.04` Prompt governance](11-ai-platform/11-ai-governance/04-prompt-governance/README.md) · [Questions](11-ai-platform/11-ai-governance/04-prompt-governance/questions-and-answers.md)
+    - **337.** [`11.11.05` Policy enforcement](11-ai-platform/11-ai-governance/05-policy-enforcement/README.md) · [Questions](11-ai-platform/11-ai-governance/05-policy-enforcement/questions-and-answers.md)
+    - **338.** [`11.11.06` Auditability](11-ai-platform/11-ai-governance/06-auditability/README.md) · [Questions](11-ai-platform/11-ai-governance/06-auditability/questions-and-answers.md)
+  - **339.** [`11.12` European AI and privacy regulation](11-ai-platform/12-european-ai-and-privacy-regulation/README.md) · [Questions](11-ai-platform/12-european-ai-and-privacy-regulation/questions-and-answers.md)
+- **340.** [`12` Platform engineering, deployment models, FinOps and coding](12-platform-engineering/README.md) · [Questions](12-platform-engineering/questions-and-answers.md)
+  - **341.** [`12.01` AI FinOps and cost control](12-platform-engineering/01-ai-finops-and-cost-control/README.md) · [Questions](12-platform-engineering/01-ai-finops-and-cost-control/questions-and-answers.md)
+    - **342.** [`12.01.01` Cost model](12-platform-engineering/01-ai-finops-and-cost-control/01-cost-model/README.md) · [Questions](12-platform-engineering/01-ai-finops-and-cost-control/01-cost-model/questions-and-answers.md)
+    - **343.** [`12.01.02` Inference unit economics](12-platform-engineering/01-ai-finops-and-cost-control/02-inference-unit-economics/README.md) · [Questions](12-platform-engineering/01-ai-finops-and-cost-control/02-inference-unit-economics/questions-and-answers.md)
+    - **344.** [`12.01.03` Cost allocation](12-platform-engineering/01-ai-finops-and-cost-control/03-cost-allocation/README.md) · [Questions](12-platform-engineering/01-ai-finops-and-cost-control/03-cost-allocation/questions-and-answers.md)
+    - **345.** [`12.01.04` Cost optimization](12-platform-engineering/01-ai-finops-and-cost-control/04-cost-optimization/README.md) · [Questions](12-platform-engineering/01-ai-finops-and-cost-control/04-cost-optimization/questions-and-answers.md)
+    - **346.** [`12.01.05` Budget controls](12-platform-engineering/01-ai-finops-and-cost-control/05-budget-controls/README.md) · [Questions](12-platform-engineering/01-ai-finops-and-cost-control/05-budget-controls/questions-and-answers.md)
+  - **347.** [`12.02` Multi-cloud architecture](12-platform-engineering/02-multi-cloud-architecture/README.md) · [Questions](12-platform-engineering/02-multi-cloud-architecture/questions-and-answers.md)
+  - **348.** [`12.03` SaaS deployment](12-platform-engineering/03-saas-deployment/README.md) · [Questions](12-platform-engineering/03-saas-deployment/questions-and-answers.md)
+  - **349.** [`12.04` Customer private-cloud deployment](12-platform-engineering/04-customer-private-cloud-deployment/README.md) · [Questions](12-platform-engineering/04-customer-private-cloud-deployment/questions-and-answers.md)
+  - **350.** [`12.05` On-premises deployment](12-platform-engineering/05-on-premises-deployment/README.md) · [Questions](12-platform-engineering/05-on-premises-deployment/questions-and-answers.md)
+  - **351.** [`12.06` Hybrid-cloud deployment](12-platform-engineering/06-hybrid-cloud-deployment/README.md) · [Questions](12-platform-engineering/06-hybrid-cloud-deployment/questions-and-answers.md)
+  - **352.** [`12.07` Air-gapped and restricted environments](12-platform-engineering/07-air-gapped-and-restricted-environments/README.md) · [Questions](12-platform-engineering/07-air-gapped-and-restricted-environments/questions-and-answers.md)
+  - **353.** [`12.08` Internal developer platform for AI](12-platform-engineering/08-internal-developer-platform-for-ai/README.md) · [Questions](12-platform-engineering/08-internal-developer-platform-for-ai/questions-and-answers.md)
+    - **354.** [`12.08.01` Platform users](12-platform-engineering/08-internal-developer-platform-for-ai/01-platform-users/README.md) · [Questions](12-platform-engineering/08-internal-developer-platform-for-ai/01-platform-users/questions-and-answers.md)
+    - **355.** [`12.08.02` Golden paths](12-platform-engineering/08-internal-developer-platform-for-ai/02-golden-paths/README.md) · [Questions](12-platform-engineering/08-internal-developer-platform-for-ai/02-golden-paths/questions-and-answers.md)
+    - **356.** [`12.08.03` Platform interfaces](12-platform-engineering/08-internal-developer-platform-for-ai/03-platform-interfaces/README.md) · [Questions](12-platform-engineering/08-internal-developer-platform-for-ai/03-platform-interfaces/questions-and-answers.md)
+    - **357.** [`12.08.04` Platform APIs](12-platform-engineering/08-internal-developer-platform-for-ai/04-platform-apis/README.md) · [Questions](12-platform-engineering/08-internal-developer-platform-for-ai/04-platform-apis/questions-and-answers.md)
+    - **358.** [`12.08.05` Platform reconciliation](12-platform-engineering/08-internal-developer-platform-for-ai/05-platform-reconciliation/README.md) · [Questions](12-platform-engineering/08-internal-developer-platform-for-ai/05-platform-reconciliation/questions-and-answers.md)
+    - **359.** [`12.08.06` Developer experience](12-platform-engineering/08-internal-developer-platform-for-ai/06-developer-experience/README.md) · [Questions](12-platform-engineering/08-internal-developer-platform-for-ai/06-developer-experience/questions-and-answers.md)
+    - **360.** [`12.08.07` Platform product management](12-platform-engineering/08-internal-developer-platform-for-ai/07-platform-product-management/README.md) · [Questions](12-platform-engineering/08-internal-developer-platform-for-ai/07-platform-product-management/questions-and-answers.md)
+  - **361.** [`12.09` Configuration and feature management](12-platform-engineering/09-configuration-and-feature-management/README.md) · [Questions](12-platform-engineering/09-configuration-and-feature-management/questions-and-answers.md)
+  - **362.** [`12.10` Database, cache and messaging support for AI platforms](12-platform-engineering/10-database-cache-and-messaging-support-for-ai-platforms/README.md) · [Questions](12-platform-engineering/10-database-cache-and-messaging-support-for-ai-platforms/questions-and-answers.md)
+  - **363.** [`12.11` Python for platform engineering](12-platform-engineering/11-python-for-platform-engineering/README.md) · [Questions](12-platform-engineering/11-python-for-platform-engineering/questions-and-answers.md)
+  - **364.** [`12.12` Go fundamentals](12-platform-engineering/12-go-fundamentals/README.md) · [Questions](12-platform-engineering/12-go-fundamentals/questions-and-answers.md)
+  - **365.** [`12.13` Shell scripting](12-platform-engineering/13-shell-scripting/README.md) · [Questions](12-platform-engineering/13-shell-scripting/questions-and-answers.md)
+  - **366.** [`12.14` SQL and data querying](12-platform-engineering/14-sql-and-data-querying/README.md) · [Questions](12-platform-engineering/14-sql-and-data-querying/questions-and-answers.md)
+- **367.** [`13` Procedural, architecture and leadership scenarios](13-scenarios/README.md) · [Questions](13-scenarios/questions-and-answers.md)
+  - Supplement: [150 cross-domain procedural scenarios with answers](13-scenarios/120-cross-domain-scenarios.md)
+  - **368.** [`13.01` Architecture exercises](13-scenarios/01-architecture-exercises/README.md) · [Questions](13-scenarios/01-architecture-exercises/questions-and-answers.md)
+  - **369.** [`13.02` Troubleshooting scenarios](13-scenarios/02-troubleshooting-scenarios/README.md) · [Questions](13-scenarios/02-troubleshooting-scenarios/questions-and-answers.md)
+  - **370.** [`13.03` Migration scenarios](13-scenarios/03-migration-scenarios/README.md) · [Questions](13-scenarios/03-migration-scenarios/questions-and-answers.md)
+  - **371.** [`13.04` Security scenarios](13-scenarios/04-security-scenarios/README.md) · [Questions](13-scenarios/04-security-scenarios/questions-and-answers.md)
+  - **372.** [`13.05` Reliability scenarios](13-scenarios/05-reliability-scenarios/README.md) · [Questions](13-scenarios/05-reliability-scenarios/questions-and-answers.md)
+  - **373.** [`13.06` Leadership and behavioural questions](13-scenarios/06-leadership-and-behavioural-questions/README.md) · [Questions](13-scenarios/06-leadership-and-behavioural-questions/questions-and-answers.md)
 
-### Part V — Infrastructure as Code and delivery
+### Study support outside the numbered path
 
-- [`09-iac-delivery/terraform/README.md`](09-iac-delivery/terraform/README.md) — HCL/graph, plan/apply, state, lifecycle, modules, refactoring/import, testing, CI/CD and security.
-- [`09-iac-delivery/pulumi/README.md`](09-iac-delivery/pulumi/README.md) — complete project/stack/program/file structure, inputs/outputs, state, components, Automation API, policy, delivery, testing and Terraform comparison/migration.
-- [`09-iac-delivery/ci-cd/README.md`](09-iac-delivery/ci-cd/README.md) — CI/CD, GitHub Actions/GitLab/Jenkins/CircleCI, strategies, GitOps, database changes and software-supply-chain security.
-- [`09-iac-delivery/ci-cd/github-actions/README.md`](09-iac-delivery/ci-cd/github-actions/README.md) — full workflow YAML anatomy, events, jobs/steps, matrices, services, outputs, artifacts/cache, reusable workflows/actions, runners, OIDC/security, CLI and labs.
-- [`09-iac-delivery/ci-cd/circleci/README.md`](09-iac-delivery/ci-cd/circleci/README.md) — full CircleCI 2.1 config structure, executors/commands/jobs/workflows, orbs, dynamic config, contexts/OIDC, workspaces/cache/artifacts, CLI and labs.
+- [Additions from the role and current platform landscape](curriculum/additions-from-role-and-research.md)
+- [Curriculum coverage matrix](curriculum/coverage-matrix.md)
+- [Question and answer standard](curriculum/question-standard.md)
+- [Official and primary sources](sources/official-sources.md)
+- [Audit of `hammadhaqqani/devops-interview-handbook`](sources/reference-handbook-audit.md)
+- [90-day Senior AI Platform Engineer interview plan](study-plan/90-day-plan.md)
+- [Andela DevOps / Senior AI Platform interview readiness](study-plan/andela-readiness.md)
+- [Master curriculum baseline](curriculum/master-curriculum.txt)
+- [Root cross-domain questions and answers](questions-and-answers.md)
 
-### Part VI — Observability, reliability, and platform security
-
-- [`10-operations/observability/README.md`](10-operations/observability/README.md) — metrics/logs/traces/profiles, Prometheus/Grafana/OpenTelemetry, GenAI and GPU telemetry, cardinality/privacy/cost.
-- [`10-operations/sre-and-reliability-engineering/README.md`](10-operations/sre-and-reliability-engineering/README.md) — SLIs/SLOs/error budgets, alerting, capacity, incidents/postmortems, DR, chaos/game days.
-- [`10-operations/platform-and-cloud-security/README.md`](10-operations/platform-and-cloud-security/README.md) — identity/secrets/network/Kubernetes/supply-chain/vulnerability controls and audit evidence.
-
-### Parts VII–VIII — AI/ML, LLM engineering, security, and governance
-
-- [`11-ai-platform/gpu-compute-architecture/README.md`](11-ai-platform/gpu-compute-architecture/README.md) — ML lifecycle, transformers/LLMs, model artifacts, precision/quantization, memory math and parallelism.
-- [`11-ai-platform/model-serving-and-inference-platforms/README.md`](11-ai-platform/model-serving-and-inference-platforms/README.md) — KServe, vLLM, Triton, TGI/Ray Serve, model lifecycle, batching/cache, autoscaling, rollout and failure modes.
-- [`11-ai-platform/llm-gateway/README.md`](11-ai-platform/llm-gateway/README.md) — normalized APIs, identity/tenancy, policy/routing/reliability, token limits, caching, observability and cost.
-- [`11-ai-platform/rag-engineering/README.md`](11-ai-platform/rag-engineering/README.md) — ingestion/parsing/chunking, embeddings/vector databases, hybrid retrieval/reranking, context, freshness, tenancy, security, operations.
-- [`11-ai-platform/ai-evaluation-infrastructure/README.md`](11-ai-platform/ai-evaluation-infrastructure/README.md) and [`11-ai-platform/mlops-and-llmops-lifecycle/README.md`](11-ai-platform/mlops-and-llmops-lifecycle/README.md) — datasets/evaluators, RAG/quality/safety/operational metrics, release gates, lineage, reproducibility, drift and retirement.
-- The MLOps/LLMOps lifecycle branch contains 26 deeper practical folders spanning experiment tracking, data/features, orchestration/training, registries, release/monitoring/retraining, PromptOps, fine-tuning/PEFT, RAGOps, EvalOps, ProviderOps, AgentOps, observability, safety, governance, supply chain and FinOps.
-- [`11-ai-platform/agents-and-tool-using-ai/README.md`](11-ai-platform/agents-and-tool-using-ai/README.md) — agent/tool architecture, MCP and tool contracts, authorization, sandboxes, human approval, budgets, observability/evaluation.
-- [`11-ai-platform/ai-and-llm-security/README.md`](11-ai-platform/ai-and-llm-security/README.md), [`11-ai-platform/ai-governance/README.md`](11-ai-platform/ai-governance/README.md), and [`11-ai-platform/european-ai-and-privacy-regulation/README.md`](11-ai-platform/european-ai-and-privacy-regulation/README.md) — threat modeling, OWASP GenAI risks, red teaming, asset/model/data/prompt governance, NIST AI RMF, EU AI Act and GDPR operations.
-
-### Parts IX–XI — Economics, deployment models, platform engineering, and coding
-
-- [`12-platform-engineering/ai-finops-and-cost-control/README.md`](12-platform-engineering/ai-finops-and-cost-control/README.md) and [`12-platform-engineering/multi-cloud-architecture/README.md`](12-platform-engineering/multi-cloud-architecture/README.md) — inference unit economics, chargeback/budgets and multi-cloud design. The sibling SaaS, customer-cloud, on-prem, hybrid and air-gap folders cover each deployment model separately.
-- [`12-platform-engineering/internal-developer-platform-for-ai/README.md`](12-platform-engineering/internal-developer-platform-for-ai/README.md) — users/golden paths, portals/CLIs/APIs/CRDs, reconciliation, configuration, developer experience and platform-product metrics.
-- [`12-platform-engineering/python-for-platform-engineering/README.md`](12-platform-engineering/python-for-platform-engineering/README.md), [`12-platform-engineering/go-fundamentals/README.md`](12-platform-engineering/go-fundamentals/README.md), [`12-platform-engineering/shell-scripting/README.md`](12-platform-engineering/shell-scripting/README.md), and [`12-platform-engineering/sql-and-data-querying/README.md`](12-platform-engineering/sql-and-data-querying/README.md) — code, CLI, tests and automation contracts.
-
-### Part XII — Procedural and architecture preparation
-
-- [`scenarios/README.md`](scenarios/README.md) — how to answer procedural questions.
-- [`scenarios/120-cross-domain-scenarios.md`](scenarios/120-cross-domain-scenarios.md) — 150 production scenarios with investigation, mitigation, verification, and prevention guidance (the filename is retained from the original 120-scenario plan).
-- [`scenarios/architecture-exercises/README.md`](scenarios/architecture-exercises/README.md) — AI platform, LLM gateway, GPU capacity, RAG, evaluation, private/on-prem, multi-region, observability, migration designs.
-- [`scenarios/leadership-and-behavioural-questions/README.md`](scenarios/leadership-and-behavioural-questions/README.md) — senior ownership and behavioural questions with STAR/decision-record answer patterns.
-
-### Study governance and sources
-
-- [`curriculum/master-curriculum.txt`](curriculum/master-curriculum.txt) — immutable user-supplied requirements baseline.
-- [`curriculum/coverage-matrix.md`](curriculum/coverage-matrix.md) — mapping from all 66 curriculum branches to study notes and question banks.
-- [`curriculum/additions-from-role-and-research.md`](curriculum/additions-from-role-and-research.md) — role gaps and fast-moving additions beyond the original tree.
-- [`curriculum/question-standard.md`](curriculum/question-standard.md) — minimum counts and answer-quality rubric.
-- [`sources/official-sources.md`](sources/official-sources.md) — authoritative, version-sensitive references.
-- [`sources/reference-handbook-audit.md`](sources/reference-handbook-audit.md) — what was incorporated from the external DevOps handbook and what it did not cover.
-- [`study-plan/90-day-plan.md`](study-plan/90-day-plan.md) — P0-first preparation plan.
-- [`study-plan/andela-readiness.md`](study-plan/andela-readiness.md) — official-format-informed system design, coding/configuration, review and incident mock interview.
-- [`scripts/validate_content.py`](scripts/validate_content.py) — local link, structure, and question-count checker.
+<!-- complete-reading-path:end -->
 
 ## Interview answer contracts
 
@@ -148,3 +443,10 @@ Begin with requirements: tenants, traffic/tokens, model sizes, GPU types, latenc
 
 Cloud products, Kubernetes feature states, serving runtimes, and regulations change. Treat commands and feature availability as version-sensitive, confirm them against the official sources, and say which version/region you assume during an interview. The notes are designed for understanding and rehearsal, not for memorizing vendor marketing claims.
 # DevOps-interview-preparation
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** **Start here** · [Questions](questions-and-answers.md) · [Begin: Interview and role-ownership framework →](00-role-ownership/README.md)
+
+<!-- reading-navigation:end -->

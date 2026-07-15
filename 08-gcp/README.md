@@ -1,19 +1,15 @@
 # Google Cloud Platform
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 169 of 373 — 08**
+>
+> **Builds on:** [AWS GPUs, Inferentia and Trainium](../07-aws/11-ai-platform/04-aws-accelerators/README.md)
+>
+> **Now:** Learn **Google Cloud Platform** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [GCP foundations and governance](01-gcp-foundations-and-governance/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [GCP compute and containers](gcp-compute-and-containers/README.md) — [questions and answers](gcp-compute-and-containers/questions-and-answers.md)
-- [GCP foundations and governance](gcp-foundations-and-governance/README.md) — [questions and answers](gcp-foundations-and-governance/questions-and-answers.md)
-- [GCP load balancing](gcp-load-balancing/README.md) — [questions and answers](gcp-load-balancing/questions-and-answers.md)
-- [GCP messaging and data processing](gcp-messaging-and-data-processing/README.md) — [questions and answers](gcp-messaging-and-data-processing/questions-and-answers.md)
-- [GCP networking](gcp-networking/README.md) — [questions and answers](gcp-networking/questions-and-answers.md)
-- [GCP operations, security and cost](gcp-operations-security-and-cost/README.md) — [questions and answers](gcp-operations-security-and-cost/questions-and-answers.md)
-- [GCP storage and databases](gcp-storage-and-databases/README.md) — [questions and answers](gcp-storage-and-databases/questions-and-answers.md)
-- [Vertex AI and GCP AI platform](vertex-ai-and-gcp-ai-platform/README.md) — [questions and answers](vertex-ai-and-gcp-ai-platform/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 ## Resource and identity mental model
 
 Organization → folders → projects → resources. Policies inherit downward; projects are practical API/quota/billing/isolation boundaries. IAM binds principals to roles on resources; service accounts are workload identities, not human groups. Prefer user federation and Workload Identity Federation/managed workload identity over service-account keys. Organization policies constrain capabilities; VPC Service Controls add data-exfiltration perimeters for supported services but do not replace IAM.
@@ -123,15 +119,13 @@ gcloud billing budgets list --billing-account=ACCOUNT
 - Budget alerts do not guarantee spend prevention; combine quotas/policies/platform controls.
 - GKE Autopilot/managed services reduce, not eliminate, workload/security/reliability responsibility.
 
-<!-- generated-topic-index:start -->
-## Deep topic branches
+## Read further
 
-- [GCP foundations and governance](gcp-foundations-and-governance/README.md) — [Q&A](gcp-foundations-and-governance/questions-and-answers.md)
-- [GCP networking](gcp-networking/README.md) — [Q&A](gcp-networking/questions-and-answers.md)
-- [GCP load balancing](gcp-load-balancing/README.md) — [Q&A](gcp-load-balancing/questions-and-answers.md)
-- [GCP compute and containers](gcp-compute-and-containers/README.md) — [Q&A](gcp-compute-and-containers/questions-and-answers.md)
-- [GCP storage and databases](gcp-storage-and-databases/README.md) — [Q&A](gcp-storage-and-databases/questions-and-answers.md)
-- [GCP messaging and data processing](gcp-messaging-and-data-processing/README.md) — [Q&A](gcp-messaging-and-data-processing/questions-and-answers.md)
-- [Vertex AI and GCP AI platform](vertex-ai-and-gcp-ai-platform/README.md) — [Q&A](vertex-ai-and-gcp-ai-platform/questions-and-answers.md)
-- [GCP operations, security and cost](gcp-operations-security-and-cost/README.md) — [Q&A](gcp-operations-security-and-cost/questions-and-answers.md)
-<!-- generated-topic-index:end -->
+- [Google Cloud documentation](https://cloud.google.com/docs) — authoritative product, architecture and API documentation. Confirm project, location, quota, pricing and release-stage assumptions before following a version-sensitive example.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: AWS GPUs, Inferentia and Trainium](../07-aws/11-ai-platform/04-aws-accelerators/README.md) · [Questions](questions-and-answers.md) · [Next: GCP foundations and governance →](01-gcp-foundations-and-governance/README.md)
+
+<!-- reading-navigation:end -->

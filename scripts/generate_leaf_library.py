@@ -13,6 +13,33 @@ import re
 
 
 ROOT = Path(__file__).resolve().parents[1]
+NUMBER_PREFIX = re.compile(r"^\d{2,3}-(.+)$")
+
+
+def unnumbered(name: str) -> str:
+    match = NUMBER_PREFIX.match(name)
+    return match.group(1) if match else name
+
+
+def numbered_path(path: Path) -> Path:
+    """Resolve unnumbered generator paths into the existing numbered tree."""
+    try:
+        relative = path.relative_to(ROOT)
+    except ValueError:
+        return path
+    current = ROOT
+    for part in relative.parts:
+        exact = current / part
+        if exact.exists():
+            current = exact
+            continue
+        matches = (
+            [child for child in current.iterdir() if child.is_dir() and unnumbered(child.name) == part]
+            if current.exists()
+            else []
+        )
+        current = matches[0] if len(matches) == 1 else exact
+    return current
 
 
 @dataclass(frozen=True)
@@ -1163,27 +1190,19 @@ def safe_id(value: str) -> str:
 
 def branch_overview(area: str, branch: str, leaves: list[Leaf]) -> str:
     title = branch.replace("-", " ").title()
-    rows = "\n".join(
-        f"- [{leaf.title}](services/{leaf.slug}/README.md) — [Q&A](services/{leaf.slug}/questions-and-answers.md)"
-        for leaf in leaves
-    )
     concepts = []
     for leaf in leaves:
         concepts.extend(split_concept(c)[0] for c in leaf.concepts[:3])
     diagram_nodes = "\n".join(f"  B --> S{i}[{leaf.title}]" for i, leaf in enumerate(leaves, 1))
     return f"""# {title}
 
-This branch README is both the study note and the map. Each service leaf keeps its notes in its own README and its answered interview bank in a separate file.
+This branch README connects the service chapters into one production capability. The root reading tree places each service chapter directly after this overview.
 
 ```mermaid
 flowchart LR
   B[{title}]
 {diagram_nodes}
 ```
-
-## Service leaves
-
-{rows}
 
 ## Branch learning contract
 
@@ -1371,6 +1390,7 @@ def qna(leaf: Leaf, *, branch: bool = False) -> str:
 
 
 def write(path: Path, content: str) -> None:
+    path = numbered_path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content.rstrip() + "\n", encoding="utf-8")
 
@@ -1381,7 +1401,7 @@ def generate_area(leaves: list[Leaf]) -> None:
         by_branch.setdefault((leaf.area, leaf.branch), []).append(leaf)
 
     for (area, branch), branch_leaves in by_branch.items():
-        base = ROOT / area / branch
+        base = numbered_path(ROOT / area / branch)
         branch_leaf = Leaf(
             area, branch, branch, branch.replace("-", " ").title(),
             f"Integrate the {branch.replace('-', ' ')} branch as one production capability rather than isolated products.",
@@ -1394,17 +1414,8 @@ def generate_area(leaves: list[Leaf]) -> None:
         write(base / "README.md", branch_overview(area, branch, branch_leaves) + "\n" + branch_notes)
         write(base / "questions-and-answers.md", qna(branch_leaf, branch=True))
 
-        services = base / "services"
-        service_rows = "\n".join(
-            f"- [{leaf.title}]({leaf.slug}/README.md) — [Q&A]({leaf.slug}/questions-and-answers.md)"
-            for leaf in branch_leaves
-        )
-        service_notes = notes(branch_leaf).split("\n", 1)[1].lstrip()
-        write(services / "README.md", f"# {branch_leaf.title} service leaves\n\n{service_rows}\n\n{service_notes}")
-        write(services / "questions-and-answers.md", qna(branch_leaf, branch=True))
-
         for leaf in branch_leaves:
-            service = base / "services" / leaf.slug
+            service = numbered_path(base / leaf.slug)
             write(service / "README.md", notes(leaf))
             write(service / "questions-and-answers.md", qna(leaf))
 

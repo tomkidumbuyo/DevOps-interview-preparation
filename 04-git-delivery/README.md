@@ -1,17 +1,15 @@
 # Git and software-delivery fundamentals
 
-<!-- child-topic-toc:start -->
-## Table of contents and deeper notes
+<!-- chapter-guide:start -->
+> **Step 041 of 373 — 04**
+>
+> **Builds on:** [Network troubleshooting](../03-networking/12-network-troubleshooting/README.md)
+>
+> **Now:** Learn **Git and software-delivery fundamentals** from its mental model through production ownership.
+>
+> **Then:** Rehearse the linked questions and continue to [Git object model](01-git-object-model/README.md).
+<!-- chapter-guide:end -->
 
-This parent note explains how the child topics work together. Follow each child link for the deeper mechanism, real commands/configuration, hands-on practice, authoritative documentation, and its local interview bank.
-
-- [Branching](branching/README.md) — [questions and answers](branching/questions-and-answers.md)
-- [Change integration](change-integration/README.md) — [questions and answers](change-integration/questions-and-answers.md)
-- [Collaboration](collaboration/README.md) — [questions and answers](collaboration/questions-and-answers.md)
-- [Git object model](git-object-model/README.md) — [questions and answers](git-object-model/questions-and-answers.md)
-- [Git security](git-security/README.md) — [questions and answers](git-security/questions-and-answers.md)
-- [Release management](release-management/README.md) — [questions and answers](release-management/questions-and-answers.md)
-<!-- child-topic-toc:end -->
 ## Object and collaboration model
 
 Git stores content-addressed blobs, trees and commits; refs point to commits; `HEAD` identifies the checked-out ref/commit; the index stages the next tree. A commit records snapshot, parents, author/committer and message. Understanding the graph makes merge/rebase/reset/revert predictable.
@@ -50,13 +48,15 @@ Resolve conflicts by understanding both intentions and running tests, not choosi
 - Releases bind source to immutable artifact and evidence.
 - Rotate leaked secrets before repository history cleanup.
 
-<!-- generated-topic-index:start -->
-## Deep topic folders
+Production ownership includes failure recovery, reliability, observability and cost: preserve reflogs and immutable release evidence, measure pipeline and review latency, make rollback versus revert explicit, and avoid repository or CI designs whose storage and runner cost grows without ownership.
 
-- [4.1 Git object model](git-object-model/README.md) — [Q&A](git-object-model/questions-and-answers.md)
-- [4.2 Branching](branching/README.md) — [Q&A](branching/questions-and-answers.md)
-- [4.3 Change integration](change-integration/README.md) — [Q&A](change-integration/questions-and-answers.md)
-- [4.4 Collaboration](collaboration/README.md) — [Q&A](collaboration/questions-and-answers.md)
-- [4.5 Release management](release-management/README.md) — [Q&A](release-management/questions-and-answers.md)
-- [4.6 Git security](git-security/README.md) — [Q&A](git-security/questions-and-answers.md)
-<!-- generated-topic-index:end -->
+## Read further
+
+- [Git reference documentation](https://git-scm.com/docs) — authoritative command and behavior reference; use the child chapters to connect individual commands to safe collaboration and delivery workflows.
+
+<!-- reading-navigation:start -->
+---
+
+**Reading path:** [← Back: Network troubleshooting](../03-networking/12-network-troubleshooting/README.md) · [Questions](questions-and-answers.md) · [Next: Git object model →](01-git-object-model/README.md)
+
+<!-- reading-navigation:end -->
