@@ -13,6 +13,15 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from generate_leaf_library import Leaf, numbered_path, qna, safe_id, write
+from note_explanations import (
+    capability_table,
+    concept_explanations,
+    flow_diagram,
+    history_text,
+    junior_intro,
+    practice_session,
+    worked_example,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -309,10 +318,9 @@ def concepts_for(items: list[str], title: str) -> tuple[str, ...]:
     selected = list(items)
     if not selected:
         selected = [title]
-    while len(selected) < 10:
-        selected.extend(selected)
     # Keep every curriculum item in the note. The Q&A generator uses the first
-    # ten mechanisms to produce 60 ranked questions.
+    # ten mechanisms (and pads its own local list when necessary) to produce
+    # 60 ranked questions. Do not duplicate short curricula in the study note.
     return tuple(f"{item} — {explanation(item, title)}" for item in selected)
 
 
@@ -326,73 +334,71 @@ def render_note(
     area: str,
     children: list[tuple[str, str]] | None = None,
 ) -> str:
-    rows = []
-    for idx, concept in enumerate(concepts, 1):
-        name, _, desc = concept.partition(" — ")
-        rows.append(f"| {idx} | **{name}** | {desc} |")
     # Child order and navigation live only in the root reading tree. Keep the
     # argument for generator-call compatibility, but do not emit a local TOC.
     children_text = ""
     commands = COMMANDS_BY_TOPIC.get(title.lower(), commands)
-    command_text = "\n".join(commands)
     lab = LABS_BY_AREA.get(
         area,
         "Use a disposable local or cloud sandbox. Confirm identity/context and cost boundary, capture a healthy baseline with the commands above, introduce one bounded configuration or invalid-input failure, compare evidence, revert from source control, verify the original outcome, and delete only the named lab resources.",
     )
+    topic_names = [concept.partition(" — ")[0] for concept in concepts]
     return f"""# {title}
 
 > [Interview questions and answers](questions-and-answers.md) · [Master curriculum]({master_link}) · Official starting point: <{docs}>
 
-## Easy mode: mental model
+## Explanation
 
-{purpose}
+### What it is and why it exists
 
-Learn this topic in layers: name the object or mechanism, trace its lifecycle/data path, configure it safely, observe a healthy and failed state, recover it, and then design it across failure domains and team boundaries.
+{junior_intro(title, area, purpose, topic_names)}
 
-```mermaid
-flowchart LR
-  R[requirement or symptom] --> M[{title} mechanism]
-  M --> S[state and dependencies]
-  S --> O[commands metrics logs traces audit]
-  O --> D[decision mitigation or design]
-  D --> V[user-facing verification]
-```
+### History and evolution
+
+{history_text(title, area, purpose)}
+
+### How it works: the end-to-end path
+
+{flow_diagram(title, area)}
+
+The path begins with a concrete input: a user request, configuration revision, packet, job, model request or operational symptom. The relevant subsystem validates that input, reads current state, performs or schedules work and exposes a result. Some transitions complete before the caller receives a response; others acknowledge the request and converge later. That difference determines whether a timeout means "nothing happened," "the operation failed," or "the final result is still unknown."
+
+For **{title}**, the important stages are {", ".join(topic_names)}. Their boundaries explain where identity is checked, where state becomes durable, where capacity is consumed, how failures propagate and which signal can distinguish one layer from another. A production explanation should follow the actual path rather than treating each term as an isolated definition.
 {children_text}
-## Complete curriculum checklist
+
+### Core concepts explained in detail
+
+{concept_explanations(concepts, title, area)}
+
+### Worked command and configuration example
+
+{worked_example(commands, title)}
+
+### Security, reliability and production ownership
+
+Security controls who can initiate a transition and what data or resource that transition may affect. Authentication, authorization, network reachability, encryption and audit solve different problems and must align at each boundary. Short-lived attributable identities, least privilege, explicit tenant separation and tested key/certificate rotation reduce blast radius. Logs and traces need their own data controls because copying a secret or customer payload into telemetry defeats the primary protection.
+
+Reliability depends on every synchronous dependency and on the eventual convergence of asynchronous work. Timeouts bound waiting; idempotency makes an ambiguous retry safe; backpressure and load shedding keep demand within useful capacity; replication and failover help only across independent failure domains. Recovery must be tested from protected state and verified through the original user outcome, not inferred from a green administrative status.
+
+Ownership makes these mechanisms operable. Every production resource or service needs an accountable team, source-of-truth revision, environment and data classification, SLO, runbook, cost center and retirement policy. Reversible mitigation can stabilize an incident, but the durable repair belongs in Git, IaC, policy or the owning application so reconciliation does not reintroduce the fault.
+
+### Observability, performance and cost
+
+Metrics, logs, traces, profiles and audit events are complementary. A useful diagnostic path starts with time, identity, exact target and user symptom, then compares desired and observed state before moving through reconciliation, network/protocol, runtime, dependency and saturation layers. High-cardinality request or object IDs belong in sampled logs or traces rather than metric labels; alerts should represent actionable user-impact risk or leading exhaustion.
+
+Performance is governed by work distribution, queueing and bottlenecks. Rate, latency percentiles, errors, saturation, queue depth or age and service-specific limits reveal more than average utilization. Application replicas and underlying machines, storage or provider quota scale through separate loops with different cold delays. Cost includes idle headroom, requests or work units, storage/retention, network transfer, telemetry, support and recovery capacity; optimize cost per successful outcome rather than the cheapest isolated resource.
+
+### What you should be able to explain
+
+The table remains as a revision checklist. Read the explanations above first; afterward, use each row to check whether you can explain the concept without relying on memorized wording.
 
 | # | Topic | What you must understand and demonstrate |
 |---:|---|---|
-{chr(10).join(rows)}
+{capability_table(concepts)}
 
-## Beginner → mid-level → senior learning path
+## Practice
 
-1. **Beginner:** define every term; identify the relevant file, object, protocol, API, or command; explain one normal use.
-2. **Mid-level:** configure it from source control, inspect effective runtime state, diagnose two failure modes, automate a safe change, and explain one trade-off.
-3. **Senior:** clarify ambiguous requirements, map trust and failure domains, quantify capacity/SLO/RPO/RTO/cost, compare alternatives, plan migration/rollback, and assign ownership.
-
-## Command and configuration lab
-
-Run read-only checks first in a sandbox. For each command, predict healthy output, one failing result, the next discriminating check, and the safe rollback for any later mutation.
-
-```bash
-{command_text}
-```
-
-## Hands-on practice: setup → failure → verification → cleanup
-
-{lab}
-
-Expected result: you can show the healthy evidence, reproduce a safe failure, explain why each command distinguishes one layer from another, restore the baseline, and prove cleanup. Hard extension: automate the lab from source control, add a test or alert for the injected failure, and write a five-step runbook another engineer can execute.
-
-For code/configuration, be ready to review an intentionally unsafe diff and improve idempotency, secret handling, timeouts, validation, logging, tests, and rollback.
-
-## Senior design checklist
-
-State assumptions for tenants, traffic/work units, latency and availability targets, data classification/residency, recovery, team skills and budget. Draw control/data planes and synchronous/asynchronous dependencies. Cover identity, policy, encryption/key lifecycle, delivery provenance, observability, capacity, unit cost, operational ownership, migration and exit criteria. Name the evidence that would cause you to revise the design.
-
-## Revision and practice
-
-Complete the separate [checkbox interview bank](questions-and-answers.md). Do not memorize wording: speak in the order **definition → mechanism → evidence/configuration → failure/trade-off → production example**. For procedures use **stabilize → scope → inspect → hypothesize → test → mitigate → verify → prevent**.
+{practice_session(title, area, commands, lab)}
 """
 
 
@@ -450,7 +456,7 @@ def generate() -> tuple[int, int]:
                 leaf = topic_leaf(
                     area,
                     section.title,
-                    f"Master {section.title} from first principles through safe production operation and senior architecture decisions.",
+                    f"{section.title} is the part of {major.title} that connects the listed mechanisms to effective runtime state, observable behavior and production outcomes.",
                     section.items,
                     commands,
                     docs,

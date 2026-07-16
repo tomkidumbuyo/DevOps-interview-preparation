@@ -726,7 +726,7 @@ API-server latency
 Resource pressure
 7. Kubernetes GPU and accelerator platform — P0
 
-Kubernetes supports accelerator access through device plugins and newer resource-allocation mechanisms. NVIDIA’s Kubernetes stack adds driver management, container runtime integration, GPU discovery, partitioning and DCGturn676270search37
+Kubernetes accelerator access: device plugins, Dynamic Resource Allocation, NVIDIA driver and container-runtime integration, GPU discovery, partitioning and DCGM monitoring
 
 7.1 Accelerator hardware fundamentals
 GPUs
@@ -873,7 +873,7 @@ GPU fragmentation
 Node provisioning failure
 Part III — AWS
 
-AWS’s official EKS AI/ML guidance includes accelerator configuration, GPU scheduling, network and operating-system tuning, autoscaling and cost optimization, while SageMaker provides multiple managed model-dturn589377search12
+AWS AI/ML platforms: EKS accelerator configuration, GPU scheduling, network and operating-system tuning, autoscaling and cost optimization, plus SageMaker managed model-deployment modes
 
 8. AWS foundations and governance — P0
 8.1 AWS global infrastructure
@@ -1427,7 +1427,7 @@ Graviton for supporting services
 Cost and compatibility trade-offs
 Part IV — Google Cloud Platform
 
-GKE is positioned for both AI training and inference and includes accelerator-capacity planning, while Vertex AI provides managed generative-AI and model-platurn589377search29
+GCP AI platforms: GKE training and inference accelerator-capacity planning plus Vertex AI managed generative-AI and model-platform capabilities
 
 21. GCP foundations and governance — P0
 Organizations
@@ -1555,7 +1555,7 @@ Quota management
 Part V — Infrastructure as Code and Delivery
 29. Terraform — P0
 
-Terraform uses state to map configuration to real resources, and its current workflow includes module composition 6turn589377search2
+Terraform state mapping, configuration-to-resource identity and module composition
 
 29.1 Terraform fundamentals
 HCL
@@ -1666,7 +1666,7 @@ Policy as code
 Least-privilege deployment roles
 30. Pulumi — P0
 
-Pulumi supports general-purpose programming languages, state backends, policy enforcement, CI/CD workflows and Automation API-driven turn589377search39
+Pulumi languages, state backends, policy enforcement, CI/CD workflows and Automation API-driven deployments
 
 30.1 Pulumi concepts
 Projects
@@ -1830,7 +1830,7 @@ Container scanning
 Part VI — Observability, Reliability and Security
 32. Observability — P0
 
-OpenTelemetry provides common conventions for traces, metrics and logs, including GenAI-specific attributes for operations, models, token usage, evaluaturn660468search16
+OpenTelemetry traces, metrics, logs and GenAI semantic conventions for operations, models, token usage and evaluation
 
 32.1 Observability fundamentals
 Metrics
@@ -2163,7 +2163,7 @@ Hardware topology
 GPU utilization and fragmentation
 38. Model serving and inference platforms — P0
 
-KServe provides Kubernetes-native predictive and generative serving, while vLLM supports optimized LLM inference, continuous batching and distributed tensor/piturn676270search47
+KServe and vLLM: Kubernetes-native predictive and generative model serving, continuous batching and distributed tensor/pipeline inference
 
 38.1 Serving-platform choices
 Managed model APIs
@@ -2656,7 +2656,7 @@ Agent evaluation
 Part VIII — AI Security, Governance and Compliance
 44. AI and LLM security — P0
 
-OWASP’s GenAI guidance includes prompt injection, sensitive-information disclosure, supply-chain threats and risks across the application lifecycle, so AI security needs its own branch rather than being hidden insideturn660468search13
+OWASP GenAI risks: prompt injection, sensitive-information disclosure, supply-chain threats and security across the AI application lifecycle
 
 44.1 Threat modeling
 Assets
@@ -2795,7 +2795,7 @@ Which model version responded
 Which evaluation approved the release
 46. European AI and privacy regulation — P1
 
-Because the role is connected to Berlin and European customers, preparation should include the EU AI Act, GDPR, data residency, AI-system classification, provider/deployer responsibilities, human oversight and incident documentation. Regulation (EU) 2024/1689 is the AI Act’s legal basis, and current Commission guidance addresses provider, deployer and general-purposeturn180867search12
+EU AI Act and GDPR: data residency, AI-system classification, provider and deployer responsibilities, general-purpose AI, human oversight and incident documentation
 
 EU AI Act fundamentals
 Risk-based classification

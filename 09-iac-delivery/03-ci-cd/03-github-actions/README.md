@@ -10,521 +10,356 @@
 > **Then:** Rehearse the linked questions and continue to [GitLab CI](../04-gitlab-ci/README.md).
 <!-- chapter-guide:end -->
 
-> [60 junior/mid/senior questions and answers](questions-and-answers.md) · [Parent CI/CD note](../README.md) · Syntax changes over time, so verify examples against the official references linked below.
+<!-- explanation-practice-normalizer:v1 -->
 
-## Easy mode: what executes what?
+## Explanation
 
-A workflow is a YAML document under `.github/workflows/`. An event creates a workflow run. A workflow run contains jobs; jobs run on isolated runners and are parallel unless `needs` creates dependencies. A job contains ordered steps. A step either executes shell code with `run` or invokes a reusable action with `uses`.
+### What this chapter is and why it exists
+
+**GitHub Actions** is easiest to understand as one part of a larger path. The subject turns version-controlled intent into a reviewed state transition. A tool parses configuration, resolves dependencies, compares desired and recorded/remote state, proposes a change set and calls provider APIs after approval.
+
+The chapter focuses on GitHub Actions. These are connected mechanisms, not vocabulary to memorize. GitHub Actions is a repository-integrated workflow engine in which events create workflow runs, jobs execute on runners and permissions govern access to code, secrets and deployment targets The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+### History and evolution
+
+Infrastructure automation evolved from shell scripts and host configuration tools into declarative resource graphs, remote state and reviewed delivery pipelines. Terraform popularized provider-based declarative provisioning from 2014, while later tools and GitOps connected infrastructure changes to normal software review, testing and promotion practices.
+
+In this chapter, **GitHub Actions** is the next layer of that evolution. Its modern purpose is to gitHub Actions is a repository-integrated workflow engine in which events create workflow runs, jobs execute on runners and permissions govern access to code, secrets and deployment targets. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+### How the complete branch works
 
 ```mermaid
 flowchart LR
-  E[repository schedule API or manual event] --> W[workflow run]
-  W --> J1[lint job runner]
-  W --> J2[test matrix runners]
-  J1 --> D[deploy job protected environment]
-  J2 --> D
-  D --> C[OIDC cloud credentials]
-  C --> V[deploy and verify]
+  A["versioned configuration"] --> B["graph state and preview"]
+  B --> C["GitHub Actions: provider API and rollout"]
+  C --> D["verified desired state"]
+  D -. "status and evidence" .-> B
 ```
 
-Do not confuse these units:
+A branch overview connects child mechanisms into one lifecycle. The input crosses identity and policy, a control or decision plane, the runtime data path and its dependencies before producing a user-visible result. Status and telemetry travel back through the loop so operators and controllers can correct drift or failure. Reading the child chapters adds precision, but this overview explains why those chapters depend on one another.
 
-| Unit | Location | Meaning |
-|---|---|---|
-| Workflow | `.github/workflows/*.yml` | Triggered automation containing one or more jobs. |
-| Job | `jobs.<job_id>` | One runner allocation and ordered set of steps. Jobs do not share a filesystem unless data is transferred. |
-| Step | `jobs.<job_id>.steps[]` | A shell script or action invocation inside one job. |
-| Action | repository, local folder or container image | Reusable task implemented as JavaScript, a Docker container, or a composite action. |
-| Reusable workflow | `.github/workflows/*.yml` with `workflow_call` | Reusable job graph called at job level; useful for organization deployment policy. |
-| Runner | GitHub-hosted or self-hosted execution environment | Trust and network boundary that receives a job-scoped token and code. |
-| Environment | repository deployment control | Named target with reviewers, wait rules, branch rules, secrets/variables and deployment history. |
+A useful test of understanding is to trace one concrete request or change from origin to outcome and name the authoritative state at each boundary. That trace reveals where work is synchronous or asynchronous, which failure domains are independent, what a timeout can prove, and which evidence distinguishes accepted intent from healthy behavior.
 
-## Repository structure
+> [Interview questions and answers](questions-and-answers.md) · [Master curriculum](../../../curriculum/master-curriculum.txt) · Official starting point: <https://docs.github.com/en/actions>
 
-```text
-repository/
-├── .github/
-│   ├── workflows/
-│   │   ├── pull-request.yml       # unprivileged validation
-│   │   ├── deploy.yml             # protected deployment
-│   │   └── reusable-deploy.yml    # workflow_call contract
-│   ├── actions/
-│   │   └── validate-release/
-│   │       ├── action.yml         # composite/custom action metadata
-│   │       └── scripts/
-│   └── dependabot.yml
-├── scripts/                       # locally runnable pipeline logic
-├── tests/
-└── application/IaC source
+### Explanation
+
+#### What it is and why it exists
+
+**GitHub Actions** is easiest to understand as one part of a larger path. The subject turns version-controlled intent into a reviewed state transition. A tool parses configuration, resolves dependencies, compares desired and recorded/remote state, proposes a change set and calls provider APIs after approval.
+
+The chapter focuses on Workflows, Events, Jobs, Steps. These are connected mechanisms, not vocabulary to memorize. GitHub Actions is the part of CI/CD that connects the listed mechanisms to effective runtime state, observable behavior and production outcomes The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+#### History and evolution
+
+Infrastructure automation evolved from shell scripts and host configuration tools into declarative resource graphs, remote state and reviewed delivery pipelines. Terraform popularized provider-based declarative provisioning from 2014, while later tools and GitOps connected infrastructure changes to normal software review, testing and promotion practices.
+
+In this chapter, **GitHub Actions** is the next layer of that evolution. Its modern purpose is to gitHub Actions is the part of CI/CD that connects the listed mechanisms to effective runtime state, observable behavior and production outcomes. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+#### How it works: the end-to-end path
+
+```mermaid
+flowchart LR
+  A["versioned configuration"] --> B["graph state and preview"]
+  B --> C["GitHub Actions: provider API and rollout"]
+  C --> D["verified desired state"]
+  D -. "status and evidence" .-> B
 ```
 
-Keep substantial build/test/deploy logic in versioned scripts that run locally. The workflow should express event, permissions, runner, dependency graph, inputs/outputs, environment and policy—not hide hundreds of lines of untestable YAML shell.
+The path begins with a concrete input: a user request, configuration revision, packet, job, model request or operational symptom. The relevant subsystem validates that input, reads current state, performs or schedules work and exposes a result. Some transitions complete before the caller receives a response; others acknowledge the request and converge later. That difference determines whether a timeout means "nothing happened," "the operation failed," or "the final result is still unknown."
 
-## Complete workflow format
+For **GitHub Actions**, the important stages are Workflows, Events, Jobs, Steps, Actions, Runners, Matrices, Reusable workflows, Environments, Secrets, OIDC, Caching, Artifacts, Concurrency controls. Their boundaries explain where identity is checked, where state becomes durable, where capacity is consumed, how failures propagate and which signal can distinguish one layer from another. A production explanation should follow the actual path rather than treating each term as an isolated definition.
 
-The common top-level keys are:
 
-```yaml
-name: human-readable workflow name
-run-name: >-
-  CI for ${{ github.ref_name }} by ${{ github.actor }}
+#### Core concepts explained in detail
 
-on:                              # event contract
-  pull_request:
-    branches: [main]
-    paths-ignore: ["docs/**"]
-  push:
-    branches: [main]
-    tags: ["v*"]
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: Target environment
-        required: true
-        type: choice
-        options: [staging, production]
+##### Workflows
 
-permissions:                     # GITHUB_TOKEN least privilege
-  contents: read
+**What it is.** The term Workflows describes the ordered states from creation or submission through active use, change, failure, recovery and retirement, including who owns each transition within GitHub Actions.
 
-concurrency:                     # workflow-level overlap policy
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
 
-env:                             # workflow-wide non-secret values
-  PYTHON_VERSION: "3.12"
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
 
-defaults:
-  run:
-    shell: bash
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
 
-jobs:
-  job_id:
-    name: name shown in UI
-    if: ${{ !cancelled() }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      contents: read
-    env:
-      JOB_VALUE: example
-    defaults:
-      run:
-        working-directory: ./app
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ["3.11", "3.12"]
-    container:                    # optional job container, Linux runner
-      image: python:3.12-slim
-    services:                     # optional sibling service containers
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: test-only-password
-        ports: [5432:5432]
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    outputs:
-      artifact_digest: ${{ steps.build.outputs.digest }}
-    steps:
-      - name: Checkout exact event revision
-        uses: actions/checkout@v4
-      - id: build
-        name: Build
-        run: ./scripts/build.sh
-        env:
-          VERSION: ${{ github.sha }}
-```
+##### Events
 
-`name` is display text; `job_id` and step `id` are machine references. `run-name` controls the run display. YAML indentation changes meaning. Quote ambiguous scalar values and remember that expressions are evaluated by GitHub before a shell sees the result.
+**What it is.** The term Events is an asynchronous hand-off mechanism that decouples producers from consumers and therefore must define ordering, retention, delivery, acknowledgement, retry and backlog behavior within GitHub Actions.
 
-For production, replace readable major action tags such as `@v4` with reviewed full commit SHAs and use dependency automation to update those pins. A tag or branch is mutable.
+**Junior mental model.** Telemetry is the instrument panel, not the system itself. Metrics summarize trends, logs preserve discrete context, traces connect work across boundaries, profiles attribute resource use, and audit events record security-relevant actions.
 
-## A practical CI → artifact → protected deployment workflow
+**How it works.** Instrumentation observes a defined event or state, attaches bounded context, transports the signal, stores it under retention rules and makes it queryable. A useful signal has documented semantics and can distinguish at least two competing explanations; correlation identifiers belong in logs or traces rather than unbounded metric labels.
 
-This example validates Python, builds one immutable artifact, passes it between jobs, uses a protected environment, requests OIDC only in the deployment job, and verifies after deployment. Replace commands and the cloud login with your application; define `STAGING_URL` as an environment variable. The placeholders `PINNED_SHA` and `CLOUD_ROLE` must be replaced with reviewed values.
+**What it looks like in production.** Healthy evidence includes coverage of the user journey, known collection delay and actionable SLO or saturation views. Missing telemetry, sampling bias, cardinality explosions, sensitive payload capture and alert thresholds disconnected from user impact are failures of the observability system itself.
 
-```yaml
-name: application delivery
+##### Jobs
 
-on:
-  pull_request:
-  push:
-    branches: [main]
-  workflow_dispatch:
+**What it is.** The term Jobs refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within GitHub Actions.
 
-permissions:
-  contents: read
+**Junior mental model.** A queue is like a numbered waiting line: producers can hand off work without waiting for completion, but someone must define ordering, capacity, acknowledgement and what happens when a worker disappears.
 
-concurrency:
-  group: delivery-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+**How it works.** A producer serializes and publishes a message, the service stores or routes it, a consumer receives it under a delivery contract, and acknowledgement advances or removes the item. At-least-once systems can redeliver after an unknown outcome, so stable operation identifiers and idempotent state changes are part of correctness.
 
-jobs:
-  test:
-    name: Test Python ${{ matrix.python }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        python: ["3.11", "3.12"]
-    steps:
-      - uses: actions/checkout@v4 # pin a reviewed SHA in production
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python }}
-          cache: pip
-      - name: Install from lock file
-        run: python -m pip install -r requirements.txt
-      - name: Unit tests
-        run: python -m pytest -q --junitxml=test-results.xml
-      - name: Upload test evidence
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: tests-${{ matrix.python }}
-          path: test-results.xml
-          retention-days: 7
+**What it looks like in production.** Healthy evidence includes publish and consume rates, queue depth and age, processing latency, retry/dead-letter counts and end-to-end business completion. Poison messages, hot partitions, backlog growth, duplicate effects and retry storms are common; adding consumers helps only when the downstream dependency and partition model can absorb them.
 
-  build:
-    needs: test
-    if: ${{ github.event_name != 'pull_request' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      attestations: write
-      id-token: write
-    outputs:
-      digest: ${{ steps.package.outputs.digest }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - id: package
-        name: Build once
-        shell: bash
-        run: |
-          set -Eeuo pipefail
-          tar -czf application.tgz src requirements.txt
-          digest="$(sha256sum application.tgz | awk '{print $1}')"
-          printf 'digest=%s\n' "$digest" >> "$GITHUB_OUTPUT"
-          printf '### Artifact\n`sha256:%s`\n' "$digest" >> "$GITHUB_STEP_SUMMARY"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: application-${{ github.sha }}
-          path: application.tgz
-          if-no-files-found: error
-          retention-days: 14
+##### Steps
 
-  deploy-staging:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    environment:
-      name: staging
-      url: ${{ vars.STAGING_URL }}
-    concurrency:
-      group: deploy-staging
-      cancel-in-progress: false
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: application-${{ github.sha }}
-      - name: Verify promoted bytes
-        env:
-          EXPECTED_DIGEST: ${{ needs.build.outputs.digest }}
-        run: test "$(sha256sum application.tgz | awk '{print $1}')" = "$EXPECTED_DIGEST"
-      - name: Exchange GitHub OIDC token for a short-lived cloud role
-        run: ./scripts/cloud-login-oidc.sh "CLOUD_ROLE"
-      - name: Deploy exact artifact and verify
-        env:
-          ARTIFACT_DIGEST: ${{ needs.build.outputs.digest }}
-          STAGING_URL: ${{ vars.STAGING_URL }}
-        run: |
-          ./scripts/deploy.sh application.tgz "$ARTIFACT_DIGEST"
-          ./scripts/smoke-test.sh "$STAGING_URL"
-```
+**What it is.** The term Steps refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within GitHub Actions.
 
-Important review points:
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
 
-- PR jobs receive untrusted repository content; do not expose deployment secrets or privileged self-hosted runners.
-- Build once and promote the same digest. Do not rebuild different bytes for production.
-- `needs` passes status and declared outputs, not the runner filesystem.
-- Artifact upload/download transfers files; cache accelerates dependency restoration and is not an artifact promotion system.
-- `environment` can enforce reviewers and target-scoped variables/secrets. Job-level `concurrency` serializes the target.
-- OIDC permission only allows requesting a token; the cloud trust policy must restrict repository, ref/environment, audience and preferably the reusable workflow identity.
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
 
-## Events and filters
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
 
-`on` may be one event, a list, or a mapping with event-specific filters. Common events include `push`, `pull_request`, `merge_group`, `release`, `schedule`, `workflow_dispatch`, `workflow_call`, `workflow_run` and `repository_dispatch`.
+##### Actions
 
-```yaml
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-    branches: [main]
-    paths: ["src/**", "tests/**", ".github/workflows/ci.yml"]
-  schedule:
-    - cron: "17 3 * * 1-5" # UTC; expect scheduling delay
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        type: boolean
-        default: true
-```
+**What it is.** The term Actions refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within GitHub Actions.
 
-Filters can cause a required workflow to remain pending when it never runs; design branch protection and required checks deliberately. Scheduled workflows run from default-branch workflow content. Event payloads differ, so a context field present for a PR may be empty for a manual run.
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
 
-Security boundary: `pull_request` is the normal validation event for forks and does not grant repository secrets to fork code. `pull_request_target` runs in the base repository's privileged context and is dangerous if it checks out or executes attacker-controlled PR code. Use it only for carefully constrained metadata operations.
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
 
-## Jobs, dependencies and matrices
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
 
-Jobs run in parallel by default. `needs` creates a directed acyclic graph. By default a failed/skipped dependency prevents downstream execution; use explicit status functions such as `always()`, `failure()`, `cancelled()` or `success()` only when the resulting behavior is safe.
+##### Runners
 
-```yaml
-jobs:
-  test:
-    strategy:
-      fail-fast: false
-      max-parallel: 4
-      matrix:
-        os: [ubuntu-latest, macos-latest]
-        runtime: ["20", "22"]
-        include:
-          - os: ubuntu-latest
-            runtime: "22"
-            experimental: true
-        exclude:
-          - os: macos-latest
-            runtime: "20"
-    runs-on: ${{ matrix.os }}
-    continue-on-error: ${{ matrix.experimental || false }}
-```
+**What it is.** The term Runners refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within GitHub Actions.
 
-Large matrices consume time/money and can saturate rate limits or test dependencies. Use representative compatibility coverage, `max-parallel`, fail-fast behavior and separate required versus experimental cells.
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
 
-## Steps, shells and workflow commands
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
 
-Each `run` step starts a new process. The working directory persists within the job, but ordinary shell variables do not. Use the runner-provided files:
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+##### Matrices
+
+**What it is.** The term Matrices refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within GitHub Actions.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+##### Reusable workflows
+
+**What it is.** The term Reusable workflows describes the ordered states from creation or submission through active use, change, failure, recovery and retirement, including who owns each transition within GitHub Actions.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+##### Environments
+
+**What it is.** The term Environments refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within GitHub Actions.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+##### Secrets
+
+**What it is.** The term Secrets is a trust-control mechanism that identifies an actor or protected asset and enforces which action is allowed under explicit context, with audit, rotation, revocation and recovery behavior within GitHub Actions.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+##### OIDC
+
+**What it is.** The term OIDC refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within GitHub Actions.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+##### Caching
+
+**What it is.** The term Caching keeps reusable results closer to the caller to reduce repeated work or latency, while introducing freshness, eviction, capacity and invalidation behavior that becomes part of correctness within GitHub Actions.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+##### Artifacts
+
+**What it is.** The term Artifacts is a delivery mechanism that binds reviewed source to an immutable revision and moves that revision through validation and bounded rollout toward verified runtime state within GitHub Actions.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+##### Concurrency controls
+
+**What it is.** The term Concurrency controls refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within GitHub Actions.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Worked command and configuration example
+
+The following is a diagnostic example, not an unexplained command dump. Define every uppercase placeholder first—for example `NAME`, `RESOURCE`, `PROJECT`, `REGION`, `NAMESPACE`, `URL`, `IMAGE` or `CONTAINER`—and use a sandbox or read-only production role.
 
 ```bash
-printf 'NAME=%s\n' 'value' >> "$GITHUB_ENV"          # later steps in this job
-printf 'result=%s\n' 'value' >> "$GITHUB_OUTPUT"    # output from a step with id
-printf '%s\n' '/opt/tool/bin' >> "$GITHUB_PATH"     # later PATH entries
-printf '### Diagnostic summary\n' >> "$GITHUB_STEP_SUMMARY"
-```
-
-Use `set -Eeuo pipefail`, quote values and pass untrusted event data through environment variables rather than interpolating it directly into shell source:
-
-```yaml
-- name: Safely print PR title
-  env:
-    PR_TITLE: ${{ github.event.pull_request.title }}
-  run: printf '%s\n' "$PR_TITLE"
-```
-
-`continue-on-error` is not a substitute for understanding failure semantics. Always apply timeouts to external operations and make deployment/retry scripts idempotent.
-
-## Contexts, expressions, variables and secrets
-
-Common contexts include `github`, `env`, `vars`, `secrets`, `inputs`, `runner`, `job`, `steps`, `needs`, `matrix` and `strategy`. Expressions use `${{ ... }}` and functions such as `contains`, `startsWith`, `fromJSON`, `toJSON`, `hashFiles`, and the status functions.
-
-```yaml
-if: >-
-  github.ref == 'refs/heads/main' &&
-  github.repository_owner == 'YOUR_ORG'
-env:
-  REGION: ${{ vars.AWS_REGION }}
-  DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-```
-
-Repository/organization/environment variables are not secrets. Secret redaction is best-effort and cannot save a workflow that deliberately transforms or exfiltrates a secret. Avoid dumping entire contexts because event payloads/tokens can be sensitive. Secrets are unavailable in several untrusted-event situations and should not be referenced directly in `if`; map them into an environment value only when required.
-
-## Outputs, artifacts and caches
-
-- Step output: small metadata within a job, declared through `$GITHUB_OUTPUT`.
-- Job output: maps a step output so dependent jobs access `needs.<job>.outputs.<name>`.
-- Reusable-workflow output: maps called job output into the `workflow_call` contract.
-- Artifact: retained files/evidence transferred between jobs or downloaded later.
-- Cache: best-effort dependency/build acceleration keyed by input identity; treat restore content from untrusted scopes cautiously.
-
-```yaml
-- uses: actions/cache@v4
-  with:
-    path: ~/.cache/pip
-    key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-    restore-keys: |
-      ${{ runner.os }}-pip-
-```
-
-Never cache credentials. Use lock-file hashes, bound retention and cache scopes. Artifacts intended for deployment need digest/provenance verification, access control and retention; a successful upload does not prove the artifact is trustworthy.
-
-## Reusable workflows, composite actions and custom actions
-
-Use a reusable workflow when you need a governed multi-job deployment contract; call it as a job, not as a step:
-
-```yaml
-# .github/workflows/reusable-deploy.yml
-name: reusable deploy
-on:
-  workflow_call:
-    inputs:
-      environment:
-        required: true
-        type: string
-      artifact_digest:
-        required: true
-        type: string
-    secrets:
-      deployment_token:
-        required: false
-    outputs:
-      endpoint:
-        value: ${{ jobs.deploy.outputs.endpoint }}
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-    outputs:
-      endpoint: ${{ steps.deploy.outputs.endpoint }}
-    steps:
-      - id: deploy
-        env:
-          DIGEST: ${{ inputs.artifact_digest }}
-        run: ./scripts/deploy.sh "$DIGEST"
-```
-
-```yaml
-# caller job
-jobs:
-  deploy:
-    uses: YOUR_ORG/platform-automation/.github/workflows/reusable-deploy.yml@PINNED_SHA
-    with:
-      environment: production
-      artifact_digest: ${{ needs.build.outputs.digest }}
-    secrets: inherit # prefer explicitly named secrets when possible
-```
-
-A composite action packages steps and runs in the caller's job. Its `action.yml` looks like:
-
-```yaml
-name: Validate release
-description: Validate a release manifest
-inputs:
-  manifest:
-    description: Path to the release manifest
-    required: true
-outputs:
-  digest:
-    description: Validated digest
-    value: ${{ steps.validate.outputs.digest }}
-runs:
-  using: composite
-  steps:
-    - id: validate
-      shell: bash
-      env:
-        MANIFEST: ${{ inputs.manifest }}
-      run: "$GITHUB_ACTION_PATH/scripts/validate.sh" "$MANIFEST"
-```
-
-JavaScript and Docker actions use other `runs.using` forms and require their runtime/bundle or Dockerfile. Pin every external action and reusable workflow. Review transitive code, token permissions and network behavior; marketplace presence is not a security proof.
-
-## Runners and isolation
-
-GitHub-hosted runners are ephemeral managed VMs for ordinary jobs. Self-hosted runners provide custom hardware/network (including GPUs/on-prem) but code can persist, inspect neighboring state or attack the network if isolation is weak. Do not place untrusted public-PR work on privileged persistent runners. Prefer ephemeral one-job runners, clean images, network egress controls, workload identity, separate runner groups, patching, capacity limits and no ambient credentials.
-
-Job containers and service containers require a Linux runner with a container runtime. They are convenience environments, not a hardened multi-tenant boundary from the runner host.
-
-## Security and supply-chain checklist
-
-1. Set top-level `permissions: contents: read` or `{}` and add job-level grants only where used.
-2. Prefer OIDC short-lived cloud credentials; restrict cloud trust to organization/repository, event/ref/environment, audience and reusable workflow.
-3. Pin third-party actions/reusable workflows to reviewed commit SHAs and automate updates.
-4. Separate untrusted validation from privileged deployment; never execute fork code in `pull_request_target` context.
-5. Protect environments, release branches/tags and workflow files with required review/CODEOWNERS.
-6. Build once, generate SBOM/provenance/attestation, sign or verify, scan, and promote the same digest.
-7. Harden ephemeral/self-hosted runners, control egress and isolate tenants/repositories.
-8. Prevent command/script injection; never interpolate attacker-controlled context directly into shell.
-9. Bound time, concurrency, artifact/cache retention and costs; make cancellation and deployment idempotent.
-10. Audit workflow changes, reruns, approvals, OIDC/cloud events and final deployment identity.
-
-## CLI, debugging and operations
-
-With the GitHub CLI authenticated to a test repository:
-
-```bash
-gh workflow list
-gh workflow view "application delivery" --yaml
-gh workflow run deploy.yml -f environment=staging
-gh run list --workflow deploy.yml --limit 10
-gh run view RUN_ID --log-failed
-gh run watch RUN_ID --exit-status
-gh run rerun RUN_ID --failed
-gh run download RUN_ID --dir ./run-artifacts
-gh api repos/OWNER/REPO/actions/runs/RUN_ID/jobs
-```
-
-Diagnose in this order: event/filter and selected SHA → repository/organization Actions policy → expression/`if` → dependency/skipped status → runner availability/labels → token permissions/secrets/environment approval → action/tool dependency → application command → artifact/cloud/deployment state. Enable runner/step debug logging only briefly and review whether it could expose sensitive data.
-
-Static and local checks:
-
-```bash
-actionlint .github/workflows/*.yml
-shellcheck scripts/*.sh
-yamllint .github/workflows
+terraform fmt -check -recursive
+terraform validate; terraform plan
+pulumi preview --diff
 git diff --check
 ```
 
-## Hands-on lab: beginner → senior
+What the example demonstrates:
 
-1. Fork or create a disposable private repository with a tiny tested script. Add PR CI using `checkout`, a pinned runtime and one test job.
-2. Add a two-version matrix, JUnit artifact on `always()`, dependency cache and step summary. Intentionally break a test and explain the job/step conclusions and exit status.
-3. Split build and deploy. Pass a digest as a job output and bytes as an artifact. Add staging environment approval and concurrency; verify the exact digest after download.
-4. Replace a stored cloud key with OIDC in a sandbox role. Inspect token claims without printing the token and demonstrate that the wrong branch/environment cannot assume the role.
-5. Extract deployment into a pinned reusable workflow; restrict cloud trust to that workflow. Add an untrusted PR test proving it cannot obtain privileged credentials.
-6. Observe with `gh run`, cancel a run, rerun only failed jobs, download evidence, then delete the disposable cloud resources/repository or disable the workflows.
+- `terraform fmt -check -recursive` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `terraform validate; terraform plan` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `pulumi preview --diff` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `git diff --check` inspects the repository's object graph, refs or diff so a delivery decision is tied to exact content rather than an assumed branch name.
 
-## Further documentation and video learning
+A healthy run returns the intended identity/context, exits successfully and shows the expected object or response without a new warning, retry loop or saturation signal. A failure is useful evidence: preserve the exact exit code, status/reason, timestamp and target, then inspect the immediately adjacent layer before changing anything. This makes the example part of the explanation of **GitHub Actions**, not merely a list to copy.
 
-Official documentation:
+#### Security, reliability and production ownership
 
-- [GitHub Actions documentation](https://docs.github.com/en/actions)
-- [Workflow syntax reference](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax)
-- [Events that trigger workflows](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows)
-- [Contexts reference](https://docs.github.com/en/actions/reference/workflows-and-actions/contexts)
-- [Expressions reference](https://docs.github.com/en/actions/reference/workflows-and-actions/expressions)
-- [Reuse workflows](https://docs.github.com/en/actions/how-tos/reuse-automations/reuse-workflows)
-- [Metadata syntax for custom actions](https://docs.github.com/en/actions/reference/workflows-and-actions/metadata-syntax)
-- [Security hardening and OIDC](https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments)
-- [GitHub CLI Actions manual](https://cli.github.com/manual/gh_run)
+Security controls who can initiate a transition and what data or resource that transition may affect. Authentication, authorization, network reachability, encryption and audit solve different problems and must align at each boundary. Short-lived attributable identities, least privilege, explicit tenant separation and tested key/certificate rotation reduce blast radius. Logs and traces need their own data controls because copying a secret or customer payload into telemetry defeats the primary protection.
 
-Video resources (verify the publish date because syntax and runner behavior change):
+Reliability depends on every synchronous dependency and on the eventual convergence of asynchronous work. Timeouts bound waiting; idempotency makes an ambiguous retry safe; backpressure and load shedding keep demand within useful capacity; replication and failover help only across independent failure domains. Recovery must be tested from protected state and verified through the original user outcome, not inferred from a green administrative status.
 
-- [GitHub's official YouTube channel—GitHub Actions videos](https://www.youtube.com/@GitHub/search?query=GitHub%20Actions)
-- [GitHub Skills: Hello GitHub Actions hands-on course](https://github.com/skills/hello-github-actions)
-- [GitHub Skills: reusable workflows hands-on course](https://github.com/skills/reusable-workflows)
+Ownership makes these mechanisms operable. Every production resource or service needs an accountable team, source-of-truth revision, environment and data classification, SLO, runbook, cost center and retirement policy. Reversible mitigation can stabilize an incident, but the durable repair belongs in Git, IaC, policy or the owning application so reconciliation does not reintroduce the fault.
 
-## Interview traps
+#### Observability, performance and cost
 
-- A job is not a step, and `needs` does not share a filesystem.
-- Cache is not a release artifact repository.
-- `id-token: write` must be combined with a narrow external trust policy.
-- Encrypted secrets are still exposed to any step that is authorized to read and exfiltrate them.
-- `pull_request_target` plus checkout/execution of PR code is a high-risk privilege inversion.
-- Self-hosted runners are part of the production trust boundary.
-- A green deployment step is not user-facing verification; check SLO, correctness, security and the exact artifact revision.
+Metrics, logs, traces, profiles and audit events are complementary. A useful diagnostic path starts with time, identity, exact target and user symptom, then compares desired and observed state before moving through reconciliation, network/protocol, runtime, dependency and saturation layers. High-cardinality request or object IDs belong in sampled logs or traces rather than metric labels; alerts should represent actionable user-impact risk or leading exhaustion.
 
-After the lab, delete sandbox deployments and temporary artifacts, remove test environments and repository secrets, revoke temporary cloud trust, and verify that no self-hosted runner, workflow schedule or billable resource remains. Reliability and observability checks must prove the exact artifact, runner, environment and user-facing result rather than trusting a green job alone.
+Performance is governed by work distribution, queueing and bottlenecks. Rate, latency percentiles, errors, saturation, queue depth or age and service-specific limits reveal more than average utilization. Application replicas and underlying machines, storage or provider quota scale through separate loops with different cold delays. Cost includes idle headroom, requests or work units, storage/retention, network transfer, telemetry, support and recovery capacity; optimize cost per successful outcome rather than the cheapest isolated resource.
+
+#### What you should be able to explain
+
+The table remains as a revision checklist. Read the explanations above first; afterward, use each row to check whether you can explain the concept without relying on memorized wording.
+
+| # | Topic | What you must understand and demonstrate |
+|---:|---|---|
+| 1 | **Workflows** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 2 | **Events** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 3 | **Jobs** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 4 | **Steps** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 5 | **Actions** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 6 | **Runners** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 7 | **Matrices** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 8 | **Reusable workflows** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 9 | **Environments** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 10 | **Secrets** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 11 | **OIDC** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 12 | **Caching** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 13 | **Artifacts** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 14 | **Concurrency controls** | is part of GitHub Actions; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+
+## Practice
+
+### Practice
+
+#### Practice objective
+
+Build a small, safe proof of **GitHub Actions** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
+
+#### Prerequisites and setup
+
+Use a disposable state/backend and sandbox account. Format, validate and test first; preview/plan and save the reviewed output; apply one harmless tagged resource only after checking identity and estimated cost; introduce a configuration-only diff; inspect the plan; revert it in source; and verify no drift. Destroy only the exact sandbox stack after inspecting the destroy preview and retaining no required state.
+
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
+
+#### Activity 1: establish a healthy baseline
+
+Run the read-oriented example first:
+
+```bash
+terraform fmt -check -recursive
+terraform validate; terraform plan
+pulumi preview --diff
+git diff --check
+```
+
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
+
+#### Activity 2: create or review the smallest working example
+
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
+
+#### Activity 3: controlled failure and troubleshooting
+
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
+
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
+
+#### Verification
+
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
+
+#### Cleanup and rollback
+
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
+
+#### Harder extension
+
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
+
+### Practice objective
+
+Build a small, safe proof of **GitHub Actions** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
+
+### Prerequisites and setup
+
+Use a disposable local environment, sandbox account/project or isolated namespace. Confirm the effective identity and target, record the start time, and set a cost limit before creating anything.
+
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
+
+### Activity 1: establish a healthy baseline
+
+Run the read-oriented example first:
+
+```bash
+terraform fmt -check -recursive
+terraform validate
+terraform plan
+```
+
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
+
+### Activity 2: create or review the smallest working example
+
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
+
+### Activity 3: controlled failure and troubleshooting
+
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
+
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
+
+### Verification
+
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
+
+### Cleanup and rollback
+
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
+
+### Harder extension
+
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
 
 <!-- reading-navigation:start -->
 ---

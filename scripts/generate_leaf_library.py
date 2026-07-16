@@ -11,6 +11,20 @@ from dataclasses import dataclass
 from pathlib import Path
 import re
 
+from note_explanations import (
+    answer_evidence,
+    answer_mechanism,
+    capability_table,
+    command_explanation,
+    concept_explanations,
+    flow_diagram,
+    history_text,
+    junior_intro,
+    practice_session,
+    usable_description,
+    worked_example,
+)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 NUMBER_PREFIX = re.compile(r"^\d{2,3}-(.+)$")
@@ -1215,75 +1229,70 @@ See [questions-and-answers.md](questions-and-answers.md) for 60 additional branc
 
 
 def notes(leaf: Leaf) -> str:
-    concept_rows = "\n".join(
-        f"| {idx} | **{split_concept(item)[0]}** | {split_concept(item)[1]} |"
-        for idx, item in enumerate(leaf.concepts, 1)
-    )
-    command_lines = "\n".join(leaf.commands)
     topic_names = [split_concept(c)[0] for c in leaf.concepts]
     return f"""# {leaf.title}
 
 > Interview bank: [questions-and-answers.md](questions-and-answers.md) · Official documentation: <{leaf.docs}>
 
-## Easy mode: purpose and mental model
+## Explanation
 
-{leaf.purpose}
+### What it is and why it exists
 
-```mermaid
-flowchart LR
-  I[identity and desired state] --> C[{leaf.title} control plane]
-  C --> D[{leaf.title} data plane]
-  D --> U[user/workload outcome]
-  D --> O[metrics logs traces audit]
-  O --> R[reconcile scale recover optimize]
-```
+{junior_intro(leaf.title, leaf.area, leaf.purpose, topic_names)}
 
-## Detailed learning notes
+### History and evolution
+
+{history_text(leaf.title, leaf.area, leaf.purpose)}
+
+### How it works: the end-to-end path
+
+{flow_diagram(leaf.title, leaf.area)}
+
+The diagram is a feedback loop rather than a one-way provisioning sequence. A caller supplies identity and intent; the control plane validates and records that intent; asynchronous controllers, runtimes or managed infrastructure create the effective data plane; and status and telemetry feed the next decision. A successful API response can therefore mean only "the request was accepted," not "the workload outcome is healthy."
+
+For **{leaf.title}**, the mechanisms participating in that loop are {", ".join(topic_names)}. Some run synchronously on the caller's request, while others converge later. This timing distinction explains many production surprises: the desired object can exist before capacity is ready, a data path can continue while its control plane is impaired, and a timeout can leave the final side effect unknown.
+
+### Core concepts explained in detail
+
+{concept_explanations(leaf.concepts, leaf.title, leaf.area)}
+
+### Worked command and configuration example
+
+{worked_example(leaf.commands, leaf.title)}
+
+### Security and trust boundaries
+
+Security begins with the actor and the exact operation, not with a network location. Human, workload, CI and service identities have different lifecycles; every hop must authenticate the relevant identity and authorize the action against the resource and current conditions. Network controls reduce reachable paths, while resource policy and application authorization decide what an already-reachable caller may do. Encryption protects data in transit or at rest, but key access, rotation, revocation and recovery are part of the same system.
+
+The safe design minimizes public paths, long-lived credentials, wildcard permissions and implicit cross-tenant trust. It also protects the evidence plane: audit logs, traces and command history must not become a second copy of secrets or customer content. A production review should be able to identify the enforcement point, default behavior, bypass path, break-glass owner and proof that revoked access actually stops working.
+
+### Reliability and failure behavior
+
+Availability is an end-to-end property. The service depends on identity, quota, API/control-plane health, DNS and network paths, capacity, downstream services and any durable state required to recover. Replicas improve availability only when they occupy independent failure domains and clients can reach a healthy replica; a managed-service label does not remove customer responsibility for configuration, load, data correctness or recovery testing.
+
+Timeouts, bounded retry budgets with jitter, idempotency, backpressure, load shedding and graceful drain control how failures spread. They must match the protocol and side-effect model. A timeout is ambiguous because the remote operation may have completed; blind retry is unsafe when the operation is not idempotent. Recovery is complete only when the original user action works and data, latency, error rate and backlog have returned to acceptable bounds.
+
+### Performance, scaling and cost
+
+Capacity planning starts with a work unit and a distribution, not an average utilization percentage. Relevant signals include request or job arrival rate, work size, latency percentiles, errors, queue age, saturation and service-specific limits. Scaling application replicas and provisioning underlying nodes, storage or provider quota are separate feedback loops with different delays. Cold starts and warm-up determine whether newly allocated capacity helps before the burst is over.
+
+Total cost includes idle headroom, request or token work, storage and retention, cross-zone or cross-Region transfer, NAT/egress, observability, licenses and recovery capacity. The useful optimization target is cost per successful SLO- or quality-controlled outcome. A cheaper configuration that increases retries, operator toil, data risk or missed objectives can raise total cost.
+
+### Observability and troubleshooting
+
+Diagnosis follows the same path as the request. First establish time, user impact, identity and exact target; then compare desired configuration with observed status and recent changes. Continue through control-plane reconciliation, network and protocol evidence, runtime state, dependencies and resource saturation. Metrics show trends, logs explain discrete events, traces connect boundaries, profiles attribute resource use and audit logs explain security decisions.
+
+The most useful next check is the one that distinguishes competing causes. A permission denial calls for policy-evaluation evidence, not a restart; a connection refusal means something different from a timeout; a pending resource with a scheduling reason differs from a running resource whose application is unready. Reversible mitigation stabilizes impact, while the durable repair updates Git, IaC, policy or the owning service and adds a regression test or alert.
+
+### What you should be able to explain
+
+Use this table only after reading the explanations above. It is a revision checklist, not a substitute for the lesson.
 
 | # | Concept | What you must be able to explain |
 |---:|---|---|
-{concept_rows}
+{capability_table(leaf.concepts)}
 
-## Architecture and lifecycle
-
-Trace this service from request/authentication and desired configuration through provisioning, steady-state data path, scaling, change, failure, recovery and retirement. Bind every production resource to an owner, environment, data classification, source-of-truth revision, SLO, runbook, cost center and deletion/retention policy.
-
-For {leaf.title}, draw a real request/resource path and label where these mechanisms act: {", ".join(topic_names)}. State which parts are control plane versus data plane, regional versus zonal/global, synchronous versus asynchronous, and customer versus provider responsibility.
-
-## Security model
-
-Start with the caller/workload identity and evaluate every applicable identity, resource, organization, network-endpoint, encryption-key and admission policy. Minimize public paths, long-lived credentials, wildcard actions/resources and unreviewed cross-account/tenant trust. Encrypt in transit/at rest where applicable, but include key/certificate rotation and recovery. Protect audit evidence and prevent secrets/customer content from entering command history, logs, traces or metric labels.
-
-## Availability and failure modes
-
-List dependencies and failure domains before claiming high availability. Test quota/capacity, identity/control-plane, DNS/network/TLS, configuration drift, downstream saturation, zonal/Regional/node failure and recovery from protected state. Use bounded timeout, retry budget, jitter, idempotency, backpressure, load shedding and graceful drain according to protocol. A green resource status is not a user-facing recovery check.
-
-## Performance, scaling and cost
-
-Measure workload distribution and SLI before sizing. Track rate/work units, latency distribution, errors, saturation/queue and service-specific limits. Separate replica/task scaling from infrastructure/capacity scaling and include cold-start/provisioning delay. Cost includes idle/provisioned capacity, requests/work units, storage/retention, cross-AZ/Region/egress/NAT, observability, licenses/support and failure headroom. Optimize cost per successful SLO/quality-controlled task.
-
-## Observability
-
-Correlate a request/change across user, route/resource, dependency and underlying compute/storage/network. Use stable owner/environment/region/service dimensions; put high-cardinality request/object IDs in sampled logs/traces rather than metric labels. Alert on actionable SLO burn and leading exhaustion. Monitor the telemetry path and keep a read-only diagnostic role.
-
-## Command lab
-
-Run in a sandbox with the correct account/context/Region. Read and explain output before mutation.
-
-```bash
-{command_lines}
-```
-
-For each command, record: identity/context, exact resource, expected healthy fields, one failing output, the next command/query, and which mutation would be reversible. Never paste secrets/tokens into committed notes or shared terminal history.
-
-## Real-world exercise: easy → hard
-
-1. **Easy:** inventory one healthy {leaf.title} resource and draw identity/control/data/dependency paths.
-2. **Intermediate:** reproduce a safe configuration change with IaC, preview/diff, apply to a sandbox, verify and roll back.
-3. **Hard:** inject one policy/network/quota/capacity/dependency failure, diagnose from user symptom to root mechanism, mitigate without widening access, then add an alert/test/runbook.
-4. **Senior:** design the service for two tenants, multi-zone/Region failure, RPO/RTO, regulated data, 10× demand and a 30% cost reduction; quantify trade-offs.
-
-## Common interview traps
+### Common interview traps
 
 - Naming a feature without explaining request/resource lifecycle or failure semantics.
 - Treating an allow, encryption checkbox, replica count or managed-service label as a complete security/reliability design.
@@ -1291,15 +1300,18 @@ For each command, record: identity/context, exact resource, expected healthy fie
 - Scaling the wrong layer or retrying overload/permanent errors.
 - Omitting quotas, cold start, deletion/restore, observability cost or customer/tenant boundaries.
 
-## Revision summary
+## Practice
 
-Explain {leaf.title} in five passes: purpose/selection, mechanism/lifecycle, security/failure, operation/commands, and architecture/economics. Then complete the separate [answered question bank](questions-and-answers.md) without looking at these notes.
+{practice_session(leaf.title, leaf.area, leaf.commands)}
 """
 
 
 def qna(leaf: Leaf, *, branch: bool = False) -> str:
     leaf_id = safe_id(("BRANCH-" if branch else "") + leaf.title)[:48]
-    concepts = [split_concept(c) for c in leaf.concepts]
+    concepts = []
+    for concept in leaf.concepts:
+        name, description = split_concept(concept)
+        concepts.append((name, usable_description(name, description, leaf.title, leaf.area).rstrip(".") + "."))
     while len(concepts) < 10:
         concepts += concepts
     concepts = concepts[:10]
@@ -1329,8 +1341,23 @@ def qna(leaf: Leaf, *, branch: bool = False) -> str:
         tag = "**Code:** " if i in (7, 8, 9) else ""
         q = (f"What does `{commands[i % len(commands)]}` help you verify for {leaf.title}?" if tag
              else f"What is {name}, and why does it matter in {leaf.title}?")
-        a = (f"It is a read-oriented check in this leaf's command path. Run it only after confirming identity, account/context, Region/namespace and resource. Interpret it against the desired configuration and healthy baseline; then correlate events, metrics, logs and audit rather than changing state from one output. The relevant mechanism is: {explanation}" if tag
-             else f"{explanation} In an interview, connect it to the request/resource lifecycle, name one limit or failure, and explain how you would observe it. Do not stop at the vendor definition.")
+        cmd = commands[i % len(commands)]
+        mechanism_detail = answer_mechanism(name, explanation, leaf.title, leaf.area)
+        evidence_detail = answer_evidence(name, explanation, leaf.title, leaf.area)
+        a = (
+            f"**Purpose.** `{cmd}` {command_explanation(cmd)}. "
+            f"**Mechanism.** The relevant {leaf.title} concept is {name}: {explanation} The command reads one representation of desired or observed state; it does not by itself prove that every controller, dependency or user path is healthy. "
+            "**Evidence.** Confirm identity, account/project/cluster, location and exact resource first, then preserve IDs, status/reason fields, timestamps and exit status. Compare them with source-controlled intent and a known healthy baseline, and correlate the nearest event, metric, log, trace or audit record. "
+            "**Failure and trade-off.** Empty output, permission denial, stale state and an unavailable dependency require different next checks; immediately mutating the target destroys evidence and may widen impact. "
+            f"**Production example.** During a {leaf.title} rollout, an operator uses this check to decide whether the fault is in accepted configuration, reconciliation or the live data path, and verifies the final repair from the original client."
+            if tag
+            else
+            f"**Definition.** {explanation} "
+            f"**Mechanism.** {mechanism_detail} Its guarantee applies only at its own boundary, so upstream identity, downstream dependencies and asynchronous convergence still matter. "
+            f"**Evidence and failure behavior.** {evidence_detail} Compare those signals with desired configuration, workload shape and a known healthy baseline before choosing a mitigation. "
+            "**Trade-off.** The choice normally balances simplicity, isolation, performance, recovery effort, portability and cost; moving a boundary solves one problem while shifting another to the caller or operator. "
+            f"**Production example.** A team operating a service in which {name} matters records the workload and configuration baseline, injects one bounded failure in a sandbox, alerts on the first user-impact or saturation signal, and verifies recovery through the original {leaf.title} journey rather than an administrative green status alone."
+        )
         jn.append((tag, q, a))
     add_section("Junior — normal conceptual and code questions", "J", "N", jn)
 
@@ -1339,7 +1366,13 @@ def qna(leaf: Leaf, *, branch: bool = False) -> str:
         cmd = commands[i % len(commands)]
         tag = "**Code:** " if i % 3 == 0 else ""
         q = f"A basic {name} check fails. What would you do first{' using the CLI' if tag else ''}?"
-        a = (f"Confirm the user-visible symptom, time and blast radius; verify your read-only identity/context; then run `{cmd}` and capture exact status/reason/request ID. {explanation} Compare desired with observed state, inspect the immediately adjacent dependency, and change only one reversible variable. Verify from the original client, then record the source fix and prevention.")
+        a = (
+            "**Stabilize and scope.** Confirm the user-visible symptom, start time, affected tenants/locations and current change owner; freeze unrelated changes and avoid retry amplification. "
+            f"**Inspect.** Verify a read-only identity and exact target, then run `{cmd}`. This {command_explanation(cmd)}. Capture the full error, exit status, resource or request ID and timestamp. "
+            f"**Reason about the mechanism.** {explanation} Compare declared and effective state, then inspect the immediately adjacent identity, control-plane, network, dependency or capacity layer instead of restarting blindly. "
+            "**Mitigate versus repair.** A mitigation changes one reversible variable—such as pausing traffic or returning to a known compatible revision—without widening trust. The durable repair updates Git/IaC/policy or the owning service and adds a regression test or alert. "
+            f"**Verify.** Repeat the original {leaf.title} client action, confirm correctness plus latency/error/backlog recovery, and record the timeline and prevention."
+        )
         jp.append((tag, q, a))
     add_section("Junior — procedural and command questions", "J", "P", jp)
 
@@ -1348,7 +1381,13 @@ def qna(leaf: Leaf, *, branch: bool = False) -> str:
         right, right_expl = concepts[(i + 1) % len(concepts)]
         tag = "**Configuration review:** " if i in (3, 6, 9) else ""
         q = f"Compare {left} with {right}. When would each change your design?"
-        a = (f"{left}: {left_expl} {right}: {right_expl} Select by protocol/access pattern, isolation/trust, failure domain and recovery, performance/scale, operational ownership and total cost. State which evidence or SLO would make you revisit the choice; they may be complementary rather than substitutes.")
+        a = (
+            f"**Definitions.** {left}: {left_expl} {right}: {right_expl} "
+            f"**Mechanism.** In {leaf.title}, compare where each acts in the request or resource lifecycle, which state it owns, whether its result is synchronous or eventually reconciled, and how callers observe completion. They may be complementary layers rather than substitutes. "
+            "**Decision criteria.** Select using workload shape and protocol, identity and tenant isolation, failure-domain independence, consistency and recovery contract, latency/throughput limits, team ownership and total cost. "
+            "**Failure evidence.** State which metric, event, status field or controlled test would distinguish failure of one from the other, and how rollback differs. "
+            f"**Production example.** For a production {leaf.title} design, use the simpler option until measured SLO, isolation, scale or recovery evidence crosses an explicit threshold; document that threshold so the decision can be revisited instead of becoming permanent folklore."
+        )
         mn.append((tag, q, a))
     add_section("Mid-level — normal, comparison and configuration questions", "M", "N", mn)
 
@@ -1357,7 +1396,13 @@ def qna(leaf: Leaf, *, branch: bool = False) -> str:
         cmd = commands[i % len(commands)]
         tag = "**CLI/debugging:** " if i % 2 == 0 else ""
         q = f"Production is degraded around {name}; walk through diagnosis, mitigation and durable repair."
-        a = (f"Declare impact/owner and freeze risky changes. Segment identity/policy, DNS/network/TLS, control-plane reconciliation, data path, dependency and quota/capacity. Start with `{cmd}` plus recent events/changes, then correlate the service-specific SLI. {explanation} Stop retry amplification, shed or fail over only to an approved compatible path, and preserve evidence. Verify user outcome/data correctness, repair IaC/Git, add a regression test/alert and rehearse the runbook.")
+        a = (
+            "**Incident control.** Declare impact, severity, owner, communications cadence and abort criteria; freeze risky changes and preserve evidence. Segment by tenant, location, revision and request type to reduce the search space. "
+            f"**Diagnosis.** Start with `{cmd}` plus recent changes and the user-facing SLI. The command {command_explanation(cmd)}. Walk identity/policy → API/control-plane reconciliation → DNS/network/TLS → runtime/data path → dependency → quota/capacity, stopping when evidence discriminates the first broken transition. "
+            f"**Mechanism.** {explanation} This matters because mitigation at the wrong layer can leave the cause intact or amplify load. "
+            "**Mitigation.** Bound retries, shed or drain traffic, pause reconciliation or return to a known compatible revision only when the action is reversible and preserves tenant/data guarantees. Do not treat broad permission or an unqualified failover target as recovery. "
+            f"**Durable repair and proof.** Update the {leaf.title} source of truth, add a regression test and leading alert, verify the original user outcome plus correctness and backlog, and rehearse the revised runbook in a sandbox or game day."
+        )
         mp.append((tag, q, a))
     add_section("Mid-level — procedural, CLI and troubleshooting questions", "M", "P", mp)
 
@@ -1367,7 +1412,13 @@ def qna(leaf: Leaf, *, branch: bool = False) -> str:
         n3, e3 = concepts[(i + 6) % len(concepts)]
         tag = "**Architecture/configuration:** " if i % 2 else ""
         q = f"Design a production {leaf.title} capability where {name}, {n2} and {n3} are first-class requirements."
-        a = (f"Clarify tenants, workload/scale, latency/quality SLO, data class/residency, RPO/RTO, deployment modes, team and budget. Relevant facts: {explanation} {e2} {e3} Separate control/data planes and failure domains; define identity/trust and encryption/key lifecycle; quantify capacity/headroom/cold path; use immutable delivery/canary/rollback; instrument SLO, saturation, audit and unit cost. Compare managed/shared/dedicated options and include migration, DR test and exit triggers.")
+        a = (
+            "**Requirements and assumptions.** Clarify tenants, workload distribution and 10× case, latency/quality SLO, data class and residency, RPO/RTO, deployment locations, team skills and budget. Turn each ambiguous requirement into a measurable acceptance or rejection criterion. "
+            f"**Mechanisms.** {name}: {explanation} {n2}: {e2} {n3}: {e3} Place each on a control/data-plane and synchronous/asynchronous diagram, then identify its source of truth, owner and failure domain. "
+            "**Security and reliability.** Use short-lived identity, least privilege, explicit tenant boundaries and recoverable encryption keys; design independent capacity and bounded failure propagation rather than assuming replica count equals availability. "
+            "**Delivery and operations.** Bind reviewed source to immutable artifacts, qualify with representative tests, release progressively and retain a tested rollback or rebuild path. Instrument user SLO, queue/saturation, audit and cost per successful outcome. "
+            f"**Trade-offs and example.** Compare managed, shared and dedicated {leaf.title} options across isolation, portability, operator load and cost. Pilot the highest-risk dependency, perform a restore/failover test, and define migration and exit triggers before committing the full platform."
+        )
         sn.append((tag, q, a))
     add_section("Senior — architecture, trade-off and code-design questions", "S", "N", sn)
 
@@ -1376,7 +1427,13 @@ def qna(leaf: Leaf, *, branch: bool = False) -> str:
         cmd = commands[i % len(commands)]
         tag = "**Incident/migration:** "
         q = f"You own a high-severity failure or migration involving {name}. How do you lead it end to end?"
-        a = (f"Establish incident/change command, impact, decision rights, communications cadence and abort criteria. Preserve evidence and use `{cmd}` as one read-only checkpoint, not the whole diagnosis. {explanation} Choose reversible containment, protect tenant/data boundaries, and keep rollback artifacts/state. Recover in waves and validate SLO, correctness/quality, security and billing. Publish timeline/trade-off/ADR or postmortem, assign preventive actions with owners, and verify them in a game day or migration rehearsal.")
+        a = (
+            "**Lead the work.** Establish incident or change command, impact, decision rights, stakeholder cadence, success measures and abort criteria. Freeze conflicting changes, preserve a timeline and keep one accountable technical owner for each workstream. "
+            f"**Build evidence.** Use `{cmd}` as one checkpoint because it {command_explanation(cmd)}. Correlate identity, desired revision, events, SLI, dependency state and capacity; never make a destructive move from a single green or red field. "
+            f"**Mechanism and risk.** {explanation} Translate that behavior into explicit data, tenant, compatibility and partial-completion risks. "
+            "**Execute safely.** Rehearse on representative state, protect backups and rollback artifacts, canary one failure domain or tenant, stop at thresholds, and prefer reversible containment. Recover in waves so error, latency, correctness, security and billing evidence can halt expansion. "
+            f"**Close the loop.** Verify {leaf.title} from the user path, reconcile the durable source, publish the timeline and trade-off record or postmortem, assign preventive actions with owners and dates, and prove them in a restore test, game day or migration rehearsal."
+        )
         sp.append((tag, q, a))
     add_section("Senior — procedural incident, migration and ownership questions", "S", "P", sp)
 

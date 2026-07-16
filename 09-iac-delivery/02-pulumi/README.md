@@ -12,107 +12,650 @@
 
 > [Interview questions and answers](questions-and-answers.md) · [Master curriculum](../../curriculum/master-curriculum.txt) · Official starting point: <https://www.pulumi.com/docs/>
 
-## Easy mode: mental model
+## Explanation
 
-Integrate every part of Pulumi into one secure, reliable, observable, supportable and cost-aware production capability.
+### What it is and why it exists
 
-Learn this topic in layers: name the object or mechanism, trace its lifecycle/data path, configure it safely, observe a healthy and failed state, recover it, and then design it across failure domains and team boundaries.
+**Pulumi** is easiest to understand as one part of a larger path. The subject turns version-controlled intent into a reviewed state transition. A tool parses configuration, resolves dependencies, compares desired and recorded/remote state, proposes a change set and calls provider APIs after approval.
+
+The chapter focuses on Pulumi languages, state backends, policy enforcement, CI/CD workflows and Automation API-driven deployments, Projects, Stacks, Resources. These are connected mechanisms, not vocabulary to memorize. Integrate every part of Pulumi into one secure, reliable, observable, supportable and cost-aware production capability The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+### History and evolution
+
+Infrastructure automation evolved from shell scripts and host configuration tools into declarative resource graphs, remote state and reviewed delivery pipelines. Terraform popularized provider-based declarative provisioning from 2014, while later tools and GitOps connected infrastructure changes to normal software review, testing and promotion practices.
+
+In this chapter, **Pulumi** is the next layer of that evolution. Its modern purpose is to integrate every part of Pulumi into one secure, reliable, observable, supportable and cost-aware production capability. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+### How it works: the end-to-end path
 
 ```mermaid
 flowchart LR
-  R[requirement or symptom] --> M[Pulumi mechanism]
-  M --> S[state and dependencies]
-  S --> O[commands metrics logs traces audit]
-  O --> D[decision mitigation or design]
-  D --> V[user-facing verification]
+  A["versioned configuration"] --> B["graph state and preview"]
+  B --> C["Pulumi: provider API and rollout"]
+  C --> D["verified desired state"]
+  D -. "status and evidence" .-> B
 ```
 
-## Deeper topic folders
+The path begins with a concrete input: a user request, configuration revision, packet, job, model request or operational symptom. The relevant subsystem validates that input, reads current state, performs or schedules work and exposes a result. Some transitions complete before the caller receives a response; others acknowledge the request and converge later. That difference determines whether a timeout means "nothing happened," "the operation failed," or "the final result is still unknown."
 
-- [30.1 Pulumi concepts](01-pulumi-concepts/README.md) — [Q&A](01-pulumi-concepts/questions-and-answers.md)
-- [30.2 Pulumi languages](02-pulumi-languages/README.md) — [Q&A](02-pulumi-languages/questions-and-answers.md)
-- [30.3 Pulumi state](03-pulumi-state/README.md) — [Q&A](03-pulumi-state/questions-and-answers.md)
-- [30.4 Component resources](04-component-resources/README.md) — [Q&A](04-component-resources/questions-and-answers.md)
-- [30.5 Pulumi Automation API](05-pulumi-automation-api/README.md) — [Q&A](05-pulumi-automation-api/questions-and-answers.md)
-- [30.6 Pulumi policies](06-pulumi-policies/README.md) — [Q&A](06-pulumi-policies/questions-and-answers.md)
-- [30.7 Pulumi CI/CD](07-pulumi-ci-cd/README.md) — [Q&A](07-pulumi-ci-cd/questions-and-answers.md)
-- [30.8 Terraform versus Pulumi](08-terraform-versus-pulumi/README.md) — [Q&A](08-terraform-versus-pulumi/questions-and-answers.md)
+For **Pulumi**, the important stages are Pulumi languages, state backends, policy enforcement, CI/CD workflows and Automation API-driven deployments, Projects, Stacks, Resources, Inputs, Outputs, Providers, Components, Configuration, Secrets, TypeScript, Python, Go, C#, Java, YAML, Language-selection trade-offs, Pulumi Cloud backend, DIY backends, State encryption, State locking, State recovery, Import, Refresh, Drift, Reusable components, Platform abstractions, Inputs and outputs, Resource parenting, Provider inheritance, Versioning, Programmatic deployments, Embedded IaC, Self-service platforms, Stack creation, Preview, Update, Destroy, Event streaming, Error handling, Policy as code, Advisory policies, Mandatory policies, CrossGuard, Organizational policies, Compliance controls, Preview on pull request, Apply after approval, OIDC, Secret handling, Drift detection, Stack promotion, Rollback, Declarative HCL versus general-purpose languages, State models, Testing, Reuse, Provider maturity, Team skills, Platform API integration, Migration strategies. Their boundaries explain where identity is checked, where state becomes durable, where capacity is consumed, how failures propagate and which signal can distinguish one layer from another. A production explanation should follow the actual path rather than treating each term as an isolated definition.
 
-## Complete curriculum checklist
 
-| # | Topic | What you must understand and demonstrate |
-|---:|---|---|
-| 1 | **Pulumi supports general-purpose programming languages, state backends, policy enforcement, CI/CD workflows and Automation API-driven turn589377search39** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery. |
-| 2 | **Projects** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 3 | **Stacks** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 4 | **Resources** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 5 | **Inputs** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 6 | **Outputs** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 7 | **Providers** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 8 | **Components** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 9 | **Configuration** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 10 | **Secrets** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 11 | **TypeScript** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 12 | **Python** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 13 | **Go** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 14 | **C#** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 15 | **Java** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 16 | **YAML** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 17 | **Language-selection trade-offs** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 18 | **Pulumi Cloud backend** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 19 | **DIY backends** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 20 | **State encryption** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 21 | **State locking** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 22 | **State recovery** | is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion. |
-| 23 | **Import** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 24 | **Refresh** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 25 | **Drift** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 26 | **Reusable components** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 27 | **Platform abstractions** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 28 | **Inputs and outputs** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 29 | **Resource parenting** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 30 | **Provider inheritance** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 31 | **Versioning** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 32 | **Programmatic deployments** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 33 | **Embedded IaC** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 34 | **Self-service platforms** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 35 | **Stack creation** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 36 | **Preview** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 37 | **Update** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 38 | **Destroy** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 39 | **Event streaming** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 40 | **Error handling** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 41 | **Policy as code** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery. |
-| 42 | **Advisory policies** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 43 | **Mandatory policies** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 44 | **CrossGuard** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 45 | **Organizational policies** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 46 | **Compliance controls** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 47 | **Preview on pull request** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 48 | **Apply after approval** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 49 | **OIDC** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 50 | **Secret handling** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 51 | **Drift detection** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 52 | **Stack promotion** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 53 | **Rollback** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 54 | **Declarative HCL versus general-purpose languages** | is a design comparison: define both sides, contrast mechanism and guarantees, then select using workload, failure, security, ownership and cost evidence rather than preference. |
-| 55 | **State models** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 56 | **Testing** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 57 | **Reuse** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 58 | **Provider maturity** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 59 | **Team skills** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 60 | **Platform API integration** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 61 | **Migration strategies** | is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion. |
+### Core concepts explained in detail
 
-## Beginner → mid-level → senior learning path
+#### Pulumi languages, state backends, policy enforcement, CI/CD workflows and Automation API-driven deployments
 
-1. **Beginner:** define every term; identify the relevant file, object, protocol, API, or command; explain one normal use.
-2. **Mid-level:** configure it from source control, inspect effective runtime state, diagnose two failure modes, automate a safe change, and explain one trade-off.
-3. **Senior:** clarify ambiguous requirements, map trust and failure domains, quantify capacity/SLO/RPO/RTO/cost, compare alternatives, plan migration/rollback, and assign ownership.
+**What it is.** Defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery.
 
-## Command and configuration lab
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
 
-Run read-only checks first in a sandbox. For each command, predict healthy output, one failing result, the next discriminating check, and the safe rollback for any later mutation.
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Projects
+
+**What it is.** The term Projects refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Stacks
+
+**What it is.** The term Stacks refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Resources
+
+**What it is.** The term Resources refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Inputs
+
+**What it is.** The term Inputs refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Outputs
+
+**What it is.** The term Outputs refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Providers
+
+**What it is.** The term Providers refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Components
+
+**What it is.** The term Components refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Configuration
+
+**What it is.** The term Configuration refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Secrets
+
+**What it is.** The term Secrets is a trust-control mechanism that identifies an actor or protected asset and enforces which action is allowed under explicit context, with audit, rotation, revocation and recovery behavior within Pulumi.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### TypeScript
+
+**What it is.** The term TypeScript refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Python
+
+**What it is.** The term Python refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Go
+
+**What it is.** The term Go refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### C#
+
+**What it is.** The term C# refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Java
+
+**What it is.** The term Java refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### YAML
+
+**What it is.** The term YAML refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Language-selection trade-offs
+
+**What it is.** The term Language-selection trade-offs refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Pulumi Cloud backend
+
+**What it is.** The term Pulumi Cloud backend refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### DIY backends
+
+**What it is.** The term DIY backends refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### State encryption
+
+**What it is.** The term State encryption refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### State locking
+
+**What it is.** The term State locking refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### State recovery
+
+**What it is.** Is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion.
+
+**Junior mental model.** Failure controls are traffic rules for unhealthy conditions: they bound how long work waits, how often it retries, how much enters the system and what reduced service remains possible.
+
+**How it works.** A caller assigns a deadline and attempt budget, classifies an error, applies bounded backoff with jitter only when retry is safe, and propagates capacity limits upstream. Circuit breakers, bulkheads and load shedding prevent one dependency from consuming every worker; recovery probes and gradual traffic return avoid a second overload.
+
+**What it looks like in production.** Healthy evidence shows bounded queues, stable retry ratios and recovery within an objective. Unbounded retries, identical timeouts at every layer, non-idempotent replays, shared resource pools and failover to an unqualified target commonly turn a small fault into an outage.
+
+#### Import
+
+**What it is.** The term Import refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### Refresh
+
+**What it is.** The term Refresh refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Drift
+
+**What it is.** The term Drift refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Failure controls are traffic rules for unhealthy conditions: they bound how long work waits, how often it retries, how much enters the system and what reduced service remains possible.
+
+**How it works.** A caller assigns a deadline and attempt budget, classifies an error, applies bounded backoff with jitter only when retry is safe, and propagates capacity limits upstream. Circuit breakers, bulkheads and load shedding prevent one dependency from consuming every worker; recovery probes and gradual traffic return avoid a second overload.
+
+**What it looks like in production.** Healthy evidence shows bounded queues, stable retry ratios and recovery within an objective. Unbounded retries, identical timeouts at every layer, non-idempotent replays, shared resource pools and failover to an unqualified target commonly turn a small fault into an outage.
+
+#### Reusable components
+
+**What it is.** The term Reusable components refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Platform abstractions
+
+**What it is.** The term Platform abstractions refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Inputs and outputs
+
+**What it is.** The term Inputs and outputs refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Resource parenting
+
+**What it is.** The term Resource parenting refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Provider inheritance
+
+**What it is.** The term Provider inheritance refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Versioning
+
+**What it is.** The term Versioning is a delivery mechanism that binds reviewed source to an immutable revision and moves that revision through validation and bounded rollout toward verified runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Programmatic deployments
+
+**What it is.** The term Programmatic deployments is a delivery mechanism that binds reviewed source to an immutable revision and moves that revision through validation and bounded rollout toward verified runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Embedded IaC
+
+**What it is.** The term Embedded IaC refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Self-service platforms
+
+**What it is.** The term Self-service platforms refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Stack creation
+
+**What it is.** The term Stack creation refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Preview
+
+**What it is.** The term Preview refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Update
+
+**What it is.** The term Update refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Destroy
+
+**What it is.** The term Destroy refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Event streaming
+
+**What it is.** The term Event streaming is an asynchronous hand-off mechanism that decouples producers from consumers and therefore must define ordering, retention, delivery, acknowledgement, retry and backlog behavior within Pulumi.
+
+**Junior mental model.** Telemetry is the instrument panel, not the system itself. Metrics summarize trends, logs preserve discrete context, traces connect work across boundaries, profiles attribute resource use, and audit events record security-relevant actions.
+
+**How it works.** Instrumentation observes a defined event or state, attaches bounded context, transports the signal, stores it under retention rules and makes it queryable. A useful signal has documented semantics and can distinguish at least two competing explanations; correlation identifiers belong in logs or traces rather than unbounded metric labels.
+
+**What it looks like in production.** Healthy evidence includes coverage of the user journey, known collection delay and actionable SLO or saturation views. Missing telemetry, sampling bias, cardinality explosions, sensitive payload capture and alert thresholds disconnected from user impact are failures of the observability system itself.
+
+#### Error handling
+
+**What it is.** The term Error handling refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Policy as code
+
+**What it is.** Defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Advisory policies
+
+**What it is.** The term Advisory policies refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Mandatory policies
+
+**What it is.** The term Mandatory policies refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### CrossGuard
+
+**What it is.** The term CrossGuard refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Organizational policies
+
+**What it is.** The term Organizational policies refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Governance is how a team makes repeated decisions visible and enforceable; economics shows which resources those decisions consume. Neither is a one-time approval or a monthly bill review.
+
+**How it works.** An asset or service receives an owner, lifecycle state, data/risk class, policy, budget and evidence requirements. Usage is attributed to stable organizational dimensions, compared with outcome and SLO, and reviewed through changes, exceptions and retirement; automated guardrails enforce the decisions at the relevant control point.
+
+**What it looks like in production.** Healthy evidence connects an accountable owner and approved intent to runtime inventory, audit and unit cost. Orphaned resources, permanent exceptions, unallocated shared cost, vanity utilization and savings that damage reliability or quality are common failure modes.
+
+#### Compliance controls
+
+**What it is.** The term Compliance controls turns organizational requirements into named owners, enforceable controls, evidence, exceptions with expiry and lifecycle decisions that can be audited and repeated within Pulumi.
+
+**Junior mental model.** Governance is how a team makes repeated decisions visible and enforceable; economics shows which resources those decisions consume. Neither is a one-time approval or a monthly bill review.
+
+**How it works.** An asset or service receives an owner, lifecycle state, data/risk class, policy, budget and evidence requirements. Usage is attributed to stable organizational dimensions, compared with outcome and SLO, and reviewed through changes, exceptions and retirement; automated guardrails enforce the decisions at the relevant control point.
+
+**What it looks like in production.** Healthy evidence connects an accountable owner and approved intent to runtime inventory, audit and unit cost. Orphaned resources, permanent exceptions, unallocated shared cost, vanity utilization and savings that damage reliability or quality are common failure modes.
+
+#### Preview on pull request
+
+**What it is.** The term Preview on pull request refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Apply after approval
+
+**What it is.** The term Apply after approval turns organizational requirements into named owners, enforceable controls, evidence, exceptions with expiry and lifecycle decisions that can be audited and repeated within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### OIDC
+
+**What it is.** The term OIDC refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Secret handling
+
+**What it is.** The term Secret handling is a trust-control mechanism that identifies an actor or protected asset and enforces which action is allowed under explicit context, with audit, rotation, revocation and recovery behavior within Pulumi.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Drift detection
+
+**What it is.** The term Drift detection refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Failure controls are traffic rules for unhealthy conditions: they bound how long work waits, how often it retries, how much enters the system and what reduced service remains possible.
+
+**How it works.** A caller assigns a deadline and attempt budget, classifies an error, applies bounded backoff with jitter only when retry is safe, and propagates capacity limits upstream. Circuit breakers, bulkheads and load shedding prevent one dependency from consuming every worker; recovery probes and gradual traffic return avoid a second overload.
+
+**What it looks like in production.** Healthy evidence shows bounded queues, stable retry ratios and recovery within an objective. Unbounded retries, identical timeouts at every layer, non-idempotent replays, shared resource pools and failover to an unqualified target commonly turn a small fault into an outage.
+
+#### Stack promotion
+
+**What it is.** The term Stack promotion is a delivery mechanism that binds reviewed source to an immutable revision and moves that revision through validation and bounded rollout toward verified runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Rollback
+
+**What it is.** The term Rollback refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Declarative HCL versus general-purpose languages
+
+**What it is.** Is a design comparison: define both sides, contrast mechanism and guarantees, then select using workload, failure, security, ownership and cost evidence rather than preference.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### State models
+
+**What it is.** The term State models is an AI data or behavior artifact whose exact revision, inputs, transformations, compatibility and evaluation evidence affect the result produced at runtime within Pulumi.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Testing
+
+**What it is.** The term Testing is a repeatable comparison between defined input, expected or baseline behavior and an acceptance threshold, with recorded environment and artifact revisions so the result can support a release decision within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Reuse
+
+**What it is.** The term Reuse refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Provider maturity
+
+**What it is.** The term Provider maturity refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Team skills
+
+**What it is.** The term Team skills refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Platform API integration
+
+**What it is.** The term Platform API integration refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Pulumi.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Migration strategies
+
+**What it is.** Is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+### Worked command and configuration example
+
+The following is a diagnostic example, not an unexplained command dump. Define every uppercase placeholder first—for example `NAME`, `RESOURCE`, `PROJECT`, `REGION`, `NAMESPACE`, `URL`, `IMAGE` or `CONTAINER`—and use a sandbox or read-only production role.
 
 ```bash
 terraform fmt -check -recursive
@@ -121,546 +664,143 @@ pulumi preview --diff
 git diff --check
 ```
 
-## Hands-on practice: setup → failure → verification → cleanup
+What the example demonstrates:
+
+- `terraform fmt -check -recursive` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `terraform validate; terraform plan` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `pulumi preview --diff` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `git diff --check` inspects the repository's object graph, refs or diff so a delivery decision is tied to exact content rather than an assumed branch name.
+
+A healthy run returns the intended identity/context, exits successfully and shows the expected object or response without a new warning, retry loop or saturation signal. A failure is useful evidence: preserve the exact exit code, status/reason, timestamp and target, then inspect the immediately adjacent layer before changing anything. This makes the example part of the explanation of **Pulumi**, not merely a list to copy.
+
+### Security, reliability and production ownership
+
+Security controls who can initiate a transition and what data or resource that transition may affect. Authentication, authorization, network reachability, encryption and audit solve different problems and must align at each boundary. Short-lived attributable identities, least privilege, explicit tenant separation and tested key/certificate rotation reduce blast radius. Logs and traces need their own data controls because copying a secret or customer payload into telemetry defeats the primary protection.
+
+Reliability depends on every synchronous dependency and on the eventual convergence of asynchronous work. Timeouts bound waiting; idempotency makes an ambiguous retry safe; backpressure and load shedding keep demand within useful capacity; replication and failover help only across independent failure domains. Recovery must be tested from protected state and verified through the original user outcome, not inferred from a green administrative status.
+
+Ownership makes these mechanisms operable. Every production resource or service needs an accountable team, source-of-truth revision, environment and data classification, SLO, runbook, cost center and retirement policy. Reversible mitigation can stabilize an incident, but the durable repair belongs in Git, IaC, policy or the owning application so reconciliation does not reintroduce the fault.
+
+### Observability, performance and cost
+
+Metrics, logs, traces, profiles and audit events are complementary. A useful diagnostic path starts with time, identity, exact target and user symptom, then compares desired and observed state before moving through reconciliation, network/protocol, runtime, dependency and saturation layers. High-cardinality request or object IDs belong in sampled logs or traces rather than metric labels; alerts should represent actionable user-impact risk or leading exhaustion.
+
+Performance is governed by work distribution, queueing and bottlenecks. Rate, latency percentiles, errors, saturation, queue depth or age and service-specific limits reveal more than average utilization. Application replicas and underlying machines, storage or provider quota scale through separate loops with different cold delays. Cost includes idle headroom, requests or work units, storage/retention, network transfer, telemetry, support and recovery capacity; optimize cost per successful outcome rather than the cheapest isolated resource.
+
+### What you should be able to explain
+
+The table remains as a revision checklist. Read the explanations above first; afterward, use each row to check whether you can explain the concept without relying on memorized wording.
+
+| # | Topic | What you must understand and demonstrate |
+|---:|---|---|
+| 1 | **Pulumi languages, state backends, policy enforcement, CI/CD workflows and Automation API-driven deployments** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery |
+| 2 | **Projects** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 3 | **Stacks** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 4 | **Resources** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 5 | **Inputs** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 6 | **Outputs** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 7 | **Providers** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 8 | **Components** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 9 | **Configuration** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 10 | **Secrets** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 11 | **TypeScript** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 12 | **Python** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 13 | **Go** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 14 | **C#** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 15 | **Java** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 16 | **YAML** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 17 | **Language-selection trade-offs** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 18 | **Pulumi Cloud backend** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 19 | **DIY backends** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 20 | **State encryption** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 21 | **State locking** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 22 | **State recovery** | is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion |
+| 23 | **Import** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 24 | **Refresh** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 25 | **Drift** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 26 | **Reusable components** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 27 | **Platform abstractions** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 28 | **Inputs and outputs** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 29 | **Resource parenting** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 30 | **Provider inheritance** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 31 | **Versioning** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 32 | **Programmatic deployments** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 33 | **Embedded IaC** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 34 | **Self-service platforms** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 35 | **Stack creation** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 36 | **Preview** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 37 | **Update** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 38 | **Destroy** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 39 | **Event streaming** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 40 | **Error handling** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 41 | **Policy as code** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery |
+| 42 | **Advisory policies** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 43 | **Mandatory policies** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 44 | **CrossGuard** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 45 | **Organizational policies** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 46 | **Compliance controls** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 47 | **Preview on pull request** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 48 | **Apply after approval** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 49 | **OIDC** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 50 | **Secret handling** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 51 | **Drift detection** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 52 | **Stack promotion** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 53 | **Rollback** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 54 | **Declarative HCL versus general-purpose languages** | is a design comparison: define both sides, contrast mechanism and guarantees, then select using workload, failure, security, ownership and cost evidence rather than preference |
+| 55 | **State models** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 56 | **Testing** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 57 | **Reuse** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 58 | **Provider maturity** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 59 | **Team skills** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 60 | **Platform API integration** | is part of Pulumi; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 61 | **Migration strategies** | is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion |
+
+## Practice
+
+### Practice objective
+
+Build a small, safe proof of **Pulumi** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
+
+### Prerequisites and setup
 
 Use a disposable state/backend and sandbox account. Format, validate and test first; preview/plan and save the reviewed output; apply one harmless tagged resource only after checking identity and estimated cost; introduce a configuration-only diff; inspect the plan; revert it in source; and verify no drift. Destroy only the exact sandbox stack after inspecting the destroy preview and retaining no required state.
 
-Expected result: you can show the healthy evidence, reproduce a safe failure, explain why each command distinguishes one layer from another, restore the baseline, and prove cleanup. Hard extension: automate the lab from source control, add a test or alert for the injected failure, and write a five-step runbook another engineer can execute.
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
 
-For code/configuration, be ready to review an intentionally unsafe diff and improve idempotency, secret handling, timeouts, validation, logging, tests, and rollback.
+### Activity 1: establish a healthy baseline
 
-## Senior design checklist
-
-State assumptions for tenants, traffic/work units, latency and availability targets, data classification/residency, recovery, team skills and budget. Draw control/data planes and synchronous/asynchronous dependencies. Cover identity, policy, encryption/key lifecycle, delivery provenance, observability, capacity, unit cost, operational ownership, migration and exit criteria. Name the evidence that would cause you to revise the design.
-
-## Revision and practice
-
-Complete the separate [checkbox interview bank](questions-and-answers.md). Do not memorize wording: speak in the order **definition → mechanism → evidence/configuration → failure/trade-off → production example**. For procedures use **stabilize → scope → inspect → hypothesize → test → mitigate → verify → prevent**.
-
-<!-- merged-practical-pulumi-note:start -->
-## Practical Pulumi deep dive
-
-## 1. Mental model
-
-Pulumi evaluates a program in a supported language, registers desired resources with the deployment engine, calls providers and stores checkpoint state. A project groups code; a stack is an isolated configured instance. `Input<T>` can be immediate or eventual; `Output<T>` represents engine-tracked asynchronous values with dependency and secret metadata. Do not unwrap Outputs by blocking or stringify them accidentally.
-
-```mermaid
-flowchart LR
-  CODE[TypeScript/Python/Go/C#/Java/YAML] --> LANG[language host]
-  LANG --> ENG[Pulumi engine]
-  CFG[stack config + secrets] --> ENG
-  STATE[(checkpoint backend)] --> ENG
-  ENG <--> PROV[providers]
-  PROV <--> CLOUD[cloud/Kubernetes APIs]
-  ENG --> PREVIEW[preview]
-  ENG --> UPDATE[update + checkpoint]
-```
-
-## 2. Repository, project, stack and program structure
-
-One Pulumi **project** is described by `Pulumi.yaml` and contains one program. A **stack** is an independently configured and state-tracked instance of that project, such as `dev`, `staging`, or `production`. The program registers resources; providers translate those registrations into cloud/Kubernetes API calls; the backend holds deployment checkpoints and locks.
-
-```text
-infrastructure/
-├── Pulumi.yaml                 # project metadata/runtime/config schema
-├── Pulumi.dev.yaml             # stack config; encrypted secret ciphertext may be committed
-├── Pulumi.production.yaml
-├── package.json                # language dependencies (TypeScript example)
-├── package-lock.json
-├── tsconfig.json
-├── index.ts                    # program entry point
-├── components/
-│   ├── model-serving.ts        # ComponentResource golden path
-│   └── network.ts
-├── policy/
-│   ├── PulumiPolicy.yaml
-│   └── index.ts
-├── tests/
-│   ├── unit.test.ts
-│   └── integration.test.ts
-└── scripts/
-    ├── verify.sh
-    └── smoke-test.sh
-```
-
-### `Pulumi.yaml` project file
-
-The filename begins with capital `P`. The language runtime tells Pulumi which language host executes the program. The `config` block can define a typed project configuration schema and defaults; provider-specific values such as `aws:region` are normally set in stack configuration.
-
-```yaml
-name: ai-platform
-runtime:
-  name: nodejs
-  options:
-    typescript: true
-description: GPU inference platform infrastructure
-main: .
-stackConfigDir: stacks
-
-config:
-  ai-platform:owner:
-    type: string
-  ai-platform:replicas:
-    type: integer
-    default: 2
-  ai-platform:allowedCidrs:
-    type: array
-    items:
-      type: string
-  ai-platform:apiToken:
-    type: string
-    secret: true
-```
-
-Common project-file concerns:
-
-- `name` is the project identity and participates in stack/resource URNs; rename it as a migration, not cosmetic text.
-- `runtime` may be Node.js/TypeScript, Python, Go, .NET, Java or YAML, with runtime-specific options.
-- `main` relocates the program entry directory.
-- `stackConfigDir` moves `Pulumi.<stack>.yaml` files to a defined directory.
-- `config` documents and validates project-level inputs. A schema marked `secret` prevents accidental plaintext CLI configuration, but application code can still disclose a secret after reading it.
-- In a Pulumi YAML program, the project file can also contain top-level `variables`, `resources` and `outputs` infrastructure definitions.
-
-### `Pulumi.<stack>.yaml` stack configuration
-
-```yaml
-config:
-  aws:region: eu-central-1
-  ai-platform:owner: platform-team
-  ai-platform:replicas: 3
-  ai-platform:allowedCidrs:
-    - 10.20.0.0/16
-  ai-platform:apiToken:
-    secure: ENCRYPTED_CIPHERTEXT_FROM_PULUMI
-  ai-platform:release:
-    modelDigest: sha256:REPLACE_WITH_VERIFIED_DIGEST
-    runtimeImage: registry.example/inference@sha256:REPLACE_WITH_VERIFIED_DIGEST
-```
-
-The stack file is configuration, not the state checkpoint. `secure:` values are ciphertext tied to the configured secrets provider and can usually be committed, but access to decrypt, stack history and backups remains sensitive. Do not manually invent ciphertext. Set values with the CLI and inspect effective config:
+Run the read-oriented example first:
 
 ```bash
-pulumi stack select organization/ai-platform/dev
-pulumi config set owner platform-team
-pulumi config set replicas 3
-pulumi config set --path 'allowedCidrs[0]' 10.20.0.0/16
-pulumi config set --secret apiToken 'VALUE_FROM_SECURE_INPUT'
-pulumi config
-pulumi config get owner
-```
-
-### Program entry and language files
-
-For TypeScript, `index.ts` is the ordinary entry; `package.json`, lock file and `tsconfig.json` make the language environment reproducible. For Python, expect `__main__.py` (or configured entry), `requirements.txt`/`pyproject.toml` and lock data. Go compiles a normal module/program. General-purpose language code must still be deterministic during Pulumi evaluation: do not make unmanaged side effects, read changing remote data without a data source, or create resources outside the engine.
-
-```typescript
-import * as pulumi from "@pulumi/pulumi";
-import * as aws from "@pulumi/aws";
-import { ModelServing } from "./components/model-serving";
-
-const config = new pulumi.Config();
-const owner = config.require("owner");
-const replicas = config.getNumber("replicas") ?? 2;
-const apiToken = config.requireSecret("apiToken");
-
-const provider = new aws.Provider("regional", {
-  region: "eu-central-1",
-  defaultTags: { tags: { Owner: owner, Stack: pulumi.getStack() } },
-});
-
-const serving = new ModelServing("gateway", {
-  replicas,
-  apiToken,
-}, { provider, protect: pulumi.getStack() === "production" });
-
-export const endpoint = serving.endpoint;
-```
-
-### Resource anatomy and options
-
-Every custom resource generally has a logical name, provider-specific arguments and `ResourceOptions`:
-
-```typescript
-const bucket = new aws.s3.BucketV2("model-artifacts", {
-  forceDestroy: false,
-  tags: { DataClass: "model-artifact" },
-}, {
-  provider,
-  parent: serving,
-  protect: true,
-  aliases: [{ name: "models" }],
-  dependsOn: [auditLogBucket],
-  ignoreChanges: ["tags[ExternalController]"] ,
-});
-```
-
-- Logical name plus project/stack/type/parent contributes to the URN and state identity.
-- Arguments are desired provider inputs and may contain `Input<T>`/`Output<T>` values.
-- `parent` creates component hierarchy and provider inheritance.
-- `provider`/`providers` select explicit provider instances; never rely on an unintended default account/region.
-- `protect` blocks Pulumi-driven deletion, but does not prevent console/provider deletion and is not a backup.
-- `aliases` preserve identity across supported rename/reparent/refactor operations.
-- `dependsOn` expresses hidden behavioral ordering only; output-to-input references create normal graph dependencies.
-- `ignoreChanges`, `replaceOnChanges`, `retainOnDelete`, deletion timeouts and transformations/hook options can be useful but may hide drift or change destruction semantics. Review preview carefully.
-
-### Project, stack, backend and secrets identities
-
-Keep these separate:
-
-| Identity | Example | Responsibility |
-|---|---|---|
-| Project | `ai-platform` | Program/metadata/config schema. |
-| Stack | `organization/ai-platform/production` | Isolated config plus checkpoint history and lock. |
-| Backend | Pulumi Cloud or `s3://...`, `azblob://...`, `gs://...`, local | Stores stack state/checkpoints; requires backup, access and audit. |
-| Secrets provider | Pulumi service, passphrase, cloud KMS or supported provider | Encrypts configuration/checkpoint secrets; rotation/recovery must be tested. |
-| Cloud provider | Explicit `aws.Provider`, `kubernetes.Provider`, etc. | Account/project, region/cluster, credentials and defaults used for resource calls. |
-
-The same stack name on two backends is different state. `pulumi login` changes backend; `pulumi stack select` changes stack; cloud credentials change the target APIs. Print and verify all three before preview/update.
-
-### Pulumi YAML program structure
-
-Pulumi YAML expresses variables/resources/outputs directly in YAML:
-
-```yaml
-name: model-storage
-runtime: yaml
-config:
-  owner:
-    type: string
-resources:
-  models:
-    type: aws:s3:BucketV2
-    properties:
-      tags:
-        Owner: ${owner}
-  publicAccessBlock:
-    type: aws:s3:BucketPublicAccessBlock
-    properties:
-      bucket: ${models.id}
-      blockPublicAcls: true
-      blockPublicPolicy: true
-      ignorePublicAcls: true
-      restrictPublicBuckets: true
-outputs:
-  bucketName: ${models.bucket}
-```
-
-YAML removes general-language tooling but has its own interpolation, function and resource-reference rules. Choose the runtime based on team skill, abstraction/testing needs and control-plane integration—not the belief that one format eliminates state or provider failure.
-
-### Lifecycle commands from safe inspection to cleanup
-
-```bash
-pulumi version
-pulumi whoami -v
-pulumi about
-pulumi stack --show-name
-pulumi config --show-secrets=false
-pulumi preview --diff --refresh=false
-pulumi up --diff
-pulumi stack output --json
-pulumi history
-pulumi refresh --preview-only --diff
-pulumi destroy --preview-only
-```
-
-Preview is a proposal based on program, configuration, state, provider reads/defaults and credentials. Provider behavior is not globally transactional, so cancellation/failure can leave partial cloud effects; the engine checkpoint and refresh/reconciliation path matter.
-
-## 3. TypeScript production example
-
-```typescript
-import * as pulumi from "@pulumi/pulumi";
-import * as aws from "@pulumi/aws";
-
-const cfg = new pulumi.Config();
-const environment = pulumi.getStack();
-const owner = cfg.require("owner");
-
-const provider = new aws.Provider("eu-central", {
-  region: "eu-central-1",
-  defaultTags: {
-    tags: { ManagedBy: "pulumi", Environment: environment, Owner: owner },
-  },
-});
-
-const models = new aws.s3.BucketV2("models", {
-  forceDestroy: false,
-}, {
-  provider,
-  protect: environment === "prod",
-});
-
-new aws.s3.BucketVersioningV2("models-versioning", {
-  bucket: models.id,
-  versioningConfiguration: { status: "Enabled" },
-}, { provider, parent: models });
-
-new aws.s3.BucketPublicAccessBlock("models-public-block", {
-  bucket: models.id,
-  blockPublicAcls: true,
-  blockPublicPolicy: true,
-  ignorePublicAcls: true,
-  restrictPublicBuckets: true,
-}, { provider, parent: models });
-
-export const modelBucket = models.bucket;
-```
-
-```bash
-pulumi login
-pulumi stack init prod
-pulumi config set owner ai-platform
-pulumi config set --secret apiToken VALUE
+terraform fmt -check -recursive
+terraform validate; terraform plan
 pulumi preview --diff
-pulumi up --yes
-pulumi stack output --json
-pulumi refresh --preview-only
-pulumi history
+git diff --check
 ```
 
-Use stack/project naming and backends as ownership boundaries. A `protect` option blocks Pulumi deletion but is not backup. Provider credentials should be short-lived; Pulumi secret ciphertext depends on the stack secrets provider and can still leak if code exports/logs plaintext.
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
 
-## 3. Inputs, Outputs and dependency correctness
+### Activity 2: create or review the smallest working example
 
-```typescript
-const url: pulumi.Output<string> = pulumi.interpolate`https://${loadBalancer.dnsName}`;
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
 
-const policy = bucket.arn.apply(arn => JSON.stringify({
-  Version: "2012-10-17",
-  Statement: [{ Effect: "Allow", Action: ["s3:GetObject"], Resource: `${arn}/*` }],
-}));
-```
+### Activity 3: controlled failure and troubleshooting
 
-`apply` runs when a value is known and may behave differently during preview. Keep side effects out of it. Output-to-input references automatically track dependency; `dependsOn` is for hidden behavioral dependencies. `pulumi.secret` marks propagation, but third-party code/logging can still disclose values.
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
 
-Python equivalent:
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
 
-```python
-import pulumi
-import pulumi_aws as aws
+### Verification
 
-cfg = pulumi.Config()
-token = cfg.require_secret("apiToken")
-bucket = aws.s3.BucketV2("models", force_destroy=False,
-    opts=pulumi.ResourceOptions(protect=pulumi.get_stack() == "prod"))
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
 
-endpoint = bucket.bucket.apply(lambda name: f"s3://{name}/models/")
-pulumi.export("modelUri", endpoint)
-```
+### Cleanup and rollback
 
-## 4. Component resources: platform abstractions
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
 
-```typescript
-interface ModelBucketArgs {
-  kmsKeyArn: pulumi.Input<string>;
-  retentionDays?: pulumi.Input<number>;
-}
+### Harder extension
 
-class ModelBucket extends pulumi.ComponentResource {
-  readonly bucket: aws.s3.BucketV2;
-
-  constructor(name: string, args: ModelBucketArgs, opts?: pulumi.ComponentResourceOptions) {
-    super("company:ai:ModelBucket", name, {}, opts);
-
-    this.bucket = new aws.s3.BucketV2(name, {}, { parent: this });
-    new aws.s3.BucketServerSideEncryptionConfigurationV2(`${name}-sse`, {
-      bucket: this.bucket.id,
-      rules: [{ applyServerSideEncryptionByDefault: {
-        sseAlgorithm: "aws:kms",
-        kmsMasterKeyId: args.kmsKeyArn,
-      }}],
-    }, { parent: this, deletedWith: this.bucket });
-
-    this.registerOutputs({ bucket: this.bucket.bucket });
-  }
-}
-```
-
-Components encode a cohesive golden path, parent/ownership tree, provider inheritance and output contract. Version them semantically, provide migration notes and avoid creating cloud resources in constructors outside engine registration. Use transformations/hooks/policies carefully; hidden global magic makes review hard.
-
-## 5. State, import, aliases and recovery
-
-Pulumi Cloud or DIY backends store checkpoint history/locks and encrypt secrets according to configuration. Back up, restrict/audit and test recovery. `pulumi refresh` accepts remote reality into state; preview first because it can record deletions/changes. Export/import state is a recovery tool, not a normal editor.
-
-```bash
-pulumi stack export --file stack-backup.json
-pulumi refresh --preview-only --diff
-pulumi import aws:s3/bucketV2:BucketV2 models EXISTING_BUCKET
-pulumi state rename 'urn:pulumi:prod::project::old:type::old' NEW_NAME
-pulumi cancel
-pulumi stack import --file reviewed-recovery.json
-```
-
-Aliases preserve identity across resource/type/parent/name refactors:
-
-```typescript
-const bucket = new aws.s3.BucketV2("models", {}, {
-  aliases: [{ name: "model-artifacts" }],
-});
-```
-
-Before state changes: freeze updates, export checkpoint and backend version, confirm stack/cloud identity, use aliases/import/state commands, preview for no unintended replace/delete, peer review and validate. `pulumi cancel` releases a stuck update record; it does not undo cloud calls already made.
-
-## 6. Automation API
-
-Automation API embeds Pulumi programs/stacks in a service or CLI, enabling self-service platform APIs. The embedding system becomes a privileged multi-tenant control plane: authenticate/authorize every request, constrain inputs/policy/providers, isolate work directories/state/credentials, serialize per stack, stream redacted events, handle cancellation/timeouts and return durable operation IDs.
-
-```typescript
-import { LocalWorkspace } from "@pulumi/pulumi/automation";
-
-const stack = await LocalWorkspace.createOrSelectStack({
-  stackName: request.environment,
-  projectName: "ai-platform",
-  program: async () => {
-    const bucket = new aws.s3.BucketV2(`models-${request.tenant}`);
-    return { bucket: bucket.bucket };
-  },
-}, {
-  workDir: `/isolated/${operationId}`,
-  envVars: shortLivedCredentialEnv,
-});
-
-await stack.setConfig("aws:region", { value: request.region });
-const preview = await stack.preview({ onOutput: redactAndPersist });
-authorizePreview(request.actor, preview.changeSummary);
-const result = await stack.up({ onOutput: redactAndPersist });
-```
-
-Do not accept arbitrary user programs or environment variables. Define idempotency, operation reconciliation after worker crash, lease/lock ownership, approval expiry, rollback/compensation and audit linkage from API request to Pulumi update and cloud events.
-
-## 7. Policy as code
-
-Pulumi policies can be advisory or mandatory and validate resource properties or stack relationships. Test policy packs and provide remediation/exception process.
-
-```typescript
-import { PolicyPack, validateResourceOfType } from "@pulumi/policy";
-import * as aws from "@pulumi/aws";
-
-new PolicyPack("ai-platform-guardrails", {
-  policies: [{
-    name: "s3-public-access-block",
-    description: "Model buckets must block public access.",
-    enforcementLevel: "mandatory",
-    validateResource: validateResourceOfType(aws.s3.BucketPublicAccessBlock,
-      (args, _, report) => {
-        if (!args.blockPublicAcls || !args.blockPublicPolicy ||
-            !args.ignorePublicAcls || !args.restrictPublicBuckets) {
-          report("All S3 public access block controls must be true.");
-        }
-      }),
-  }],
-});
-```
-
-Policy does not see everything—runtime identity/data flow and provider defaults may require external checks. Pin policy pack version with deployment evidence.
-
-## 8. Testing
-
-Unit tests can use mocks to inspect registered inputs; integration tests deploy ephemeral stacks; policy tests exercise violations; post-deploy tests verify cloud behavior.
-
-```typescript
-pulumi.runtime.setMocks({
-  newResource: args => ({ id: `${args.name}_id`, state: args.inputs }),
-  call: args => args.inputs,
-});
-
-test("production bucket is protected", async () => {
-  const bucket = await import("../index");
-  expect(await promise(bucket.modelBucket)).toBeDefined();
-});
-```
-
-```bash
-npm test
-pulumi preview --diff --policy-pack ../policy
-pulumi up --stack test-${CI_RUN_ID} --yes
-pulumi destroy --stack test-${CI_RUN_ID} --yes
-pulumi stack rm test-${CI_RUN_ID} --yes
-```
-
-Track cleanup even on failure and use dedicated accounts/budgets/TTL.
-
-## 9. CI/CD
-
-```yaml
-name: pulumi
-on: [pull_request]
-permissions: {contents: read, id-token: write}
-jobs:
-  preview:
-    runs-on: ubuntu-latest
-    concurrency: {group: pulumi-prod, cancel-in-progress: false}
-    steps:
-      - uses: actions/checkout@PINNED_COMMIT
-      - uses: actions/setup-node@PINNED_COMMIT
-      - run: npm ci
-      - run: npm test
-      - uses: aws-actions/configure-aws-credentials@PINNED_COMMIT
-        with: {role-to-assume: arn:aws:iam::123456789012:role/pulumi-preview, aws-region: eu-central-1}
-      - run: pulumi preview --stack company/prod --diff --policy-pack ./policy
-        env: {PULUMI_ACCESS_TOKEN: "${{ secrets.PULUMI_ACCESS_TOKEN }}"}
-```
-
-Use OIDC/dynamic cloud credentials, protected environments, pinned actions/tool/dependencies, preview comments without secrets, per-stack concurrency and drift/refresh schedule. Apply must verify commit/preview freshness and use a narrower workflow trust policy.
-
-## 10. Terraform versus Pulumi
-
-Terraform provides a purpose-built declarative language, large ecosystem and plan/state workflows. Pulumi provides general-language abstraction/testing and Automation API integration, with risks of nondeterministic/side-effectful code and language dependency complexity. Both keep sensitive state and perform non-transactional provider API operations. Choose from team language skill, ecosystem/provider coverage, governance, abstraction needs, control-plane embedding, state/service strategy and exit plan.
-
-Migration is resource identity/state surgery: inventory ownership, select stable boundaries, prevent both tools managing one object, import into target, reach zero-change preview, migrate in waves, retain rollback/backups and remove old binding only after proof.
-
-## 11. Code review and labs
-
-Review side effects/non-determinism, Output/secret handling, resource names/aliases/parents/providers, protect/retain/replace/delete, permissions/config/backend, dependency pinning, tests/policy, preview and unit cost.
-
-Labs:
-
-1. Build the model-bucket Component in TypeScript and Python; compare Output handling.
-2. Rename/reparent with and without alias; inspect replacement preview.
-3. Import a resource, refresh and reach no-change.
-4. Build an Automation API endpoint with operation persistence/idempotency and deliberately crash the worker mid-update.
-5. Write mandatory policies for encryption/public access/tags and test allowed exception metadata.
-6. Migrate one Terraform-managed resource to Pulumi in a sandbox without recreation.
-
-## Common traps
-
-- A programming language does not make an imperative cloud script; resources still belong to the engine graph.
-- `Output.apply` is not a safe place for arbitrary side effects.
-- Secret Outputs can leak through logging/export/conversion.
-- `refresh` mutates state to observed reality; preview it.
-- Canceling an update does not rollback completed provider calls.
-- Component abstraction can hide security/cost/replacement; expose a clear contract.
-
-## Revision summary
-
-- Pulumi programs register a desired resource graph backed by checkpoint state.
-- Inputs/Outputs carry dependencies and secrecy; treat them deliberately.
-- Components are versioned platform contracts; Automation API is a privileged control plane.
-- Aliases/import/state recovery preserve resource identity.
-- Secure previews, policies, short-lived credentials and per-stack serialization remain essential.
-
-## Documentation and video learning
-
-Official documentation:
-
-- [Pulumi projects overview](https://www.pulumi.com/docs/iac/concepts/projects/)
-- [`Pulumi.yaml` project-file reference](https://www.pulumi.com/docs/iac/concepts/projects/project-file/)
-- [Stacks](https://www.pulumi.com/docs/iac/concepts/stacks/)
-- [Configuration and secrets](https://www.pulumi.com/docs/iac/concepts/config/)
-- [Inputs and Outputs](https://www.pulumi.com/docs/iac/concepts/inputs-outputs/)
-- [Resource options](https://www.pulumi.com/docs/iac/concepts/options/)
-- [Component resources](https://www.pulumi.com/docs/iac/concepts/resources/components/)
-- [State and backends](https://www.pulumi.com/docs/iac/concepts/state-and-backends/)
-- [Automation API](https://www.pulumi.com/docs/iac/using-pulumi/automation-api/)
-- [Policy as Code](https://www.pulumi.com/docs/insights/policy/)
-- [Pulumi YAML reference](https://www.pulumi.com/docs/iac/languages-sdks/yaml/yaml-language-reference/)
-
-Video resources (prefer recent videos and check the CLI/runtime version used):
-
-- [Pulumi's official YouTube channel—getting-started videos](https://www.youtube.com/@PulumiTV/search?query=getting%20started)
-- [Pulumi's official YouTube channel—Automation API videos](https://www.youtube.com/@PulumiTV/search?query=Automation%20API)
-- [Pulumi's official YouTube channel—components and testing](https://www.youtube.com/@PulumiTV/search?query=component%20resources%20testing)
-
-<!-- merged-practical-pulumi-note:end -->
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
 
 <!-- reading-navigation:start -->
 ---

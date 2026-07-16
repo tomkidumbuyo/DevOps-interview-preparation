@@ -12,56 +12,250 @@
 
 > [Interview questions and answers](questions-and-answers.md) · [Master curriculum](../../curriculum/master-curriculum.txt) · Official starting point: <https://cloud.google.com/vertex-ai/docs/start/introduction-unified-platform>
 
-## Easy mode: mental model
+## Explanation
 
-Integrate every part of Vertex AI and GCP AI platform into one secure, reliable, observable, supportable and cost-aware production capability.
+### What it is and why it exists
 
-Learn this topic in layers: name the object or mechanism, trace its lifecycle/data path, configure it safely, observe a healthy and failed state, recover it, and then design it across failure domains and team boundaries.
+**Vertex AI and GCP AI platform** is easiest to understand as one part of a larger path. The subject is an API-managed resource under organization, folder and project boundaries. Identity and policy authorize a control-plane change, while regional or global managed infrastructure produces the data-path behavior.
+
+The chapter focuses on Vertex AI Model Garden, Managed foundation models, Gemini models, Custom training. These are connected mechanisms, not vocabulary to memorize. Integrate every part of Vertex AI and GCP AI platform into one secure, reliable, observable, supportable and cost-aware production capability The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+### History and evolution
+
+Google Cloud grew from Google's internal distributed-systems experience and early managed products such as App Engine. It developed into a project- and organization-scoped platform spanning global networks, data systems, Kubernetes, serverless and AI, with APIs and IAM acting as the common control surface.
+
+In this chapter, **Vertex AI and GCP AI platform** is the next layer of that evolution. Its modern purpose is to integrate every part of Vertex AI and GCP AI platform into one secure, reliable, observable, supportable and cost-aware production capability. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+### How it works: the end-to-end path
 
 ```mermaid
 flowchart LR
-  R[requirement or symptom] --> M[Vertex AI and GCP AI platform mechanism]
-  M --> S[state and dependencies]
-  S --> O[commands metrics logs traces audit]
-  O --> D[decision mitigation or design]
-  D --> V[user-facing verification]
+  A["authenticated API request"] --> B["IAM and managed control plane"]
+  B --> C["Vertex AI and GCP AI platform: service data plane"]
+  C --> D["consumer outcome"]
+  D -. "status and evidence" .-> B
 ```
 
-## Complete curriculum checklist
+The path begins with a concrete input: a user request, configuration revision, packet, job, model request or operational symptom. The relevant subsystem validates that input, reads current state, performs or schedules work and exposes a result. Some transitions complete before the caller receives a response; others acknowledge the request and converge later. That difference determines whether a timeout means "nothing happened," "the operation failed," or "the final result is still unknown."
 
-| # | Topic | What you must understand and demonstrate |
-|---:|---|---|
-| 1 | **Vertex AI Model Garden** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 2 | **Managed foundation models** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 3 | **Gemini models** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 4 | **Custom training** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 5 | **Training pipelines** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 6 | **Model Registry** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 7 | **Online prediction** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 8 | **Batch prediction** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 9 | **Private endpoints** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 10 | **Endpoint autoscaling** | must connect demand and work units to latency, errors, saturation, queueing, provisioning delay, headroom, failure domains and unit cost using measured distributions. |
-| 11 | **Feature Store** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 12 | **Vector Search** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 13 | **RAG Engine** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 14 | **Pipelines** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 15 | **Experiments** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 16 | **Model monitoring** | turns runtime state into evidence; define signal semantics, labels/context, retention/privacy/cost, healthy baseline, actionable threshold and a query that distinguishes competing hypotheses. |
-| 17 | **Evaluation** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 18 | **Responsible AI** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 19 | **Vertex AI Agent Builder** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 20 | **GPU and TPU consumption** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 21 | **GKE-based model serving** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
+For **Vertex AI and GCP AI platform**, the important stages are Vertex AI Model Garden, Managed foundation models, Gemini models, Custom training, Training pipelines, Model Registry, Online prediction, Batch prediction, Private endpoints, Endpoint autoscaling, Feature Store, Vector Search, RAG Engine, Pipelines, Experiments, Model monitoring, Evaluation, Responsible AI, Vertex AI Agent Builder, GPU and TPU consumption, GKE-based model serving. Their boundaries explain where identity is checked, where state becomes durable, where capacity is consumed, how failures propagate and which signal can distinguish one layer from another. A production explanation should follow the actual path rather than treating each term as an isolated definition.
 
-## Beginner → mid-level → senior learning path
 
-1. **Beginner:** define every term; identify the relevant file, object, protocol, API, or command; explain one normal use.
-2. **Mid-level:** configure it from source control, inspect effective runtime state, diagnose two failure modes, automate a safe change, and explain one trade-off.
-3. **Senior:** clarify ambiguous requirements, map trust and failure domains, quantify capacity/SLO/RPO/RTO/cost, compare alternatives, plan migration/rollback, and assign ownership.
+### Core concepts explained in detail
 
-## Command and configuration lab
+#### Vertex AI Model Garden
 
-Run read-only checks first in a sandbox. For each command, predict healthy output, one failing result, the next discriminating check, and the safe rollback for any later mutation.
+**What it is.** The term Vertex AI Model Garden is an AI data or behavior artifact whose exact revision, inputs, transformations, compatibility and evaluation evidence affect the result produced at runtime within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Managed foundation models
+
+**What it is.** The term Managed foundation models is an AI data or behavior artifact whose exact revision, inputs, transformations, compatibility and evaluation evidence affect the result produced at runtime within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Gemini models
+
+**What it is.** The term Gemini models is an AI data or behavior artifact whose exact revision, inputs, transformations, compatibility and evaluation evidence affect the result produced at runtime within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Custom training
+
+**What it is.** The term Custom training refers to a Google Cloud control- or data-plane mechanism bounded by resource hierarchy, location, identity, quota and service contract within Vertex AI and GCP AI platform.
+
+**Junior mental model.** Think of a scheduler as allocating seats and time slots: a request states what it needs, available workers advertise capacity, and policy chooses a placement. Requested capacity, usable capacity and completed useful work are different quantities.
+
+**How it works.** Work enters a runnable or pending state, eligibility filters remove incompatible placements, scoring or queue policy selects a worker, and a runtime creates the process and accounts for CPU, memory, devices and time. Autoscaling observes demand, requests more replicas or machines, and waits through provisioning and warm-up before capacity becomes useful.
+
+**What it looks like in production.** Healthy evidence connects queue delay, placement, utilization, throttling, memory/device pressure, runtime readiness and successful work. Fragmentation, inaccurate requests, quota, topology, cold starts and a saturated downstream service can leave capacity apparently free while latency and pending work grow.
+
+#### Training pipelines
+
+**What it is.** The term Training pipelines is an ordered or dependency-aware chain of stages that transforms versioned inputs into outputs and records status so failed work can be retried, resumed or rolled back safely within Vertex AI and GCP AI platform.
+
+**Junior mental model.** Think of a scheduler as allocating seats and time slots: a request states what it needs, available workers advertise capacity, and policy chooses a placement. Requested capacity, usable capacity and completed useful work are different quantities.
+
+**How it works.** Work enters a runnable or pending state, eligibility filters remove incompatible placements, scoring or queue policy selects a worker, and a runtime creates the process and accounts for CPU, memory, devices and time. Autoscaling observes demand, requests more replicas or machines, and waits through provisioning and warm-up before capacity becomes useful.
+
+**What it looks like in production.** Healthy evidence connects queue delay, placement, utilization, throttling, memory/device pressure, runtime readiness and successful work. Fragmentation, inaccurate requests, quota, topology, cold starts and a saturated downstream service can leave capacity apparently free while latency and pending work grow.
+
+#### Model Registry
+
+**What it is.** The term Model Registry is an authoritative or indexed catalog of assets and metadata used to discover identity, owner, revision, lifecycle state and relationships without scanning every runtime separately within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Online prediction
+
+**What it is.** The term Online prediction refers to a Google Cloud control- or data-plane mechanism bounded by resource hierarchy, location, identity, quota and service contract within Vertex AI and GCP AI platform.
+
+**Junior mental model.** The simplest mental model is a state machine: an input is checked, current state is read, a rule computes the next state, and an observable result tells callers whether the transition succeeded.
+
+**How it works.** The mechanism receives configuration or runtime input, validates preconditions, changes or derives state, and exposes status to the next component. Synchronous parts return a direct outcome; asynchronous parts need durable status, reconciliation and idempotency because the original caller may disappear.
+
+**What it looks like in production.** Healthy evidence shows the expected state transition and its owner, timestamp and reason. Invalid input, stale state, conflicting writers, hidden limits and dependencies that partially complete are the most useful failure categories to distinguish.
+
+#### Batch prediction
+
+**What it is.** The term Batch prediction refers to a Google Cloud control- or data-plane mechanism bounded by resource hierarchy, location, identity, quota and service contract within Vertex AI and GCP AI platform.
+
+**Junior mental model.** A queue is like a numbered waiting line: producers can hand off work without waiting for completion, but someone must define ordering, capacity, acknowledgement and what happens when a worker disappears.
+
+**How it works.** A producer serializes and publishes a message, the service stores or routes it, a consumer receives it under a delivery contract, and acknowledgement advances or removes the item. At-least-once systems can redeliver after an unknown outcome, so stable operation identifiers and idempotent state changes are part of correctness.
+
+**What it looks like in production.** Healthy evidence includes publish and consume rates, queue depth and age, processing latency, retry/dead-letter counts and end-to-end business completion. Poison messages, hot partitions, backlog growth, duplicate effects and retry storms are common; adding consumers helps only when the downstream dependency and partition model can absorb them.
+
+#### Private endpoints
+
+**What it is.** The term Private endpoints is a network-facing contract that defines request and response shape, authentication, errors, timeouts, compatibility and the point where callers meet the service data path within Vertex AI and GCP AI platform.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### Endpoint autoscaling
+
+**What it is.** Must connect demand and work units to latency, errors, saturation, queueing, provisioning delay, headroom, failure domains and unit cost using measured distributions.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### Feature Store
+
+**What it is.** The term Feature Store is an AI data or behavior artifact whose exact revision, inputs, transformations, compatibility and evaluation evidence affect the result produced at runtime within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Vector Search
+
+**What it is.** The term Vector Search refers to a Google Cloud control- or data-plane mechanism bounded by resource hierarchy, location, identity, quota and service contract within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### RAG Engine
+
+**What it is.** The term RAG Engine is an AI data or behavior artifact whose exact revision, inputs, transformations, compatibility and evaluation evidence affect the result produced at runtime within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Pipelines
+
+**What it is.** The term Pipelines is an ordered or dependency-aware chain of stages that transforms versioned inputs into outputs and records status so failed work can be retried, resumed or rolled back safely within Vertex AI and GCP AI platform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Experiments
+
+**What it is.** The term Experiments refers to a Google Cloud control- or data-plane mechanism bounded by resource hierarchy, location, identity, quota and service contract within Vertex AI and GCP AI platform.
+
+**Junior mental model.** The simplest mental model is a state machine: an input is checked, current state is read, a rule computes the next state, and an observable result tells callers whether the transition succeeded.
+
+**How it works.** The mechanism receives configuration or runtime input, validates preconditions, changes or derives state, and exposes status to the next component. Synchronous parts return a direct outcome; asynchronous parts need durable status, reconciliation and idempotency because the original caller may disappear.
+
+**What it looks like in production.** Healthy evidence shows the expected state transition and its owner, timestamp and reason. Invalid input, stale state, conflicting writers, hidden limits and dependencies that partially complete are the most useful failure categories to distinguish.
+
+#### Model monitoring
+
+**What it is.** Turns runtime state into evidence; define signal semantics, labels/context, retention/privacy/cost, healthy baseline, actionable threshold and a query that distinguishes competing hypotheses.
+
+**Junior mental model.** Telemetry is the instrument panel, not the system itself. Metrics summarize trends, logs preserve discrete context, traces connect work across boundaries, profiles attribute resource use, and audit events record security-relevant actions.
+
+**How it works.** Instrumentation observes a defined event or state, attaches bounded context, transports the signal, stores it under retention rules and makes it queryable. A useful signal has documented semantics and can distinguish at least two competing explanations; correlation identifiers belong in logs or traces rather than unbounded metric labels.
+
+**What it looks like in production.** Healthy evidence includes coverage of the user journey, known collection delay and actionable SLO or saturation views. Missing telemetry, sampling bias, cardinality explosions, sensitive payload capture and alert thresholds disconnected from user impact are failures of the observability system itself.
+
+#### Evaluation
+
+**What it is.** The term Evaluation is a repeatable comparison between defined input, expected or baseline behavior and an acceptance threshold, with recorded environment and artifact revisions so the result can support a release decision within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Responsible AI
+
+**What it is.** The term Responsible AI refers to a Google Cloud control- or data-plane mechanism bounded by resource hierarchy, location, identity, quota and service contract within Vertex AI and GCP AI platform.
+
+**Junior mental model.** The simplest mental model is a state machine: an input is checked, current state is read, a rule computes the next state, and an observable result tells callers whether the transition succeeded.
+
+**How it works.** The mechanism receives configuration or runtime input, validates preconditions, changes or derives state, and exposes status to the next component. Synchronous parts return a direct outcome; asynchronous parts need durable status, reconciliation and idempotency because the original caller may disappear.
+
+**What it looks like in production.** Healthy evidence shows the expected state transition and its owner, timestamp and reason. Invalid input, stale state, conflicting writers, hidden limits and dependencies that partially complete are the most useful failure categories to distinguish.
+
+#### Vertex AI Agent Builder
+
+**What it is.** The term Vertex AI Agent Builder is a delivery mechanism that binds reviewed source to an immutable revision and moves that revision through validation and bounded rollout toward verified runtime state within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### GPU and TPU consumption
+
+**What it is.** The term GPU and TPU consumption refers to a Google Cloud control- or data-plane mechanism bounded by resource hierarchy, location, identity, quota and service contract within Vertex AI and GCP AI platform.
+
+**Junior mental model.** Think of a scheduler as allocating seats and time slots: a request states what it needs, available workers advertise capacity, and policy chooses a placement. Requested capacity, usable capacity and completed useful work are different quantities.
+
+**How it works.** Work enters a runnable or pending state, eligibility filters remove incompatible placements, scoring or queue policy selects a worker, and a runtime creates the process and accounts for CPU, memory, devices and time. Autoscaling observes demand, requests more replicas or machines, and waits through provisioning and warm-up before capacity becomes useful.
+
+**What it looks like in production.** Healthy evidence connects queue delay, placement, utilization, throttling, memory/device pressure, runtime readiness and successful work. Fragmentation, inaccurate requests, quota, topology, cold starts and a saturated downstream service can leave capacity apparently free while latency and pending work grow.
+
+#### GKE-based model serving
+
+**What it is.** The term GKE-based model serving is an AI data or behavior artifact whose exact revision, inputs, transformations, compatibility and evaluation evidence affect the result produced at runtime within Vertex AI and GCP AI platform.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+### Worked command and configuration example
+
+The following is a diagnostic example, not an unexplained command dump. Define every uppercase placeholder first—for example `NAME`, `RESOURCE`, `PROJECT`, `REGION`, `NAMESPACE`, `URL`, `IMAGE` or `CONTAINER`—and use a sandbox or read-only production role.
 
 ```bash
 gcloud auth list
@@ -70,154 +264,103 @@ gcloud projects describe PROJECT
 gcloud logging read 'severity>=ERROR' --limit=20
 ```
 
-## Hands-on practice: setup → failure → verification → cleanup
+What the example demonstrates:
+
+- `gcloud auth list` establishes which identity and target context subsequent commands will inspect; a correct resource in the wrong account, project or cluster is still the wrong result.
+- `gcloud config list` establishes which identity and target context subsequent commands will inspect; a correct resource in the wrong account, project or cluster is still the wrong result.
+- `gcloud projects describe PROJECT` queries Google Cloud's control plane using the active account, project and location; compare the returned resource with source-controlled intent.
+- `gcloud logging read 'severity>=ERROR' --limit=20` queries Google Cloud's control plane using the active account, project and location; compare the returned resource with source-controlled intent.
+
+A healthy run returns the intended identity/context, exits successfully and shows the expected object or response without a new warning, retry loop or saturation signal. A failure is useful evidence: preserve the exact exit code, status/reason, timestamp and target, then inspect the immediately adjacent layer before changing anything. This makes the example part of the explanation of **Vertex AI and GCP AI platform**, not merely a list to copy.
+
+### Security, reliability and production ownership
+
+Security controls who can initiate a transition and what data or resource that transition may affect. Authentication, authorization, network reachability, encryption and audit solve different problems and must align at each boundary. Short-lived attributable identities, least privilege, explicit tenant separation and tested key/certificate rotation reduce blast radius. Logs and traces need their own data controls because copying a secret or customer payload into telemetry defeats the primary protection.
+
+Reliability depends on every synchronous dependency and on the eventual convergence of asynchronous work. Timeouts bound waiting; idempotency makes an ambiguous retry safe; backpressure and load shedding keep demand within useful capacity; replication and failover help only across independent failure domains. Recovery must be tested from protected state and verified through the original user outcome, not inferred from a green administrative status.
+
+Ownership makes these mechanisms operable. Every production resource or service needs an accountable team, source-of-truth revision, environment and data classification, SLO, runbook, cost center and retirement policy. Reversible mitigation can stabilize an incident, but the durable repair belongs in Git, IaC, policy or the owning application so reconciliation does not reintroduce the fault.
+
+### Observability, performance and cost
+
+Metrics, logs, traces, profiles and audit events are complementary. A useful diagnostic path starts with time, identity, exact target and user symptom, then compares desired and observed state before moving through reconciliation, network/protocol, runtime, dependency and saturation layers. High-cardinality request or object IDs belong in sampled logs or traces rather than metric labels; alerts should represent actionable user-impact risk or leading exhaustion.
+
+Performance is governed by work distribution, queueing and bottlenecks. Rate, latency percentiles, errors, saturation, queue depth or age and service-specific limits reveal more than average utilization. Application replicas and underlying machines, storage or provider quota scale through separate loops with different cold delays. Cost includes idle headroom, requests or work units, storage/retention, network transfer, telemetry, support and recovery capacity; optimize cost per successful outcome rather than the cheapest isolated resource.
+
+### What you should be able to explain
+
+The table remains as a revision checklist. Read the explanations above first; afterward, use each row to check whether you can explain the concept without relying on memorized wording.
+
+| # | Topic | What you must understand and demonstrate |
+|---:|---|---|
+| 1 | **Vertex AI Model Garden** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 2 | **Managed foundation models** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 3 | **Gemini models** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 4 | **Custom training** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 5 | **Training pipelines** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 6 | **Model Registry** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 7 | **Online prediction** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 8 | **Batch prediction** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 9 | **Private endpoints** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 10 | **Endpoint autoscaling** | must connect demand and work units to latency, errors, saturation, queueing, provisioning delay, headroom, failure domains and unit cost using measured distributions |
+| 11 | **Feature Store** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 12 | **Vector Search** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 13 | **RAG Engine** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 14 | **Pipelines** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 15 | **Experiments** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 16 | **Model monitoring** | turns runtime state into evidence; define signal semantics, labels/context, retention/privacy/cost, healthy baseline, actionable threshold and a query that distinguishes competing hypotheses |
+| 17 | **Evaluation** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 18 | **Responsible AI** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 19 | **Vertex AI Agent Builder** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 20 | **GPU and TPU consumption** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 21 | **GKE-based model serving** | is part of Vertex AI and GCP AI platform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+
+## Practice
+
+### Practice objective
+
+Build a small, safe proof of **Vertex AI and GCP AI platform** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
+
+### Prerequisites and setup
 
 Use a disposable local or cloud sandbox. Confirm identity/context and cost boundary, capture a healthy baseline with the commands above, introduce one bounded configuration or invalid-input failure, compare evidence, revert from source control, verify the original outcome, and delete only the named lab resources.
 
-Expected result: you can show the healthy evidence, reproduce a safe failure, explain why each command distinguishes one layer from another, restore the baseline, and prove cleanup. Hard extension: automate the lab from source control, add a test or alert for the injected failure, and write a five-step runbook another engineer can execute.
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
 
-For code/configuration, be ready to review an intentionally unsafe diff and improve idempotency, secret handling, timeouts, validation, logging, tests, and rollback.
+### Activity 1: establish a healthy baseline
 
-## Senior design checklist
-
-State assumptions for tenants, traffic/work units, latency and availability targets, data classification/residency, recovery, team skills and budget. Draw control/data planes and synchronous/asynchronous dependencies. Cover identity, policy, encryption/key lifecycle, delivery provenance, observability, capacity, unit cost, operational ownership, migration and exit criteria. Name the evidence that would cause you to revise the design.
-
-## Revision and practice
-
-Complete the separate [checkbox interview bank](questions-and-answers.md). Do not memorize wording: speak in the order **definition → mechanism → evidence/configuration → failure/trade-off → production example**. For procedures use **stabilize → scope → inspect → hypothesize → test → mitigate → verify → prevent**.
-
-<!-- merged-08-GCP-VERTEX-AI-PLATFORM-MD:start -->
-## Practical deep dive
-
-## Service selection
-
-Vertex AI supplies managed model/catalog, training, pipelines, registry, endpoints, evaluation/RAG/agent capabilities and governance integrations; GKE supplies Kubernetes-level runtime and accelerator control. Choose managed model APIs/endpoints for speed and reduced operations; GKE/self-hosting for runtime/model portability, custom schedulers/networking, specialized serving and cost/control—after pricing the operations team.
-
-```mermaid
-flowchart LR
-  DEV[developer / ML engineer] --> PORTAL[platform API / Git]
-  PORTAL --> VERTEX[Vertex AI control plane]
-  PORTAL --> GKE[GKE serving/training]
-  VERTEX --> REG[Model Registry / Artifact Registry / GCS]
-  GKE --> REG
-  VERTEX --> EP[managed endpoint]
-  GKE --> KS[KServe/vLLM/Triton]
-  EP --> GW[LLM/API gateway]
-  KS --> GW
-  GW --> APP[applications]
-  EP --> OBS[Cloud Monitoring/Logging/Trace + eval]
-  KS --> OBS
-```
-
-## Vertex lifecycle
-
-Model Garden/managed foundation models expose models under Region, quota, data and licensing constraints. Custom training runs containers/packages on managed workers; pipelines assemble reproducible steps; Experiments/metadata track runs; Model Registry versions deployable artifacts. Bind training code/container, data snapshot/lineage, parameters, model artifact, evaluation and approval.
-
-Endpoints serve online predictions with machine/accelerator and replica autoscaling choices; private endpoints/PSC alter access path. Batch prediction suits offline large sets. Traffic splits allow versions, but define quality/latency/error/cost gates. Feature Store/vector/RAG capabilities change rapidly—verify current product/API and avoid making a managed index the authorization source.
+Run the read-oriented example first:
 
 ```bash
-gcloud ai models list --region=REGION
-gcloud ai endpoints list --region=REGION
-gcloud ai endpoints describe ENDPOINT_ID --region=REGION
-gcloud ai custom-jobs list --region=REGION
-gcloud ai operations list --region=REGION
-gcloud ai index-endpoints list --region=REGION
+gcloud auth list
+gcloud config list
+gcloud projects describe PROJECT
+gcloud logging read 'severity>=ERROR' --limit=20
 ```
 
-Python SDK sketch (verify current SDK types):
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
 
-```python
-from google.cloud import aiplatform
+### Activity 2: create or review the smallest working example
 
-aiplatform.init(project="PROJECT", location="europe-west4", staging_bucket="gs://ml-staging")
-model = aiplatform.Model.upload(
-    display_name="reranker-v7",
-    artifact_uri="gs://models/reranker/v7",
-    serving_container_image_uri="europe-west4-docker.pkg.dev/PROJECT/serving/reranker@sha256:DIGEST",
-)
-endpoint = aiplatform.Endpoint.create(display_name="reranker-prod")
-model.deploy(
-    endpoint=endpoint,
-    deployed_model_display_name="reranker-v7-canary",
-    machine_type="g2-standard-8",
-    accelerator_type="NVIDIA_L4",
-    accelerator_count=1,
-    min_replica_count=1,
-    max_replica_count=10,
-    traffic_percentage=5,
-)
-```
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
 
-Use service account/workload federation, CMEK/VPC controls when required, exact artifact versions and explicit network/egress. Do not hardcode service-account keys.
+### Activity 3: controlled failure and troubleshooting
 
-## GKE accelerators and serving
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
 
-GPU/TPU availability depends on location/machine/version/capacity/quota. GKE can manage drivers under supported modes; otherwise qualify driver/runtime. Node pools or node auto-provisioning/ComputeClasses create accelerator nodes. Taints/labels and resource limits select GPUs; Dynamic Workload Scheduler/reservation concepts may apply to queued training/capacity.
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
 
-```bash
-gcloud container get-server-config --region=REGION
-gcloud compute accelerator-types list --filter='zone:(ZONE)'
-gcloud compute regions describe REGION --format='value(quotas)'
-gcloud container node-pools describe GPU_POOL --cluster=CLUSTER --region=REGION
-kubectl get nodes -L cloud.google.com/gke-accelerator -L topology.kubernetes.io/zone
-kubectl get nodes -o custom-columns='NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu'
-```
+### Verification
 
-Pod concept:
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata: {name: vllm, namespace: inference}
-spec:
-  replicas: 1
-  selector: {matchLabels: {app: vllm}}
-  template:
-    metadata: {labels: {app: vllm}}
-    spec:
-      nodeSelector:
-        cloud.google.com/gke-accelerator: nvidia-l4
-      tolerations:
-        - {key: nvidia.com/gpu, operator: Exists, effect: NoSchedule}
-      containers:
-        - name: server
-          image: REGION-docker.pkg.dev/PROJECT/serving/vllm@sha256:DIGEST
-          args: ["--model=/models/model", "--max-model-len=8192"]
-          resources:
-            requests: {cpu: "4", memory: 24Gi}
-            limits: {memory: 24Gi, nvidia.com/gpu: 1}
-```
+### Cleanup and rollback
 
-GKE autoscaling for AI is two-stage as in Kubernetes: custom queue/token metric scales replicas; unschedulable Pod requests trigger node provisioning. ComputeClasses can express fallback/preference across accelerator configurations in supported GKE versions. Benchmark fallbacks for correctness/performance.
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
 
-## RAG, evaluation and responsible operation
+### Harder extension
 
-Vector Search/RAG Engine/managed embeddings can reduce operations but still require source authorization, tenant filters, deletion/freshness, embedding version, poisoning controls and evaluation. Evaluation compares model/prompt/RAG versions on versioned datasets with human/calibrated automated judges and release thresholds. Store raw evidence with privacy/retention controls; production monitoring includes quality drift and cost, not only endpoint availability.
-
-## Failure and cost runbook
-
-Segment IAM/perimeter/private DNS/network, quota/capacity, model upload/deploy operation, container health, accelerator/driver, artifact access, autoscaling and application SLO. Use operation error details and Cloud Audit Logs before retrying. For capacity, diversify tested locations/hardware, reservations and managed/self-hosted fallback with residency/quality policy.
-
-Costs: model API input/output/cached tokens, endpoint replica accelerator/CPU hours, training, vector/index capacity, GCS/artifact, cross-region/egress, pipelines/data processing and telemetry. Meter tenant/model/endpoint and optimize cost per quality-controlled task.
-
-## Labs
-
-1. Register and canary a small model endpoint; add latency/error/eval rollback gate.
-2. Deploy the same model on GKE; compare cold start, TTFT, throughput, observability and cost.
-3. Configure private endpoint access and diagnose a DNS/IAM/VPC-SC failure.
-4. Exhaust a sandbox accelerator quota/capacity path and test approved fallback.
-5. Build a RAG index update/deletion/re-embedding workflow with evaluation evidence.
-
-## Revision summary
-
-- Vertex and GKE are complementary operating models with different control/ops burden.
-- Bind exact lineage and evaluation to promotion.
-- Managed RAG/agents do not remove application authorization and security.
-- Accelerator quota, zonal capacity and model compatibility all constrain scheduling.
-- Compare platforms by SLO/quality/security and unit economics, not feature count.
-
-
-<!-- merged-08-GCP-VERTEX-AI-PLATFORM-MD:end -->
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
 
 <!-- reading-navigation:start -->
 ---

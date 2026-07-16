@@ -10,7 +10,7 @@
 > **Then:** Rehearse the linked questions and continue to [Amazon VPC](01-vpc/README.md).
 <!-- chapter-guide:end -->
 
-This branch README is both the study note and the map. Each service leaf keeps its notes in its own README and its answered interview bank in a separate file.
+This branch README connects the service chapters into one production capability. The root reading tree places each service chapter directly after this overview.
 
 ```mermaid
 flowchart LR
@@ -24,7 +24,6 @@ flowchart LR
   B --> S7[Amazon Route 53]
 ```
 
-
 ## Branch learning contract
 
 Learn the easy mental model first, run the read-only commands in a sandbox, render/apply the examples only in disposable environments, then break and repair one dependency at a time. Be able to connect these topics across the branch: VPC CIDR, Subnet, Route table, Security group state, Security group reference, Outbound rules, NAT gateway, NAT instance, Centralized egress, Gateway endpoint, Interface endpoint, Private DNS, VPC peering, Transit Gateway attachments, TGW route association, Site-to-Site VPN, BGP, Direct Connect, Hosted zone, Alias record, Weighted routing.
@@ -35,59 +34,139 @@ See [questions-and-answers.md](questions-and-answers.md) for 60 additional branc
 
 > Interview bank: [questions-and-answers.md](questions-and-answers.md) · Official documentation: <https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html>
 
-## Easy mode: purpose and mental model
+## Explanation
 
-Integrate the networking branch as one production capability rather than isolated products.
+### What it is and why it exists
+
+**Networking** is easiest to understand as one part of a larger path. The subject has an API control plane and a workload data plane. An authenticated request is authorized, validated and persisted; managed controllers then create or reconfigure regional or global resources that serve traffic or process data.
+
+The chapter focuses on VPC CIDR, Subnet, Security group state, Security group reference. These are connected mechanisms, not vocabulary to memorize. Integrate the networking branch as one production capability rather than isolated products The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+### History and evolution
+
+AWS helped turn infrastructure into an on-demand API with services such as S3 and EC2 in 2006. The platform expanded from individual virtual resources into regional managed control planes, global identity and governance, event-driven services and specialized data and AI systems; automation therefore became as important as resource creation.
+
+In this chapter, **Networking** is the next layer of that evolution. Its modern purpose is to integrate the networking branch as one production capability rather than isolated products. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+### How it works: the end-to-end path
 
 ```mermaid
 flowchart LR
-  I[identity and desired state] --> C[Networking control plane]
-  C --> D[Networking data plane]
-  D --> U[user/workload outcome]
-  D --> O[metrics logs traces audit]
-  O --> R[reconcile scale recover optimize]
+  A["signed API request"] --> B["IAM and service control plane"]
+  B --> C["Networking: regional or global data plane"]
+  C --> D["customer outcome"]
+  D -. "status and evidence" .-> B
 ```
 
-## Detailed learning notes
+The diagram is a feedback loop rather than a one-way provisioning sequence. A caller supplies identity and intent; the control plane validates and records that intent; asynchronous controllers, runtimes or managed infrastructure create the effective data plane; and status and telemetry feed the next decision. A successful API response can therefore mean only "the request was accepted," not "the workload outcome is healthy."
 
-| # | Concept | What you must be able to explain |
-|---:|---|---|
-| 1 | **VPC CIDR** | regional IPv4/IPv6 address space must avoid overlap and leave room for workloads, pods and growth. |
-| 2 | **Subnet** | AZ-scoped address range whose route table and address behavior determine public/private/isolated use. |
-| 3 | **Security group state** | allowed connections automatically permit tracked return traffic. |
-| 4 | **Security group reference** | supported paths can allow traffic from ENIs associated with another group. |
-| 5 | **NAT gateway** | managed AZ-scoped IPv4 translation with hourly and data-processing cost. |
-| 6 | **NAT instance** | customer-managed translation with patching, throughput and failover responsibility. |
-| 7 | **Gateway endpoint** | route-table target for supported services such as S3/DynamoDB without endpoint ENIs. |
-| 8 | **Interface endpoint** | PrivateLink ENIs in subnets with security groups and per-hour/data cost. |
-| 9 | **VPC peering** | direct non-transitive connectivity that requires non-overlap and routes on both sides. |
-| 10 | **Transit Gateway attachments** | connect VPC, VPN, Direct Connect gateway or peering into a routed hub. |
+For **Networking**, the mechanisms participating in that loop are VPC CIDR, Subnet, Security group state, Security group reference, NAT gateway, NAT instance, Gateway endpoint, Interface endpoint, VPC peering, Transit Gateway attachments. Some run synchronously on the caller's request, while others converge later. This timing distinction explains many production surprises: the desired object can exist before capacity is ready, a data path can continue while its control plane is impaired, and a timeout can leave the final side effect unknown.
 
-## Architecture and lifecycle
+### Core concepts explained in detail
 
-Trace this service from request/authentication and desired configuration through provisioning, steady-state data path, scaling, change, failure, recovery and retirement. Bind every production resource to an owner, environment, data classification, source-of-truth revision, SLO, runbook, cost center and deletion/retention policy.
+#### VPC CIDR
 
-For Networking, draw a real request/resource path and label where these mechanisms act: VPC CIDR, Subnet, Security group state, Security group reference, NAT gateway, NAT instance, Gateway endpoint, Interface endpoint, VPC peering, Transit Gateway attachments. State which parts are control plane versus data plane, regional versus zonal/global, synchronous versus asynchronous, and customer versus provider responsibility.
+**What it is.** Regional IPv4/IPv6 address space must avoid overlap and leave room for workloads, pods and growth.
 
-## Security model
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
 
-Start with the caller/workload identity and evaluate every applicable identity, resource, organization, network-endpoint, encryption-key and admission policy. Minimize public paths, long-lived credentials, wildcard actions/resources and unreviewed cross-account/tenant trust. Encrypt in transit/at rest where applicable, but include key/certificate rotation and recovery. Protect audit evidence and prevent secrets/customer content from entering command history, logs, traces or metric labels.
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
 
-## Availability and failure modes
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
 
-List dependencies and failure domains before claiming high availability. Test quota/capacity, identity/control-plane, DNS/network/TLS, configuration drift, downstream saturation, zonal/Regional/node failure and recovery from protected state. Use bounded timeout, retry budget, jitter, idempotency, backpressure, load shedding and graceful drain according to protocol. A green resource status is not a user-facing recovery check.
+#### Subnet
 
-## Performance, scaling and cost
+**What it is.** AZ-scoped address range whose route table and address behavior determine public/private/isolated use.
 
-Measure workload distribution and SLI before sizing. Track rate/work units, latency distribution, errors, saturation/queue and service-specific limits. Separate replica/task scaling from infrastructure/capacity scaling and include cold-start/provisioning delay. Cost includes idle/provisioned capacity, requests/work units, storage/retention, cross-AZ/Region/egress/NAT, observability, licenses/support and failure headroom. Optimize cost per successful SLO/quality-controlled task.
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
 
-## Observability
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
 
-Correlate a request/change across user, route/resource, dependency and underlying compute/storage/network. Use stable owner/environment/region/service dimensions; put high-cardinality request/object IDs in sampled logs/traces rather than metric labels. Alert on actionable SLO burn and leading exhaustion. Monitor the telemetry path and keep a read-only diagnostic role.
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
 
-## Command lab
+#### Security group state
 
-Run in a sandbox with the correct account/context/Region. Read and explain output before mutation.
+**What it is.** Allowed connections automatically permit tracked return traffic.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Security group reference
+
+**What it is.** Supported paths can allow traffic from ENIs associated with another group.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### NAT gateway
+
+**What it is.** Managed AZ-scoped IPv4 translation with hourly and data-processing cost.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### NAT instance
+
+**What it is.** Customer-managed translation with patching, throughput and failover responsibility.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### Gateway endpoint
+
+**What it is.** Route-table target for supported services such as S3/DynamoDB without endpoint ENIs.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### Interface endpoint
+
+**What it is.** PrivateLink ENIs in subnets with security groups and per-hour/data cost.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### VPC peering
+
+**What it is.** Direct non-transitive connectivity that requires non-overlap and routes on both sides.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### Transit Gateway attachments
+
+**What it is.** Connect VPC, VPN, Direct Connect gateway or peering into a routed hub.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+### Worked command and configuration example
+
+The following is a diagnostic example, not an unexplained command dump. Define every uppercase placeholder first—for example `NAME`, `RESOURCE`, `PROJECT`, `REGION`, `NAMESPACE`, `URL`, `IMAGE` or `CONTAINER`—and use a sandbox or read-only production role.
 
 ```bash
 aws ec2 describe-vpcs --vpc-ids VPC_ID
@@ -99,16 +178,60 @@ aws ec2 describe-vpn-connections
 aws route53 list-hosted-zones
 ```
 
-For each command, record: identity/context, exact resource, expected healthy fields, one failing output, the next command/query, and which mutation would be reversible. Never paste secrets/tokens into committed notes or shared terminal history.
+What the example demonstrates:
 
-## Real-world exercise: easy → hard
+- `aws ec2 describe-vpcs --vpc-ids VPC_ID` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws ec2 describe-security-groups --group-ids SG_ID` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws ec2 describe-nat-gateways` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws ec2 describe-vpc-endpoints --filters Name=vpc-id,Values=VPC_ID` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws ec2 describe-vpc-peering-connections` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws ec2 describe-vpn-connections` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws route53 list-hosted-zones` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
 
-1. **Easy:** inventory one healthy Networking resource and draw identity/control/data/dependency paths.
-2. **Intermediate:** reproduce a safe configuration change with IaC, preview/diff, apply to a sandbox, verify and roll back.
-3. **Hard:** inject one policy/network/quota/capacity/dependency failure, diagnose from user symptom to root mechanism, mitigate without widening access, then add an alert/test/runbook.
-4. **Senior:** design the service for two tenants, multi-zone/Region failure, RPO/RTO, regulated data, 10× demand and a 30% cost reduction; quantify trade-offs.
+A healthy run returns the intended identity/context, exits successfully and shows the expected object or response without a new warning, retry loop or saturation signal. A failure is useful evidence: preserve the exact exit code, status/reason, timestamp and target, then inspect the immediately adjacent layer before changing anything. This makes the example part of the explanation of **Networking**, not merely a list to copy.
 
-## Common interview traps
+### Security and trust boundaries
+
+Security begins with the actor and the exact operation, not with a network location. Human, workload, CI and service identities have different lifecycles; every hop must authenticate the relevant identity and authorize the action against the resource and current conditions. Network controls reduce reachable paths, while resource policy and application authorization decide what an already-reachable caller may do. Encryption protects data in transit or at rest, but key access, rotation, revocation and recovery are part of the same system.
+
+The safe design minimizes public paths, long-lived credentials, wildcard permissions and implicit cross-tenant trust. It also protects the evidence plane: audit logs, traces and command history must not become a second copy of secrets or customer content. A production review should be able to identify the enforcement point, default behavior, bypass path, break-glass owner and proof that revoked access actually stops working.
+
+### Reliability and failure behavior
+
+Availability is an end-to-end property. The service depends on identity, quota, API/control-plane health, DNS and network paths, capacity, downstream services and any durable state required to recover. Replicas improve availability only when they occupy independent failure domains and clients can reach a healthy replica; a managed-service label does not remove customer responsibility for configuration, load, data correctness or recovery testing.
+
+Timeouts, bounded retry budgets with jitter, idempotency, backpressure, load shedding and graceful drain control how failures spread. They must match the protocol and side-effect model. A timeout is ambiguous because the remote operation may have completed; blind retry is unsafe when the operation is not idempotent. Recovery is complete only when the original user action works and data, latency, error rate and backlog have returned to acceptable bounds.
+
+### Performance, scaling and cost
+
+Capacity planning starts with a work unit and a distribution, not an average utilization percentage. Relevant signals include request or job arrival rate, work size, latency percentiles, errors, queue age, saturation and service-specific limits. Scaling application replicas and provisioning underlying nodes, storage or provider quota are separate feedback loops with different delays. Cold starts and warm-up determine whether newly allocated capacity helps before the burst is over.
+
+Total cost includes idle headroom, request or token work, storage and retention, cross-zone or cross-Region transfer, NAT/egress, observability, licenses and recovery capacity. The useful optimization target is cost per successful SLO- or quality-controlled outcome. A cheaper configuration that increases retries, operator toil, data risk or missed objectives can raise total cost.
+
+### Observability and troubleshooting
+
+Diagnosis follows the same path as the request. First establish time, user impact, identity and exact target; then compare desired configuration with observed status and recent changes. Continue through control-plane reconciliation, network and protocol evidence, runtime state, dependencies and resource saturation. Metrics show trends, logs explain discrete events, traces connect boundaries, profiles attribute resource use and audit logs explain security decisions.
+
+The most useful next check is the one that distinguishes competing causes. A permission denial calls for policy-evaluation evidence, not a restart; a connection refusal means something different from a timeout; a pending resource with a scheduling reason differs from a running resource whose application is unready. Reversible mitigation stabilizes impact, while the durable repair updates Git, IaC, policy or the owning service and adds a regression test or alert.
+
+### What you should be able to explain
+
+Use this table only after reading the explanations above. It is a revision checklist, not a substitute for the lesson.
+
+| # | Concept | What you must be able to explain |
+|---:|---|---|
+| 1 | **VPC CIDR** | regional IPv4/IPv6 address space must avoid overlap and leave room for workloads, pods and growth |
+| 2 | **Subnet** | AZ-scoped address range whose route table and address behavior determine public/private/isolated use |
+| 3 | **Security group state** | allowed connections automatically permit tracked return traffic |
+| 4 | **Security group reference** | supported paths can allow traffic from ENIs associated with another group |
+| 5 | **NAT gateway** | managed AZ-scoped IPv4 translation with hourly and data-processing cost |
+| 6 | **NAT instance** | customer-managed translation with patching, throughput and failover responsibility |
+| 7 | **Gateway endpoint** | route-table target for supported services such as S3/DynamoDB without endpoint ENIs |
+| 8 | **Interface endpoint** | PrivateLink ENIs in subnets with security groups and per-hour/data cost |
+| 9 | **VPC peering** | direct non-transitive connectivity that requires non-overlap and routes on both sides |
+| 10 | **Transit Gateway attachments** | connect VPC, VPN, Direct Connect gateway or peering into a routed hub |
+
+### Common interview traps
 
 - Naming a feature without explaining request/resource lifecycle or failure semantics.
 - Treating an allow, encryption checkbox, replica count or managed-service label as a complete security/reliability design.
@@ -116,69 +239,55 @@ For each command, record: identity/context, exact resource, expected healthy fie
 - Scaling the wrong layer or retrying overload/permanent errors.
 - Omitting quotas, cold start, deletion/restore, observability cost or customer/tenant boundaries.
 
-## Revision summary
+## Practice
 
-Explain Networking in five passes: purpose/selection, mechanism/lifecycle, security/failure, operation/commands, and architecture/economics. Then complete the separate [answered question bank](questions-and-answers.md) without looking at these notes.
+### Practice objective
 
-<!-- merged-07-AWS-VPC-NETWORKING-MD:start -->
-## Practical deep dive
+Build a small, safe proof of **Networking** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
 
-## Purpose and mental model
+### Prerequisites and setup
 
-A VPC is a regional virtual network. Subnets are AZ-scoped address ranges. A packet succeeds only when naming, source selection, routes, stateful/stateless filtering, translation, return path and destination listener all agree. Draw both directions of the packet path; “the security group is open” is never a complete diagnosis.
+Use a disposable local environment, sandbox account/project or isolated namespace. Confirm the effective identity and target, record the start time, and set a cost limit before creating anything.
 
-## Addressing, subnets and routes
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
 
-Plan non-overlapping IPv4/IPv6 CIDRs with growth, secondary ranges, pod/service addressing and hybrid routes in mind; use IPAM where scale justifies it. A subnet is public when its route table sends internet-bound traffic to an internet gateway and the workload has a usable public address. Private subnets normally egress through per-AZ NAT gateways, centralized egress, a proxy, or service endpoints. Isolated subnets have no general internet path.
+### Activity 1: establish a healthy baseline
 
-Routing uses longest-prefix match. Local VPC routes enable internal reachability; IGW, NAT, egress-only IGW, TGW, peering, virtual/private gateways and ENIs are possible targets. NAT gateways translate IPv4 connections and can exhaust ports per destination; they are AZ resources, so cross-AZ designs add dependency and cost. IPv6 uses routing and egress-only gateways rather than IPv4-style NAT as the primary model.
-
-Security groups are stateful and attached to ENIs; return traffic for an allowed connection is automatically tracked. NACLs are stateless ordered subnet rules, so both directions and ephemeral ports matter. Referencing security groups expresses identity-like relationships in supported paths, but does not create routes.
-
-## Private, multi-VPC and hybrid connectivity
-
-Gateway endpoints provide route-table paths for supported services such as S3/DynamoDB. Interface endpoints create PrivateLink ENIs with security groups and optional private DNS. Check endpoint policy, service/resource policy and DNS. VPC peering is non-transitive. Transit Gateway is a routed hub with attachment/propagation/association tables; Cloud WAN adds managed wide-area policy. VPC sharing lets accounts deploy into centrally owned subnets.
-
-Site-to-Site VPN uses redundant tunnels and typically BGP; Direct Connect supplies dedicated connectivity but should be designed with redundant locations/links and often VPN fallback. Hybrid DNS uses Route 53 Resolver inbound/outbound endpoints and conditional forwarding. Avoid loops, overlapping CIDRs, asymmetric appliance paths and accidental route propagation.
-
-Route 53 public/private hosted zones answer DNS; routing policies select records, not packets. Weighted, latency, failover, geolocation/geoproximity and multivalue policies have distinct semantics. DNS health checks cannot repair an unhealthy application design. TTL trades failover agility for query/cache load; clients may cache differently.
-
-## Security, availability, performance, observability and cost
-
-- Segment by account/VPC/subnet/SG; use endpoints and controlled egress; log DNS and flows where justified; inspect traffic through symmetric GWLB/appliance paths.
-- Use multi-AZ NAT/endpoints/TGW attachments and redundant hybrid links. Validate failure, not only diagram symmetry.
-- Watch IP availability, ENI/pod density, NAT ports/errors/bytes, TGW drops, VPN tunnel/BGP state, DX virtual interfaces, Resolver health and DNS latency.
-- VPC Flow Logs record metadata, not payload. Reachability Analyzer reasons about configured paths, while packet capture/mirroring and application telemetry address runtime behavior.
-- Cost hotspots include NAT hourly/data processing, cross-AZ transfer, TGW processing, interface endpoint hours/data, Resolver queries/endpoints, DX ports and internet egress.
-
-## Packet-path runbook
-
-1. Define source/destination IP/port/protocol, time window, expected DNS answer and whether failure is connect, TLS or application.
-2. Resolve DNS from the failing namespace/host; inspect split-horizon/private endpoint behavior.
-3. Inspect source ENI/subnet/route, next hop, destination route and return route.
-4. Evaluate source/destination SGs and both-direction NACL rules including ephemeral ports.
-5. Check NAT/TGW/peering/endpoint/VPN/DX attachment state, policies, propagation and capacity.
-6. Use Flow Logs/Reachability Analyzer, host `ip route`, `ss`, `dig`, `curl`, `traceroute` and `tcpdump` as applicable.
-7. Verify listener/target/app, then test from the original client and add a synthetic check.
+Run the read-oriented example first:
 
 ```bash
-aws ec2 describe-route-tables --filters Name=vpc-id,Values=VPC_ID
+aws ec2 describe-vpcs --vpc-ids VPC_ID
 aws ec2 describe-security-groups --group-ids SG_ID
-aws ec2 describe-network-acls --filters Name=association.subnet-id,Values=SUBNET_ID
+aws ec2 describe-nat-gateways
 aws ec2 describe-vpc-endpoints --filters Name=vpc-id,Values=VPC_ID
-aws ec2 describe-nat-gateways --filter Name=vpc-id,Values=VPC_ID
+aws ec2 describe-vpc-peering-connections
+aws ec2 describe-vpn-connections
+aws route53 list-hosted-zones
 ```
 
-## Revision summary
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
 
-- DNS → route → filter → translation → listener → return path.
-- SG statefulness and NACL statelessness have different troubleshooting implications.
-- Peering is non-transitive; TGW is transitive only as configured.
-- Endpoints alter DNS/path/policy and can reduce NAT exposure/cost.
-- Design hybrid connectivity and DNS with explicit redundancy and loop prevention.
+### Activity 2: create or review the smallest working example
 
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
 
-<!-- merged-07-AWS-VPC-NETWORKING-MD:end -->
+### Activity 3: controlled failure and troubleshooting
+
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
+
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
+
+### Verification
+
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
+
+### Cleanup and rollback
+
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
+
+### Harder extension
+
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
 
 <!-- reading-navigation:start -->
 ---

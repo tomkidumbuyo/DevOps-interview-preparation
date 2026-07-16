@@ -10,7 +10,38 @@
 > **Then:** Rehearse the linked questions and continue to [Architecture](01-architecture/README.md).
 <!-- chapter-guide:end -->
 
-## 1. Easy mode: architecture and reconciliation
+<!-- explanation-practice-normalizer:v1 -->
+
+
+## Explanation
+
+### What this chapter is and why it exists
+
+**Kubernetes core platform** is easiest to understand as one part of a larger path. The subject is governed through an API-driven feedback system. A client writes desired state, controllers compare it with observed state, the scheduler chooses placement, and node agents and plugins produce the running data plane.
+
+The chapter focuses on Kubernetes core platform. These are connected mechanisms, not vocabulary to memorize. The Kubernetes branch explains the API, reconciliation, scheduling, node, networking, storage and policy loops that turn desired objects into running workloads The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+### History and evolution
+
+Kubernetes grew from lessons learned running large fleets at Google and was released as open source in 2014. It joined the CNCF as its first project and evolved from basic container scheduling into an extensible API and reconciliation platform with standardized networking, storage, policy and custom-resource interfaces.
+
+In this chapter, **Kubernetes core platform** is the next layer of that evolution. Its modern purpose is to the Kubernetes branch explains the API, reconciliation, scheduling, node, networking, storage and policy loops that turn desired objects into running workloads. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+### How the complete branch works
+
+```mermaid
+flowchart LR
+  A["desired API object"] --> B["admission and reconciliation"]
+  B --> C["Kubernetes core platform: node plugins and runtime"]
+  C --> D["running workload outcome"]
+  D -. "status and evidence" .-> B
+```
+
+A branch overview connects child mechanisms into one lifecycle. The input crosses identity and policy, a control or decision plane, the runtime data path and its dependencies before producing a user-visible result. Status and telemetry travel back through the loop so operators and controllers can correct drift or failure. Reading the child chapters adds precision, but this overview explains why those chapters depend on one another.
+
+A useful test of understanding is to trace one concrete request or change from origin to outcome and name the authoritative state at each boundary. That trace reveals where work is synchronous or asynchronous, which failure domains are independent, what a timeout can prove, and which evidence distinguishes accepted intent from healthy behavior.
+
+### 1. Easy mode: architecture and reconciliation
 
 Kubernetes is an API-driven reconciliation system. You submit desired state; controllers compare it with observed state and make idempotent changes. The scheduler assigns unscheduled Pods to nodes; kubelet makes assigned Pods run through a CRI runtime; networking/storage plugins implement data-plane contracts.
 
@@ -42,7 +73,7 @@ kubectl get --raw /livez?verbose
 kubectl get --raw /metrics | head
 ```
 
-## 2. A complete production-shaped workload
+### 2. A complete production-shaped workload
 
 Namespace, service account, configuration, Deployment, Service, PDB, NetworkPolicy and autoscaling:
 
@@ -215,7 +246,7 @@ kubectl get deployment,rs,pod,svc,endpointslice,hpa,pdb,networkpolicy -n payment
 kubectl wait -n payments --for=condition=Available deployment/api --timeout=10m
 ```
 
-## 3. Workload controllers and Pod lifecycle
+### 3. Workload controllers and Pod lifecycle
 
 - Deployment manages ReplicaSets and stateless rolling rollout.
 - StatefulSet gives stable ordinal identity and per-Pod claims; it does not make a database correct.
@@ -272,7 +303,7 @@ kubectl delete pod POD -n NS --grace-period=60
 
 Avoid force deletion unless you understand split-brain/storage effects. A terminating Pod can be blocked by finalizers, unreachable kubelet, volume detach or long grace.
 
-## 4. Scheduling, resources and disruption
+### 4. Scheduling, resources and disruption
 
 Scheduler filters then scores nodes based on requests and constraints. Requests reserve scheduling capacity; limits are enforced by kubelet/runtime/cgroups. QoS: Guaranteed (equal CPU+memory requests/limits for all containers), Burstable, BestEffort. Eviction under node pressure is different from container OOM. Extended resources such as GPUs normally appear only in limits and are not overcommitted.
 
@@ -314,7 +345,7 @@ kubectl uncordon NODE
 
 PDBs limit concurrent voluntary eviction, not node crashes, and can block drain. Priority/preemption can evict lower-priority Pods but must not turn overload into starvation. Topology spread is often clearer than hard anti-affinity. Cluster autoscalers respond to unschedulable requests; they cannot help if constraints are impossible, quotas/capacity/IPs fail, or a Pod lacks correct requests.
 
-## 5. Services, DNS and network path
+### 5. Services, DNS and network path
 
 ```mermaid
 sequenceDiagram
@@ -345,7 +376,7 @@ ip route; ss -tan; tcpdump -ni any port 8080
 
 NetworkPolicy is additive: once a Pod is selected for a direction, only unioned allows apply. Both source egress and destination ingress may need to allow. Policies operate at IP/port; DNS names need CNI-specific policy or egress proxy. Test default-deny with DNS and required control/telemetry paths.
 
-## 6. Ingress and Gateway API
+### 6. Ingress and Gateway API
 
 Ingress is a portable HTTP routing resource implemented by a controller. Gateway API separates infrastructure (`GatewayClass`, `Gateway`, listeners) from app routes (`HTTPRoute`, `GRPCRoute`) and supports explicit cross-namespace attachment/reference grants.
 
@@ -390,7 +421,7 @@ kubectl get crd | rg gateway
 
 Always inspect controller-specific status/events/cloud resources. Route accepted does not guarantee resolved references or healthy backends. Align TLS, proxy and app timeouts; configure streaming/gRPC/WebSocket behavior explicitly.
 
-## 7. Configuration and secrets
+### 7. Configuration and secrets
 
 ConfigMaps/Secrets can be environment variables or projected volumes. Env does not update in a running process; mounted projection updates eventually via atomic symlink, but applications must reload. `subPath` mounts do not receive normal projected updates. Kubernetes Secrets are base64-encoded, not inherently encrypted at rest; enable API encryption, restrictive RBAC and external secret/KMS workflows.
 
@@ -404,7 +435,7 @@ kubectl auth can-i get secrets --as=system:serviceaccount:payments:api -n paymen
 
 Do not pass secrets on shared shell command lines/history; the commands above are learning examples. In production use secret stores/sealed/encrypted Git workflows, rotation, workload identity and process-safe injection.
 
-## 8. Storage and CSI
+### 8. Storage and CSI
 
 ```mermaid
 flowchart LR
@@ -448,7 +479,7 @@ kubectl patch pvc data -n payments -p '{"spec":{"resources":{"requests":{"storag
 
 Backup must include application-consistent data plus Kubernetes desired state and encryption/access dependencies. Test restore into an isolated environment and validate the application, not only PVC `Bound`.
 
-## 9. Authentication, RBAC and admission
+### 9. Authentication, RBAC and admission
 
 Authentication identifies; authorization decides verb/resource/subresource/name/namespace; admission validates/mutates after authorization before persistence. ServiceAccounts are namespaced identities. OIDC/cert/external integrations authenticate people; use short-lived credentials. RBAC Roles/ClusterRoles define rules; Bindings attach subjects. Avoid wildcards, secret read, pod exec/attach, impersonation, bind/escalate and workload-create paths that enable privilege escalation.
 
@@ -483,7 +514,7 @@ kubectl create token api -n payments --duration=10m
 
 Admission examples include Pod Security Admission, ValidatingAdmissionPolicy/CEL and webhooks. Webhooks are control-plane dependencies: bound timeouts, failure policy by risk, namespace selectors, HA, certificate rotation and monitoring.
 
-## 10. Packaging, apply and GitOps
+### 10. Packaging, apply and GitOps
 
 ```bash
 helm lint ./chart
@@ -500,7 +531,7 @@ kubectl apply --server-side -k overlays/prod
 
 Helm values/hooks and release state need testing; hooks can perform irreversible side effects outside rollback. Kustomize patches overlays without templates. GitOps controllers continuously reconcile Git: an emergency imperative change may be reverted, so update/freeze the source deliberately. Store no plaintext secrets in Git.
 
-## 11. CRDs and operators
+### 11. CRDs and operators
 
 CRDs extend the API; controllers watch desired state and reconcile external/internal resources. A robust reconciler is level-based/idempotent, uses finalizers for external cleanup, conditions with observed generation, exponential rate limiting, ownership, bounded work and safe retries.
 
@@ -529,7 +560,7 @@ kubectl patch modeldeployment summarizer --type=merge -p '{"metadata":{"finalize
 
 Removing finalizers manually can leak external resources; do it only after understanding/performing cleanup. Version CRDs with conversion/defaulting/storage migration and compatibility plans.
 
-## 12. Upgrades, etcd and disaster recovery
+### 12. Upgrades, etcd and disaster recovery
 
 etcd is a consistent replicated key-value store; quorum requires a majority. Back up snapshots with encryption material and exact procedure, verify snapshot status and perform restore drills. Compaction removes old revisions; defragmentation reclaims backend space. Do not casually operate managed control-plane etcd as if self-managed.
 
@@ -546,7 +577,7 @@ ETCDCTL_API=3 etcdctl snapshot save snapshot.db
 ETCDCTL_API=3 etcdctl snapshot status snapshot.db -w table
 ```
 
-## 13. The kubectl field guide
+### 13. The kubectl field guide
 
 Context/output/selection:
 
@@ -628,7 +659,7 @@ kubectl auth reconcile -f rbac.yaml --dry-run=client
 
 Prefer declarative source for lasting changes. Imperative commands are excellent for observation, controlled debugging and generating starter YAML; record any incident mutation and reconcile it to source.
 
-## 14. Symptom-to-command troubleshooting table
+### 14. Symptom-to-command troubleshooting table
 
 | Symptom | First evidence | Common branches |
 |---|---|---|
@@ -643,18 +674,7 @@ Prefer declarative source for lasting changes. Imperative commands are excellent
 | API slow | apiserver/etcd metrics, audit, clients | etcd latency/space, list/watch load, webhook, controller storm |
 | Drain blocked | PDB, finalizer, local storage | strict budget, unhealthy replica, DaemonSet, volume, grace |
 
-## 15. Real-world labs
-
-1. Deploy the complete workload; break selectors, targetPort, readiness, DNS egress and image architecture one at a time; diagnose without reading the answer.
-2. Roll from v1→v2 with a deliberately failing readiness probe; observe ReplicaSets/conditions and safely undo.
-3. Fill `emptyDir`, exceed memory, throttle CPU and compare container status, node pressure and HPA behavior.
-4. Create default-deny, then minimally allow DNS, ingress and one database; prove both directions.
-5. Provision/expand/snapshot/restore a PVC into a new namespace and validate application data.
-6. Cordon/drain a node with Deployment, StatefulSet, DaemonSet, PDB and local `emptyDir`; explain every blocked eviction.
-7. Create an overprivileged Role, demonstrate escalation path in a sandbox, then minimize it with `kubectl auth can-i` tests.
-8. Install a CRD/controller in a local cluster; observe reconciliation, status, deletion timestamp and finalizer cleanup.
-
-## Common interview traps
+### Common interview traps
 
 - A Deployment manages ReplicaSets, not Pods directly.
 - A Service does not route to unready endpoints by default; check EndpointSlices.
@@ -667,7 +687,7 @@ Prefer declarative source for lasting changes. Imperative commands are excellent
 - Finalizers are cleanup contracts, not mysterious stuck deletion flags.
 - Force deletion can create duplicate stateful actors.
 
-## Revision summary
+### Revision summary
 
 - Follow desired state through API/admission/controller/scheduler/kubelet/runtime/network/storage.
 - Conditions, events and EndpointSlices reveal controller truth.
@@ -677,9 +697,66 @@ Prefer declarative source for lasting changes. Imperative commands are excellent
 
 Treat every lab as a reliability, observability and cost exercise: record workload and control-plane evidence, inject one bounded failure, verify the user path after recovery, and delete the namespace, cluster or cloud resources you created. A healthy object status without workload behavior, telemetry and billing verification is incomplete.
 
-## Read further
+### Read further
 
 - [Kubernetes documentation](https://kubernetes.io/docs/home/) — upstream concepts, tasks and reference material. Check the feature state and Kubernetes version for version-sensitive APIs before using them.
+
+## Practice
+
+### 15. Real-world labs
+
+1. Deploy the complete workload; break selectors, targetPort, readiness, DNS egress and image architecture one at a time; diagnose without reading the answer.
+2. Roll from v1→v2 with a deliberately failing readiness probe; observe ReplicaSets/conditions and safely undo.
+3. Fill `emptyDir`, exceed memory, throttle CPU and compare container status, node pressure and HPA behavior.
+4. Create default-deny, then minimally allow DNS, ingress and one database; prove both directions.
+5. Provision/expand/snapshot/restore a PVC into a new namespace and validate application data.
+6. Cordon/drain a node with Deployment, StatefulSet, DaemonSet, PDB and local `emptyDir`; explain every blocked eviction.
+7. Create an overprivileged Role, demonstrate escalation path in a sandbox, then minimize it with `kubectl auth can-i` tests.
+8. Install a CRD/controller in a local cluster; observe reconciliation, status, deletion timestamp and finalizer cleanup.
+
+### Practice objective
+
+Build a small, safe proof of **Kubernetes core platform** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
+
+### Prerequisites and setup
+
+Use a disposable local environment, sandbox account/project or isolated namespace. Confirm the effective identity and target, record the start time, and set a cost limit before creating anything.
+
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
+
+### Activity 1: establish a healthy baseline
+
+Run the read-oriented example first:
+
+```bash
+kubectl config current-context
+kubectl get nodes -o wide
+kubectl get events -A --sort-by=.lastTimestamp
+```
+
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
+
+### Activity 2: create or review the smallest working example
+
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
+
+### Activity 3: controlled failure and troubleshooting
+
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
+
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
+
+### Verification
+
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
+
+### Cleanup and rollback
+
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
+
+### Harder extension
+
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
 
 <!-- reading-navigation:start -->
 ---

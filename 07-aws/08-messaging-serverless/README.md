@@ -10,7 +10,7 @@
 > **Then:** Rehearse the linked questions and continue to [Amazon SQS](01-sqs/README.md).
 <!-- chapter-guide:end -->
 
-This branch README is both the study note and the map. Each service leaf keeps its notes in its own README and its answered interview bank in a separate file.
+This branch README connects the service chapters into one production capability. The root reading tree places each service chapter directly after this overview.
 
 ```mermaid
 flowchart LR
@@ -23,7 +23,6 @@ flowchart LR
   B --> S6[Amazon API Gateway]
 ```
 
-
 ## Branch learning contract
 
 Learn the easy mental model first, run the read-only commands in a sandbox, render/apply the examples only in disposable environments, then break and repair one dependency at a time. Be able to connect these topics across the branch: Standard queue, FIFO queue, Visibility timeout, SNS topic, Subscription filter, Delivery retry/DLQ, State machine, Standard workflow, Express workflow, Shard/partition, Partition key, Sequence/offset, Execution environment, Cold start, Reserved concurrency, REST vs HTTP API, WebSocket API, Route/resource-method.
@@ -34,59 +33,139 @@ See [questions-and-answers.md](questions-and-answers.md) for 60 additional branc
 
 > Interview bank: [questions-and-answers.md](questions-and-answers.md) · Official documentation: <https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/welcome.html>
 
-## Easy mode: purpose and mental model
+## Explanation
 
-Integrate the messaging serverless branch as one production capability rather than isolated products.
+### What it is and why it exists
+
+**Messaging Serverless** is easiest to understand as one part of a larger path. The subject has an API control plane and a workload data plane. An authenticated request is authorized, validated and persisted; managed controllers then create or reconfigure regional or global resources that serve traffic or process data.
+
+The chapter focuses on Standard queue, FIFO queue, SNS topic, Subscription filter. These are connected mechanisms, not vocabulary to memorize. Integrate the messaging serverless branch as one production capability rather than isolated products The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+### History and evolution
+
+AWS helped turn infrastructure into an on-demand API with services such as S3 and EC2 in 2006. The platform expanded from individual virtual resources into regional managed control planes, global identity and governance, event-driven services and specialized data and AI systems; automation therefore became as important as resource creation.
+
+In this chapter, **Messaging Serverless** is the next layer of that evolution. Its modern purpose is to integrate the messaging serverless branch as one production capability rather than isolated products. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+### How it works: the end-to-end path
 
 ```mermaid
 flowchart LR
-  I[identity and desired state] --> C[Messaging Serverless control plane]
-  C --> D[Messaging Serverless data plane]
-  D --> U[user/workload outcome]
-  D --> O[metrics logs traces audit]
-  O --> R[reconcile scale recover optimize]
+  A["signed API request"] --> B["IAM and service control plane"]
+  B --> C["Messaging Serverless: regional or global data plane"]
+  C --> D["customer outcome"]
+  D -. "status and evidence" .-> B
 ```
 
-## Detailed learning notes
+The diagram is a feedback loop rather than a one-way provisioning sequence. A caller supplies identity and intent; the control plane validates and records that intent; asynchronous controllers, runtimes or managed infrastructure create the effective data plane; and status and telemetry feed the next decision. A successful API response can therefore mean only "the request was accepted," not "the workload outcome is healthy."
 
-| # | Concept | What you must be able to explain |
-|---:|---|---|
-| 1 | **Standard queue** | at-least-once delivery and best-effort order at very high scale. |
-| 2 | **FIFO queue** | ordered message groups and deduplication with throughput/parallelism constraints. |
-| 3 | **SNS topic** | publisher fan-out to protocol subscriptions under topic policy. |
-| 4 | **Subscription filter** | routes messages by attributes/body and can drop unexpected schemas. |
-| 5 | **State machine** | Amazon States Language graph defines tasks, choices, parallel/map, waits and terminal states. |
-| 6 | **Standard workflow** | durable exactly-once workflow execution semantics for long-running auditable flows. |
-| 7 | **Shard/partition** | ordered log unit and primary throughput/parallelism boundary. |
-| 8 | **Partition key** | determines shard/partition and can create hot spots. |
-| 9 | **Execution environment** | initialization may be reused across invocations but must not hold unsafe tenant state. |
-| 10 | **Cold start** | package/runtime/init/VPC and extensions contribute before handler execution. |
+For **Messaging Serverless**, the mechanisms participating in that loop are Standard queue, FIFO queue, SNS topic, Subscription filter, State machine, Standard workflow, Shard/partition, Partition key, Execution environment, Cold start. Some run synchronously on the caller's request, while others converge later. This timing distinction explains many production surprises: the desired object can exist before capacity is ready, a data path can continue while its control plane is impaired, and a timeout can leave the final side effect unknown.
 
-## Architecture and lifecycle
+### Core concepts explained in detail
 
-Trace this service from request/authentication and desired configuration through provisioning, steady-state data path, scaling, change, failure, recovery and retirement. Bind every production resource to an owner, environment, data classification, source-of-truth revision, SLO, runbook, cost center and deletion/retention policy.
+#### Standard queue
 
-For Messaging Serverless, draw a real request/resource path and label where these mechanisms act: Standard queue, FIFO queue, SNS topic, Subscription filter, State machine, Standard workflow, Shard/partition, Partition key, Execution environment, Cold start. State which parts are control plane versus data plane, regional versus zonal/global, synchronous versus asynchronous, and customer versus provider responsibility.
+**What it is.** At-least-once delivery and best-effort order at very high scale.
 
-## Security model
+**Junior mental model.** A queue is like a numbered waiting line: producers can hand off work without waiting for completion, but someone must define ordering, capacity, acknowledgement and what happens when a worker disappears.
 
-Start with the caller/workload identity and evaluate every applicable identity, resource, organization, network-endpoint, encryption-key and admission policy. Minimize public paths, long-lived credentials, wildcard actions/resources and unreviewed cross-account/tenant trust. Encrypt in transit/at rest where applicable, but include key/certificate rotation and recovery. Protect audit evidence and prevent secrets/customer content from entering command history, logs, traces or metric labels.
+**How it works.** A producer serializes and publishes a message, the service stores or routes it, a consumer receives it under a delivery contract, and acknowledgement advances or removes the item. At-least-once systems can redeliver after an unknown outcome, so stable operation identifiers and idempotent state changes are part of correctness.
 
-## Availability and failure modes
+**What it looks like in production.** Healthy evidence includes publish and consume rates, queue depth and age, processing latency, retry/dead-letter counts and end-to-end business completion. Poison messages, hot partitions, backlog growth, duplicate effects and retry storms are common; adding consumers helps only when the downstream dependency and partition model can absorb them.
 
-List dependencies and failure domains before claiming high availability. Test quota/capacity, identity/control-plane, DNS/network/TLS, configuration drift, downstream saturation, zonal/Regional/node failure and recovery from protected state. Use bounded timeout, retry budget, jitter, idempotency, backpressure, load shedding and graceful drain according to protocol. A green resource status is not a user-facing recovery check.
+#### FIFO queue
 
-## Performance, scaling and cost
+**What it is.** Ordered message groups and deduplication with throughput/parallelism constraints.
 
-Measure workload distribution and SLI before sizing. Track rate/work units, latency distribution, errors, saturation/queue and service-specific limits. Separate replica/task scaling from infrastructure/capacity scaling and include cold-start/provisioning delay. Cost includes idle/provisioned capacity, requests/work units, storage/retention, cross-AZ/Region/egress/NAT, observability, licenses/support and failure headroom. Optimize cost per successful SLO/quality-controlled task.
+**Junior mental model.** A queue is like a numbered waiting line: producers can hand off work without waiting for completion, but someone must define ordering, capacity, acknowledgement and what happens when a worker disappears.
 
-## Observability
+**How it works.** A producer serializes and publishes a message, the service stores or routes it, a consumer receives it under a delivery contract, and acknowledgement advances or removes the item. At-least-once systems can redeliver after an unknown outcome, so stable operation identifiers and idempotent state changes are part of correctness.
 
-Correlate a request/change across user, route/resource, dependency and underlying compute/storage/network. Use stable owner/environment/region/service dimensions; put high-cardinality request/object IDs in sampled logs/traces rather than metric labels. Alert on actionable SLO burn and leading exhaustion. Monitor the telemetry path and keep a read-only diagnostic role.
+**What it looks like in production.** Healthy evidence includes publish and consume rates, queue depth and age, processing latency, retry/dead-letter counts and end-to-end business completion. Poison messages, hot partitions, backlog growth, duplicate effects and retry storms are common; adding consumers helps only when the downstream dependency and partition model can absorb them.
 
-## Command lab
+#### SNS topic
 
-Run in a sandbox with the correct account/context/Region. Read and explain output before mutation.
+**What it is.** Publisher fan-out to protocol subscriptions under topic policy.
+
+**Junior mental model.** A queue is like a numbered waiting line: producers can hand off work without waiting for completion, but someone must define ordering, capacity, acknowledgement and what happens when a worker disappears.
+
+**How it works.** A producer serializes and publishes a message, the service stores or routes it, a consumer receives it under a delivery contract, and acknowledgement advances or removes the item. At-least-once systems can redeliver after an unknown outcome, so stable operation identifiers and idempotent state changes are part of correctness.
+
+**What it looks like in production.** Healthy evidence includes publish and consume rates, queue depth and age, processing latency, retry/dead-letter counts and end-to-end business completion. Poison messages, hot partitions, backlog growth, duplicate effects and retry storms are common; adding consumers helps only when the downstream dependency and partition model can absorb them.
+
+#### Subscription filter
+
+**What it is.** Routes messages by attributes/body and can drop unexpected schemas.
+
+**Junior mental model.** A queue is like a numbered waiting line: producers can hand off work without waiting for completion, but someone must define ordering, capacity, acknowledgement and what happens when a worker disappears.
+
+**How it works.** A producer serializes and publishes a message, the service stores or routes it, a consumer receives it under a delivery contract, and acknowledgement advances or removes the item. At-least-once systems can redeliver after an unknown outcome, so stable operation identifiers and idempotent state changes are part of correctness.
+
+**What it looks like in production.** Healthy evidence includes publish and consume rates, queue depth and age, processing latency, retry/dead-letter counts and end-to-end business completion. Poison messages, hot partitions, backlog growth, duplicate effects and retry storms are common; adding consumers helps only when the downstream dependency and partition model can absorb them.
+
+#### State machine
+
+**What it is.** Amazon States Language graph defines tasks, choices, parallel/map, waits and terminal states.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### Standard workflow
+
+**What it is.** Durable exactly-once workflow execution semantics for long-running auditable flows.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Shard/partition
+
+**What it is.** Ordered log unit and primary throughput/parallelism boundary.
+
+**Junior mental model.** The simplest mental model is a state machine: an input is checked, current state is read, a rule computes the next state, and an observable result tells callers whether the transition succeeded.
+
+**How it works.** The mechanism receives configuration or runtime input, validates preconditions, changes or derives state, and exposes status to the next component. Synchronous parts return a direct outcome; asynchronous parts need durable status, reconciliation and idempotency because the original caller may disappear.
+
+**What it looks like in production.** Healthy evidence shows the expected state transition and its owner, timestamp and reason. Invalid input, stale state, conflicting writers, hidden limits and dependencies that partially complete are the most useful failure categories to distinguish.
+
+#### Partition key
+
+**What it is.** Determines shard/partition and can create hot spots.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Execution environment
+
+**What it is.** Initialization may be reused across invocations but must not hold unsafe tenant state.
+
+**Junior mental model.** The simplest mental model is a state machine: an input is checked, current state is read, a rule computes the next state, and an observable result tells callers whether the transition succeeded.
+
+**How it works.** The mechanism receives configuration or runtime input, validates preconditions, changes or derives state, and exposes status to the next component. Synchronous parts return a direct outcome; asynchronous parts need durable status, reconciliation and idempotency because the original caller may disappear.
+
+**What it looks like in production.** Healthy evidence shows the expected state transition and its owner, timestamp and reason. Invalid input, stale state, conflicting writers, hidden limits and dependencies that partially complete are the most useful failure categories to distinguish.
+
+#### Cold start
+
+**What it is.** Package/runtime/init/VPC and extensions contribute before handler execution.
+
+**Junior mental model.** The simplest mental model is a state machine: an input is checked, current state is read, a rule computes the next state, and an observable result tells callers whether the transition succeeded.
+
+**How it works.** The mechanism receives configuration or runtime input, validates preconditions, changes or derives state, and exposes status to the next component. Synchronous parts return a direct outcome; asynchronous parts need durable status, reconciliation and idempotency because the original caller may disappear.
+
+**What it looks like in production.** Healthy evidence shows the expected state transition and its owner, timestamp and reason. Invalid input, stale state, conflicting writers, hidden limits and dependencies that partially complete are the most useful failure categories to distinguish.
+
+### Worked command and configuration example
+
+The following is a diagnostic example, not an unexplained command dump. Define every uppercase placeholder first—for example `NAME`, `RESOURCE`, `PROJECT`, `REGION`, `NAMESPACE`, `URL`, `IMAGE` or `CONTAINER`—and use a sandbox or read-only production role.
 
 ```bash
 aws sqs get-queue-attributes --queue-url URL --attribute-names All
@@ -97,16 +176,59 @@ aws lambda get-function-configuration --function-name FUNCTION
 aws apigateway get-rest-apis
 ```
 
-For each command, record: identity/context, exact resource, expected healthy fields, one failing output, the next command/query, and which mutation would be reversible. Never paste secrets/tokens into committed notes or shared terminal history.
+What the example demonstrates:
 
-## Real-world exercise: easy → hard
+- `aws sqs get-queue-attributes --queue-url URL --attribute-names All` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws sns list-topics` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws stepfunctions list-state-machines` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws kinesis describe-stream-summary --stream-name STREAM` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws lambda get-function-configuration --function-name FUNCTION` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
+- `aws apigateway get-rest-apis` queries the AWS service control plane; IDs, Region, status/reason fields and request attribution should be correlated with CloudTrail and service metrics.
 
-1. **Easy:** inventory one healthy Messaging Serverless resource and draw identity/control/data/dependency paths.
-2. **Intermediate:** reproduce a safe configuration change with IaC, preview/diff, apply to a sandbox, verify and roll back.
-3. **Hard:** inject one policy/network/quota/capacity/dependency failure, diagnose from user symptom to root mechanism, mitigate without widening access, then add an alert/test/runbook.
-4. **Senior:** design the service for two tenants, multi-zone/Region failure, RPO/RTO, regulated data, 10× demand and a 30% cost reduction; quantify trade-offs.
+A healthy run returns the intended identity/context, exits successfully and shows the expected object or response without a new warning, retry loop or saturation signal. A failure is useful evidence: preserve the exact exit code, status/reason, timestamp and target, then inspect the immediately adjacent layer before changing anything. This makes the example part of the explanation of **Messaging Serverless**, not merely a list to copy.
 
-## Common interview traps
+### Security and trust boundaries
+
+Security begins with the actor and the exact operation, not with a network location. Human, workload, CI and service identities have different lifecycles; every hop must authenticate the relevant identity and authorize the action against the resource and current conditions. Network controls reduce reachable paths, while resource policy and application authorization decide what an already-reachable caller may do. Encryption protects data in transit or at rest, but key access, rotation, revocation and recovery are part of the same system.
+
+The safe design minimizes public paths, long-lived credentials, wildcard permissions and implicit cross-tenant trust. It also protects the evidence plane: audit logs, traces and command history must not become a second copy of secrets or customer content. A production review should be able to identify the enforcement point, default behavior, bypass path, break-glass owner and proof that revoked access actually stops working.
+
+### Reliability and failure behavior
+
+Availability is an end-to-end property. The service depends on identity, quota, API/control-plane health, DNS and network paths, capacity, downstream services and any durable state required to recover. Replicas improve availability only when they occupy independent failure domains and clients can reach a healthy replica; a managed-service label does not remove customer responsibility for configuration, load, data correctness or recovery testing.
+
+Timeouts, bounded retry budgets with jitter, idempotency, backpressure, load shedding and graceful drain control how failures spread. They must match the protocol and side-effect model. A timeout is ambiguous because the remote operation may have completed; blind retry is unsafe when the operation is not idempotent. Recovery is complete only when the original user action works and data, latency, error rate and backlog have returned to acceptable bounds.
+
+### Performance, scaling and cost
+
+Capacity planning starts with a work unit and a distribution, not an average utilization percentage. Relevant signals include request or job arrival rate, work size, latency percentiles, errors, queue age, saturation and service-specific limits. Scaling application replicas and provisioning underlying nodes, storage or provider quota are separate feedback loops with different delays. Cold starts and warm-up determine whether newly allocated capacity helps before the burst is over.
+
+Total cost includes idle headroom, request or token work, storage and retention, cross-zone or cross-Region transfer, NAT/egress, observability, licenses and recovery capacity. The useful optimization target is cost per successful SLO- or quality-controlled outcome. A cheaper configuration that increases retries, operator toil, data risk or missed objectives can raise total cost.
+
+### Observability and troubleshooting
+
+Diagnosis follows the same path as the request. First establish time, user impact, identity and exact target; then compare desired configuration with observed status and recent changes. Continue through control-plane reconciliation, network and protocol evidence, runtime state, dependencies and resource saturation. Metrics show trends, logs explain discrete events, traces connect boundaries, profiles attribute resource use and audit logs explain security decisions.
+
+The most useful next check is the one that distinguishes competing causes. A permission denial calls for policy-evaluation evidence, not a restart; a connection refusal means something different from a timeout; a pending resource with a scheduling reason differs from a running resource whose application is unready. Reversible mitigation stabilizes impact, while the durable repair updates Git, IaC, policy or the owning service and adds a regression test or alert.
+
+### What you should be able to explain
+
+Use this table only after reading the explanations above. It is a revision checklist, not a substitute for the lesson.
+
+| # | Concept | What you must be able to explain |
+|---:|---|---|
+| 1 | **Standard queue** | at-least-once delivery and best-effort order at very high scale |
+| 2 | **FIFO queue** | ordered message groups and deduplication with throughput/parallelism constraints |
+| 3 | **SNS topic** | publisher fan-out to protocol subscriptions under topic policy |
+| 4 | **Subscription filter** | routes messages by attributes/body and can drop unexpected schemas |
+| 5 | **State machine** | Amazon States Language graph defines tasks, choices, parallel/map, waits and terminal states |
+| 6 | **Standard workflow** | durable exactly-once workflow execution semantics for long-running auditable flows |
+| 7 | **Shard/partition** | ordered log unit and primary throughput/parallelism boundary |
+| 8 | **Partition key** | determines shard/partition and can create hot spots |
+| 9 | **Execution environment** | initialization may be reused across invocations but must not hold unsafe tenant state |
+| 10 | **Cold start** | package/runtime/init/VPC and extensions contribute before handler execution |
+
+### Common interview traps
 
 - Naming a feature without explaining request/resource lifecycle or failure semantics.
 - Treating an allow, encryption checkbox, replica count or managed-service label as a complete security/reliability design.
@@ -114,57 +236,54 @@ For each command, record: identity/context, exact resource, expected healthy fie
 - Scaling the wrong layer or retrying overload/permanent errors.
 - Omitting quotas, cold start, deletion/restore, observability cost or customer/tenant boundaries.
 
-## Revision summary
+## Practice
 
-Explain Messaging Serverless in five passes: purpose/selection, mechanism/lifecycle, security/failure, operation/commands, and architecture/economics. Then complete the separate [answered question bank](questions-and-answers.md) without looking at these notes.
+### Practice objective
 
-<!-- merged-07-AWS-DATA-MESSAGING-SERVERLESS-MD:start -->
-## Practical deep dive
+Build a small, safe proof of **Messaging Serverless** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
 
-## Purpose and service selection
+### Prerequisites and setup
 
-Choose a data service from access pattern, consistency/transaction needs, item/query shape, latency/throughput, growth, availability/DR, operational control and cost. Choose messaging from delivery/order/replay/fan-out/latency and consumer model. Serverless moves fleet operations to the provider but leaves concurrency, idempotency, observability, security and cost design with you.
+Use a disposable local environment, sandbox account/project or isolated namespace. Confirm the effective identity and target, record the start time, and set a cost limit before creating anything.
 
-## Relational databases
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
 
-RDS manages engines such as PostgreSQL/MySQL. Multi-AZ provides synchronous standby/failover for availability; read replicas provide asynchronous read scaling/DR options and can lag. Neither replaces backups/PITR. Parameter/option/subnet/security groups and maintenance windows are part of lifecycle. Connection storms exhaust memory/processes; pool clients and use RDS Proxy where its semantics fit.
+### Activity 1: establish a healthy baseline
 
-Aurora separates distributed storage from compute with a writer and reader instances. Reader endpoints distribute eligible reads; failover promotes a reader. Serverless changes capacity model but does not eliminate connection/transaction/design limits. Global Database replicates cross-Region asynchronously; design recovery/failback and reconcile possible RPO.
+Run the read-oriented example first:
 
-## DynamoDB, cache and search
+```bash
+aws sqs get-queue-attributes --queue-url URL --attribute-names All
+aws sns list-topics
+aws stepfunctions list-state-machines
+aws kinesis describe-stream-summary --stream-name STREAM
+aws lambda get-function-configuration --function-name FUNCTION
+aws apigateway get-rest-apis
+```
 
-DynamoDB distributes items by partition key; sort key enables ordered collections. Key design must spread load and match queries. GSIs have independent keys/capacity and asynchronous propagation; LSIs share the partition key and are defined at table creation. On-demand/provisioned modes, adaptive capacity and autoscaling do not rescue a single hot key. Use conditional writes/idempotency, transactions selectively, TTL as asynchronous cleanup, Streams for change processing, and Global Tables with conflict semantics understood.
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
 
-ElastiCache Valkey/Redis supports replication, cluster sharding, persistence options and eviction; Memcached is simpler distributed cache. A cache is disposable acceleration unless explicitly designed otherwise. Prevent stampedes with coalescing/jitter/soft TTL and protect databases from cold-cache recovery. OpenSearch indexes/shards/replicas data for search/vector workloads; mappings, shard count, heap, segment/merge load, snapshots and domain access determine health.
+### Activity 2: create or review the smallest working example
 
-## Messaging and streaming
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
 
-SQS Standard is highly scalable with at-least-once delivery and best-effort ordering; FIFO adds ordered message groups and deduplication constraints. Visibility timeout must exceed processing or be extended; deletion is the consumer commit. Redrive to a DLQ after thoughtful retries and build replay tooling that does not re-poison production.
+### Activity 3: controlled failure and troubleshooting
 
-SNS pushes fan-out notifications; filter policies route subscriptions. EventBridge routes schema-rich events across buses/rules/targets and supports archive/replay capabilities; it is not a general replacement for a high-throughput ordered log. Step Functions orchestrates state and retries; ensure activities are idempotent. Kinesis Data Streams and MSK/Kafka use ordered partitions/shards and consumer checkpoints; key distribution, retention, lag, rebalancing and replay are core. Firehose is managed delivery/buffering, not interactive stream processing.
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
 
-## Lambda and API Gateway
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
 
-Lambda execution environments initialize then handle invocations; cold start depends on runtime/package/network/init and provisioned concurrency can pre-initialize capacity. Reserved concurrency caps/reserves; account concurrency and downstream capacity must align. Event source mappings have service-specific batch, retry, bisect and failure-destination semantics. Use idempotency keyed by stable event identity, bounded retries, DLQs/destinations, partial batch failure where supported, and timeouts shorter than callers.
+### Verification
 
-VPC Lambda uses managed networking but still needs subnet IPs, routes/endpoints/NAT and SGs. Keep secrets out of environment/logs, use execution roles, sign/scan artifacts and control layers/extensions. API Gateway REST/HTTP/WebSocket APIs differ in features/cost. Configure authorizers, validation, quotas/throttling, WAF, access logs, stages/custom domains and safe deployments.
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
 
-## Reliability, observability, security and cost
+### Cleanup and rollback
 
-Track database connections/CPU/memory/storage/replica lag/locks, DynamoDB throttles/consumed capacity/hot keys, cache hit/eviction/memory, OpenSearch cluster/shards/JVM, queue age/depth/DLQ, stream lag, Lambda concurrency/duration/errors/throttles/iterator age and workflow failures. Encrypt, isolate networks, use resource policies/workload roles, redact data and test backup/restore/replay.
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
 
-Cost traps: idle database capacity, I/O and backup retention, GSI duplication, scans, cache overprovisioning, OpenSearch shard sprawl, cross-AZ/Region transfer, long queue retention, Lambda duration/concurrency/log volume and API requests. Optimize from unit economics and SLO, not a single line item.
+### Harder extension
 
-## Revision summary
-
-- Multi-AZ availability and read replicas solve different problems.
-- DynamoDB partition-key distribution is a first-order design constraint.
-- Consumers must be idempotent because common delivery is at least once.
-- Retry/DLQ/replay need an operational lifecycle and poison-message controls.
-- Serverless removes servers, not capacity, dependency or security engineering.
-
-
-<!-- merged-07-AWS-DATA-MESSAGING-SERVERLESS-MD:end -->
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
 
 <!-- reading-navigation:start -->
 ---

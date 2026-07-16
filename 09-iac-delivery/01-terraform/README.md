@@ -12,146 +12,1010 @@
 
 > [Interview questions and answers](questions-and-answers.md) · [Master curriculum](../../curriculum/master-curriculum.txt) · Official starting point: <https://developer.hashicorp.com/terraform/docs>
 
-## Easy mode: mental model
+## Explanation
 
-Integrate every part of Terraform into one secure, reliable, observable, supportable and cost-aware production capability.
+### What it is and why it exists
 
-Learn this topic in layers: name the object or mechanism, trace its lifecycle/data path, configure it safely, observe a healthy and failed state, recover it, and then design it across failure domains and team boundaries.
+**Terraform** is easiest to understand as one part of a larger path. The subject turns version-controlled intent into a reviewed state transition. A tool parses configuration, resolves dependencies, compares desired and recorded/remote state, proposes a change set and calls provider APIs after approval.
+
+The chapter focuses on Terraform state mapping, configuration-to-resource identity and module composition, HCL, Providers, Resources. These are connected mechanisms, not vocabulary to memorize. Integrate every part of Terraform into one secure, reliable, observable, supportable and cost-aware production capability The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+### History and evolution
+
+Infrastructure automation evolved from shell scripts and host configuration tools into declarative resource graphs, remote state and reviewed delivery pipelines. Terraform popularized provider-based declarative provisioning from 2014, while later tools and GitOps connected infrastructure changes to normal software review, testing and promotion practices.
+
+In this chapter, **Terraform** is the next layer of that evolution. Its modern purpose is to integrate every part of Terraform into one secure, reliable, observable, supportable and cost-aware production capability. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+### How it works: the end-to-end path
 
 ```mermaid
 flowchart LR
-  R[requirement or symptom] --> M[Terraform mechanism]
-  M --> S[state and dependencies]
-  S --> O[commands metrics logs traces audit]
-  O --> D[decision mitigation or design]
-  D --> V[user-facing verification]
+  A["versioned configuration"] --> B["graph state and preview"]
+  B --> C["Terraform: provider API and rollout"]
+  C --> D["verified desired state"]
+  D -. "status and evidence" .-> B
 ```
 
-## Deeper topic folders
+The path begins with a concrete input: a user request, configuration revision, packet, job, model request or operational symptom. The relevant subsystem validates that input, reads current state, performs or schedules work and exposes a result. Some transitions complete before the caller receives a response; others acknowledge the request and converge later. That difference determines whether a timeout means "nothing happened," "the operation failed," or "the final result is still unknown."
 
-- [29.1 Terraform fundamentals](01-terraform-fundamentals/README.md) — [Q&A](01-terraform-fundamentals/questions-and-answers.md)
-- [29.2 Terraform planning](02-terraform-planning/README.md) — [Q&A](02-terraform-planning/questions-and-answers.md)
-- [29.3 Terraform state](03-terraform-state/README.md) — [Q&A](03-terraform-state/questions-and-answers.md)
-- [29.4 Terraform resource lifecycle](04-terraform-resource-lifecycle/README.md) — [Q&A](04-terraform-resource-lifecycle/questions-and-answers.md)
-- [29.5 Terraform modules](05-terraform-modules/README.md) — [Q&A](05-terraform-modules/questions-and-answers.md)
-- [29.6 Terraform language depth](06-terraform-language-depth/README.md) — [Q&A](06-terraform-language-depth/questions-and-answers.md)
-- [29.7 Import and refactoring](07-import-and-refactoring/README.md) — [Q&A](07-import-and-refactoring/questions-and-answers.md)
-- [29.8 Terraform environments](08-terraform-environments/README.md) — [Q&A](08-terraform-environments/questions-and-answers.md)
-- [29.9 Terraform testing and validation](09-terraform-testing-and-validation/README.md) — [Q&A](09-terraform-testing-and-validation/questions-and-answers.md)
-- [29.10 Terraform CI/CD](10-terraform-ci-cd/README.md) — [Q&A](10-terraform-ci-cd/questions-and-answers.md)
-- [29.11 Terraform security](11-terraform-security/README.md) — [Q&A](11-terraform-security/questions-and-answers.md)
+For **Terraform**, the important stages are Terraform state mapping, configuration-to-resource identity and module composition, HCL, Providers, Resources, Data sources, Variables, Local values, Outputs, Expressions, Functions, Dependency graph, Initialization, Provider installation, Refresh, Plan, Apply, Destroy, Saved plans, Exit codes, Plan review, State purpose, Resource addressing, Remote state, Backends, State locking, Encryption, Sensitive state, State recovery, State migration, State corruption, Create, Update, Replace, Destroy, create_before_destroy, prevent_destroy, ignore_changes, replace_triggered_by, Tainted resources, Forced replacement, Root modules, Child modules, Inputs and outputs, Module composition, Module versioning, Module registries, Module boundaries, Opinionated versus flexible modules, count, for_each, Dynamic blocks, for expressions, Conditional expressions, Type constraints, Optional attributes, Validation, Preconditions, Postconditions, Import blocks, terraform import, Moved blocks, Removed blocks, Resource renaming, Module extraction, State movement, Zero-downtime refactoring, Separate state files, Directory-based environments, Workspaces, Account and project separation, Environment promotion, Variable management, terraform validate, terraform test, Unit-style module tests, Integration tests, Policy testing, Terratest, Static analysis, Security scanning, Formatting, Validation, Plan generation, Plan review, Approval, Apply, OIDC authentication, Drift detection, Scheduled plans, Failure recovery, Credential handling, Secret values, State protection, Provider verification, Module supply chain, Policy as code, Least-privilege deployment roles. Their boundaries explain where identity is checked, where state becomes durable, where capacity is consumed, how failures propagate and which signal can distinguish one layer from another. A production explanation should follow the actual path rather than treating each term as an isolated definition.
 
-## Complete curriculum checklist
 
-| # | Topic | What you must understand and demonstrate |
-|---:|---|---|
-| 1 | **Terraform uses state to map configuration to real resources, and its current workflow includes module composition 6turn589377search2** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 2 | **HCL** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 3 | **Providers** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 4 | **Resources** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 5 | **Data sources** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 6 | **Variables** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 7 | **Local values** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 8 | **Outputs** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 9 | **Expressions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 10 | **Functions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 11 | **Dependency graph** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 12 | **Initialization** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 13 | **Provider installation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 14 | **Refresh** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 15 | **Plan** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 16 | **Apply** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 17 | **Destroy** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 18 | **Saved plans** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 19 | **Exit codes** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 20 | **Plan review** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 21 | **State purpose** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 22 | **Resource addressing** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 23 | **Remote state** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 24 | **Backends** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 25 | **State locking** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 26 | **Encryption** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 27 | **Sensitive state** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 28 | **State recovery** | is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion. |
-| 29 | **State migration** | is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion. |
-| 30 | **State corruption** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 31 | **Create** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 32 | **Update** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 33 | **Replace** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 34 | **Destroy** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 35 | **create_before_destroy** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 36 | **prevent_destroy** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 37 | **ignore_changes** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 38 | **replace_triggered_by** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 39 | **Tainted resources** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 40 | **Forced replacement** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 41 | **Root modules** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 42 | **Child modules** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 43 | **Inputs and outputs** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 44 | **Module composition** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 45 | **Module versioning** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 46 | **Module registries** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 47 | **Module boundaries** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 48 | **Opinionated versus flexible modules** | is a design comparison: define both sides, contrast mechanism and guarantees, then select using workload, failure, security, ownership and cost evidence rather than preference. |
-| 49 | **count** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 50 | **for_each** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 51 | **Dynamic blocks** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 52 | **for expressions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 53 | **Conditional expressions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 54 | **Type constraints** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 55 | **Optional attributes** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 56 | **Validation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 57 | **Preconditions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 58 | **Postconditions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 59 | **Import blocks** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 60 | **terraform import** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 61 | **Moved blocks** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 62 | **Removed blocks** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 63 | **Resource renaming** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 64 | **Module extraction** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 65 | **State movement** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 66 | **Zero-downtime refactoring** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 67 | **Separate state files** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 68 | **Directory-based environments** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 69 | **Workspaces** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 70 | **Account and project separation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 71 | **Environment promotion** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 72 | **Variable management** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 73 | **terraform validate** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 74 | **terraform test** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 75 | **Unit-style module tests** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 76 | **Integration tests** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 77 | **Policy testing** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery. |
-| 78 | **Terratest** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 79 | **Static analysis** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 80 | **Security scanning** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery. |
-| 81 | **Formatting** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 82 | **Validation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 83 | **Plan generation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 84 | **Plan review** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 85 | **Approval** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 86 | **Apply** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 87 | **OIDC authentication** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery. |
-| 88 | **Drift detection** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 89 | **Scheduled plans** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 90 | **Failure recovery** | requires a layer-by-layer, evidence-first path from user impact and recent change through identity, configuration, runtime, dependency and resource saturation, followed by reversible mitigation and verified repair. |
-| 91 | **Credential handling** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 92 | **Secret values** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 93 | **State protection** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 94 | **Provider verification** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 95 | **Module supply chain** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
-| 96 | **Policy as code** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery. |
-| 97 | **Least-privilege deployment roles** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off. |
+### Core concepts explained in detail
 
-## Beginner → mid-level → senior learning path
+#### Terraform state mapping, configuration-to-resource identity and module composition
 
-1. **Beginner:** define every term; identify the relevant file, object, protocol, API, or command; explain one normal use.
-2. **Mid-level:** configure it from source control, inspect effective runtime state, diagnose two failure modes, automate a safe change, and explain one trade-off.
-3. **Senior:** clarify ambiguous requirements, map trust and failure domains, quantify capacity/SLO/RPO/RTO/cost, compare alternatives, plan migration/rollback, and assign ownership.
+**What it is.** The term Terraform state mapping, configuration-to-resource identity and module composition is a trust-control mechanism that identifies an actor or protected asset and enforces which action is allowed under explicit context, with audit, rotation, revocation and recovery behavior within Terraform.
 
-## Command and configuration lab
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
 
-Run read-only checks first in a sandbox. For each command, predict healthy output, one failing result, the next discriminating check, and the safe rollback for any later mutation.
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### HCL
+
+**What it is.** The term HCL refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Providers
+
+**What it is.** The term Providers refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Resources
+
+**What it is.** The term Resources refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Data sources
+
+**What it is.** The term Data sources refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Variables
+
+**What it is.** The term Variables refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Local values
+
+**What it is.** The term Local values refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Outputs
+
+**What it is.** The term Outputs refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Expressions
+
+**What it is.** The term Expressions refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Functions
+
+**What it is.** The term Functions refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Dependency graph
+
+**What it is.** The term Dependency graph refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Initialization
+
+**What it is.** The term Initialization refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Provider installation
+
+**What it is.** The term Provider installation refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Refresh
+
+**What it is.** The term Refresh refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Plan
+
+**What it is.** The term Plan refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Apply
+
+**What it is.** The term Apply refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Destroy
+
+**What it is.** The term Destroy refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Saved plans
+
+**What it is.** The term Saved plans refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Exit codes
+
+**What it is.** The term Exit codes refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Plan review
+
+**What it is.** The term Plan review refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### State purpose
+
+**What it is.** The term State purpose refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### Resource addressing
+
+**What it is.** The term Resource addressing refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Remote state
+
+**What it is.** The term Remote state refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### Backends
+
+**What it is.** The term Backends refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### State locking
+
+**What it is.** The term State locking refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### Encryption
+
+**What it is.** The term Encryption refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Sensitive state
+
+**What it is.** The term Sensitive state refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### State recovery
+
+**What it is.** Is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion.
+
+**Junior mental model.** Failure controls are traffic rules for unhealthy conditions: they bound how long work waits, how often it retries, how much enters the system and what reduced service remains possible.
+
+**How it works.** A caller assigns a deadline and attempt budget, classifies an error, applies bounded backoff with jitter only when retry is safe, and propagates capacity limits upstream. Circuit breakers, bulkheads and load shedding prevent one dependency from consuming every worker; recovery probes and gradual traffic return avoid a second overload.
+
+**What it looks like in production.** Healthy evidence shows bounded queues, stable retry ratios and recovery within an objective. Unbounded retries, identical timeouts at every layer, non-idempotent replays, shared resource pools and failover to an unqualified target commonly turn a small fault into an outage.
+
+#### State migration
+
+**What it is.** Is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### State corruption
+
+**What it is.** The term State corruption refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### Create
+
+**What it is.** The term Create refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Update
+
+**What it is.** The term Update refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Replace
+
+**What it is.** The term Replace refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Destroy
+
+**What it is.** The term Destroy refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### create_before_destroy
+
+**What it is.** The term create_before_destroy refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### prevent_destroy
+
+**What it is.** The term prevent_destroy is an asynchronous hand-off mechanism that decouples producers from consumers and therefore must define ordering, retention, delivery, acknowledgement, retry and backlog behavior within Terraform.
+
+**Junior mental model.** Telemetry is the instrument panel, not the system itself. Metrics summarize trends, logs preserve discrete context, traces connect work across boundaries, profiles attribute resource use, and audit events record security-relevant actions.
+
+**How it works.** Instrumentation observes a defined event or state, attaches bounded context, transports the signal, stores it under retention rules and makes it queryable. A useful signal has documented semantics and can distinguish at least two competing explanations; correlation identifiers belong in logs or traces rather than unbounded metric labels.
+
+**What it looks like in production.** Healthy evidence includes coverage of the user journey, known collection delay and actionable SLO or saturation views. Missing telemetry, sampling bias, cardinality explosions, sensitive payload capture and alert thresholds disconnected from user impact are failures of the observability system itself.
+
+#### ignore_changes
+
+**What it is.** The term ignore_changes refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### replace_triggered_by
+
+**What it is.** The term replace_triggered_by refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Tainted resources
+
+**What it is.** The term Tainted resources refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Forced replacement
+
+**What it is.** The term Forced replacement refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of a scheduler as allocating seats and time slots: a request states what it needs, available workers advertise capacity, and policy chooses a placement. Requested capacity, usable capacity and completed useful work are different quantities.
+
+**How it works.** Work enters a runnable or pending state, eligibility filters remove incompatible placements, scoring or queue policy selects a worker, and a runtime creates the process and accounts for CPU, memory, devices and time. Autoscaling observes demand, requests more replicas or machines, and waits through provisioning and warm-up before capacity becomes useful.
+
+**What it looks like in production.** Healthy evidence connects queue delay, placement, utilization, throttling, memory/device pressure, runtime readiness and successful work. Fragmentation, inaccurate requests, quota, topology, cold starts and a saturated downstream service can leave capacity apparently free while latency and pending work grow.
+
+#### Root modules
+
+**What it is.** The term Root modules refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Child modules
+
+**What it is.** The term Child modules refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Inputs and outputs
+
+**What it is.** The term Inputs and outputs refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Module composition
+
+**What it is.** The term Module composition refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Module versioning
+
+**What it is.** The term Module versioning is a delivery mechanism that binds reviewed source to an immutable revision and moves that revision through validation and bounded rollout toward verified runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Module registries
+
+**What it is.** The term Module registries refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Module boundaries
+
+**What it is.** The term Module boundaries refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Opinionated versus flexible modules
+
+**What it is.** Is a design comparison: define both sides, contrast mechanism and guarantees, then select using workload, failure, security, ownership and cost evidence rather than preference.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### count
+
+**What it is.** The term count refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### for_each
+
+**What it is.** The term for_each refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Dynamic blocks
+
+**What it is.** The term Dynamic blocks refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### for expressions
+
+**What it is.** The term for expressions refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Conditional expressions
+
+**What it is.** The term Conditional expressions refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Type constraints
+
+**What it is.** The term Type constraints refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Optional attributes
+
+**What it is.** The term Optional attributes refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Validation
+
+**What it is.** The term Validation is a repeatable comparison between defined input, expected or baseline behavior and an acceptance threshold, with recorded environment and artifact revisions so the result can support a release decision within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Preconditions
+
+**What it is.** The term Preconditions refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Postconditions
+
+**What it is.** The term Postconditions refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Import blocks
+
+**What it is.** The term Import blocks refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### terraform import
+
+**What it is.** The term terraform import refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** A useful analogy is a parcel journey: the name identifies the destination, routing selects each next hop, policy decides whether the parcel may pass, transport tracks delivery, and the application decides what the contents mean.
+
+**How it works.** A real request crosses several independent states: name resolution returns an address, the source selects a route and source address, link or overlay forwarding reaches the next hop, stateful or stateless policy evaluates the flow, transport establishes communication, and TLS/application protocols negotiate their own contract. The return path must also work.
+
+**What it looks like in production.** Healthy evidence progresses layer by layer: correct name/address, expected route, permitted flow, listening endpoint, successful handshake and valid application response. Timeouts, refusals, resets and protocol errors mean different layers; packet loss, MTU, asymmetric paths, connection-state exhaustion and proxy timeout mismatch are common production failures.
+
+#### Moved blocks
+
+**What it is.** The term Moved blocks refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Removed blocks
+
+**What it is.** The term Removed blocks refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Resource renaming
+
+**What it is.** The term Resource renaming refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Module extraction
+
+**What it is.** The term Module extraction refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### State movement
+
+**What it is.** The term State movement refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### Zero-downtime refactoring
+
+**What it is.** The term Zero-downtime refactoring refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Separate state files
+
+**What it is.** The term Separate state files refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### Directory-based environments
+
+**What it is.** The term Directory-based environments refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Workspaces
+
+**What it is.** The term Workspaces refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Account and project separation
+
+**What it is.** The term Account and project separation refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Environment promotion
+
+**What it is.** The term Environment promotion is a delivery mechanism that binds reviewed source to an immutable revision and moves that revision through validation and bounded rollout toward verified runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Variable management
+
+**What it is.** The term Variable management refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### terraform validate
+
+**What it is.** The term terraform validate refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### terraform test
+
+**What it is.** The term terraform test is a repeatable comparison between defined input, expected or baseline behavior and an acceptance threshold, with recorded environment and artifact revisions so the result can support a release decision within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Unit-style module tests
+
+**What it is.** The term Unit-style module tests is a repeatable comparison between defined input, expected or baseline behavior and an acceptance threshold, with recorded environment and artifact revisions so the result can support a release decision within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Integration tests
+
+**What it is.** The term Integration tests is a repeatable comparison between defined input, expected or baseline behavior and an acceptance threshold, with recorded environment and artifact revisions so the result can support a release decision within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Policy testing
+
+**What it is.** Defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Terratest
+
+**What it is.** The term Terratest is a repeatable comparison between defined input, expected or baseline behavior and an acceptance threshold, with recorded environment and artifact revisions so the result can support a release decision within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Static analysis
+
+**What it is.** The term Static analysis refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Security scanning
+
+**What it is.** Defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Formatting
+
+**What it is.** The term Formatting refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Validation
+
+**What it is.** The term Validation is a repeatable comparison between defined input, expected or baseline behavior and an acceptance threshold, with recorded environment and artifact revisions so the result can support a release decision within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Plan generation
+
+**What it is.** The term Plan generation refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Plan review
+
+**What it is.** The term Plan review refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Approval
+
+**What it is.** The term Approval turns organizational requirements into named owners, enforceable controls, evidence, exceptions with expiry and lifecycle decisions that can be audited and repeated within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Apply
+
+**What it is.** The term Apply refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### OIDC authentication
+
+**What it is.** Defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Drift detection
+
+**What it is.** The term Drift detection refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Failure controls are traffic rules for unhealthy conditions: they bound how long work waits, how often it retries, how much enters the system and what reduced service remains possible.
+
+**How it works.** A caller assigns a deadline and attempt budget, classifies an error, applies bounded backoff with jitter only when retry is safe, and propagates capacity limits upstream. Circuit breakers, bulkheads and load shedding prevent one dependency from consuming every worker; recovery probes and gradual traffic return avoid a second overload.
+
+**What it looks like in production.** Healthy evidence shows bounded queues, stable retry ratios and recovery within an objective. Unbounded retries, identical timeouts at every layer, non-idempotent replays, shared resource pools and failover to an unqualified target commonly turn a small fault into an outage.
+
+#### Scheduled plans
+
+**What it is.** The term Scheduled plans refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Failure recovery
+
+**What it is.** Requires a layer-by-layer, evidence-first path from user impact and recent change through identity, configuration, runtime, dependency and resource saturation, followed by reversible mitigation and verified repair.
+
+**Junior mental model.** Failure controls are traffic rules for unhealthy conditions: they bound how long work waits, how often it retries, how much enters the system and what reduced service remains possible.
+
+**How it works.** A caller assigns a deadline and attempt budget, classifies an error, applies bounded backoff with jitter only when retry is safe, and propagates capacity limits upstream. Circuit breakers, bulkheads and load shedding prevent one dependency from consuming every worker; recovery probes and gradual traffic return avoid a second overload.
+
+**What it looks like in production.** Healthy evidence shows bounded queues, stable retry ratios and recovery within an objective. Unbounded retries, identical timeouts at every layer, non-idempotent replays, shared resource pools and failover to an unqualified target commonly turn a small fault into an outage.
+
+#### Credential handling
+
+**What it is.** The term Credential handling refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Secret values
+
+**What it is.** The term Secret values is a trust-control mechanism that identifies an actor or protected asset and enforces which action is allowed under explicit context, with audit, rotation, revocation and recovery behavior within Terraform.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### State protection
+
+**What it is.** The term State protection refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Think of this as a library catalog plus shelves: metadata says what should exist and where, while physical or remote storage holds the bytes. A successful write is not necessarily durable, replicated, backed up or restorable under the same contract.
+
+**How it works.** A write normally passes validation and authorization, enters a buffer or transaction, reaches a durable medium, and may then replicate or become visible to readers. Caches and indexes accelerate access but introduce freshness and eviction behavior; snapshots preserve a point-in-time representation but application consistency depends on write ordering.
+
+**What it looks like in production.** Healthy evidence combines capacity, latency, error, replication and integrity signals with a tested read or restore. Typical failures include exhausted bytes or inodes, throttling, stale replicas, corrupt metadata, topology mismatch, lost encryption keys and backups that exist but cannot reconstruct the application within RPO/RTO.
+
+#### Provider verification
+
+**What it is.** The term Provider verification refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Module supply chain
+
+**What it is.** The term Module supply chain refers to a configuration, state or promotion mechanism that moves a reviewed revision toward effective runtime state within Terraform.
+
+**Junior mental model.** Treat delivery like a controlled assembly line: reviewed source becomes an immutable artifact, the artifact is promoted without being rebuilt, and each environment records exactly which revision is effective.
+
+**How it works.** The lifecycle begins with versioned intent, validates syntax and policy, resolves dependencies, builds or selects immutable inputs, produces a diff or release plan, changes the target in bounded waves, and records status. Reconciliation keeps desired and observed state aligned; rollback is another tested state transition, not merely a command name.
+
+**What it looks like in production.** Healthy evidence links source revision, review, test, artifact digest, signer/provenance, deployment target and user-facing verification. Mutable tags, environment-specific rebuilds, unpinned dependencies, non-idempotent migrations and controllers fighting emergency changes are recurring failure modes.
+
+#### Policy as code
+
+**What it is.** Defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+#### Least-privilege deployment roles
+
+**What it is.** The term Least-privilege deployment roles is a trust-control mechanism that identifies an actor or protected asset and enforces which action is allowed under explicit context, with audit, rotation, revocation and recovery behavior within Terraform.
+
+**Junior mental model.** Think of this as a badge plus a checkpoint: identity says who or what is acting, while policy decides whether that actor may perform this exact action on this exact target under the current conditions.
+
+**How it works.** At runtime a caller presents or derives an identity, the enforcement point gathers identity, resource and request context, and applicable rules produce allow or deny. The effective decision is the intersection of all guardrails; encryption protects bytes but does not replace authorization, and audit records explain which decision was made.
+
+**What it looks like in production.** Healthy evidence includes a short-lived attributable identity, narrowly scoped access and an audit event for the intended resource. Failures commonly come from expired credentials, mismatched trust, an overriding deny, wrong resource scope or key/certificate lifecycle problems; widening access may hide the cause while creating a breach path.
+
+### Worked command and configuration example
+
+The following is a diagnostic example, not an unexplained command dump. Define every uppercase placeholder first—for example `NAME`, `RESOURCE`, `PROJECT`, `REGION`, `NAMESPACE`, `URL`, `IMAGE` or `CONTAINER`—and use a sandbox or read-only production role.
 
 ```bash
 terraform fmt -check -recursive
@@ -160,451 +1024,179 @@ pulumi preview --diff
 git diff --check
 ```
 
-## Hands-on practice: setup → failure → verification → cleanup
+What the example demonstrates:
+
+- `terraform fmt -check -recursive` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `terraform validate; terraform plan` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `pulumi preview --diff` checks configuration or previews the dependency-aware state transition before any apply; the preview must be reviewed for replacement, deletion, identity and cost.
+- `git diff --check` inspects the repository's object graph, refs or diff so a delivery decision is tied to exact content rather than an assumed branch name.
+
+A healthy run returns the intended identity/context, exits successfully and shows the expected object or response without a new warning, retry loop or saturation signal. A failure is useful evidence: preserve the exact exit code, status/reason, timestamp and target, then inspect the immediately adjacent layer before changing anything. This makes the example part of the explanation of **Terraform**, not merely a list to copy.
+
+### Security, reliability and production ownership
+
+Security controls who can initiate a transition and what data or resource that transition may affect. Authentication, authorization, network reachability, encryption and audit solve different problems and must align at each boundary. Short-lived attributable identities, least privilege, explicit tenant separation and tested key/certificate rotation reduce blast radius. Logs and traces need their own data controls because copying a secret or customer payload into telemetry defeats the primary protection.
+
+Reliability depends on every synchronous dependency and on the eventual convergence of asynchronous work. Timeouts bound waiting; idempotency makes an ambiguous retry safe; backpressure and load shedding keep demand within useful capacity; replication and failover help only across independent failure domains. Recovery must be tested from protected state and verified through the original user outcome, not inferred from a green administrative status.
+
+Ownership makes these mechanisms operable. Every production resource or service needs an accountable team, source-of-truth revision, environment and data classification, SLO, runbook, cost center and retirement policy. Reversible mitigation can stabilize an incident, but the durable repair belongs in Git, IaC, policy or the owning application so reconciliation does not reintroduce the fault.
+
+### Observability, performance and cost
+
+Metrics, logs, traces, profiles and audit events are complementary. A useful diagnostic path starts with time, identity, exact target and user symptom, then compares desired and observed state before moving through reconciliation, network/protocol, runtime, dependency and saturation layers. High-cardinality request or object IDs belong in sampled logs or traces rather than metric labels; alerts should represent actionable user-impact risk or leading exhaustion.
+
+Performance is governed by work distribution, queueing and bottlenecks. Rate, latency percentiles, errors, saturation, queue depth or age and service-specific limits reveal more than average utilization. Application replicas and underlying machines, storage or provider quota scale through separate loops with different cold delays. Cost includes idle headroom, requests or work units, storage/retention, network transfer, telemetry, support and recovery capacity; optimize cost per successful outcome rather than the cheapest isolated resource.
+
+### What you should be able to explain
+
+The table remains as a revision checklist. Read the explanations above first; afterward, use each row to check whether you can explain the concept without relying on memorized wording.
+
+| # | Topic | What you must understand and demonstrate |
+|---:|---|---|
+| 1 | **Terraform state mapping, configuration-to-resource identity and module composition** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 2 | **HCL** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 3 | **Providers** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 4 | **Resources** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 5 | **Data sources** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 6 | **Variables** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 7 | **Local values** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 8 | **Outputs** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 9 | **Expressions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 10 | **Functions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 11 | **Dependency graph** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 12 | **Initialization** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 13 | **Provider installation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 14 | **Refresh** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 15 | **Plan** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 16 | **Apply** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 17 | **Destroy** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 18 | **Saved plans** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 19 | **Exit codes** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 20 | **Plan review** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 21 | **State purpose** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 22 | **Resource addressing** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 23 | **Remote state** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 24 | **Backends** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 25 | **State locking** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 26 | **Encryption** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 27 | **Sensitive state** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 28 | **State recovery** | is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion |
+| 29 | **State migration** | is a controlled state transition requiring inventory, compatibility, protected state, rehearsal, rollback/abort criteria, integrity checks and measured user-facing RPO/RTO or completion |
+| 30 | **State corruption** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 31 | **Create** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 32 | **Update** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 33 | **Replace** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 34 | **Destroy** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 35 | **create_before_destroy** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 36 | **prevent_destroy** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 37 | **ignore_changes** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 38 | **replace_triggered_by** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 39 | **Tainted resources** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 40 | **Forced replacement** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 41 | **Root modules** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 42 | **Child modules** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 43 | **Inputs and outputs** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 44 | **Module composition** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 45 | **Module versioning** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 46 | **Module registries** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 47 | **Module boundaries** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 48 | **Opinionated versus flexible modules** | is a design comparison: define both sides, contrast mechanism and guarantees, then select using workload, failure, security, ownership and cost evidence rather than preference |
+| 49 | **count** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 50 | **for_each** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 51 | **Dynamic blocks** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 52 | **for expressions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 53 | **Conditional expressions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 54 | **Type constraints** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 55 | **Optional attributes** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 56 | **Validation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 57 | **Preconditions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 58 | **Postconditions** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 59 | **Import blocks** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 60 | **terraform import** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 61 | **Moved blocks** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 62 | **Removed blocks** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 63 | **Resource renaming** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 64 | **Module extraction** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 65 | **State movement** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 66 | **Zero-downtime refactoring** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 67 | **Separate state files** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 68 | **Directory-based environments** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 69 | **Workspaces** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 70 | **Account and project separation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 71 | **Environment promotion** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 72 | **Variable management** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 73 | **terraform validate** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 74 | **terraform test** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 75 | **Unit-style module tests** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 76 | **Integration tests** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 77 | **Policy testing** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery |
+| 78 | **Terratest** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 79 | **Static analysis** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 80 | **Security scanning** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery |
+| 81 | **Formatting** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 82 | **Validation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 83 | **Plan generation** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 84 | **Plan review** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 85 | **Approval** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 86 | **Apply** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 87 | **OIDC authentication** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery |
+| 88 | **Drift detection** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 89 | **Scheduled plans** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 90 | **Failure recovery** | requires a layer-by-layer, evidence-first path from user impact and recent change through identity, configuration, runtime, dependency and resource saturation, followed by reversible mitigation and verified repair |
+| 91 | **Credential handling** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 92 | **Secret values** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 93 | **State protection** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 94 | **Provider verification** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 95 | **Module supply chain** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+| 96 | **Policy as code** | defines a trust/control boundary: identify actor, protected asset, decision/enforcement point, least privilege, bypass path, audit evidence, rotation/revocation and recovery |
+| 97 | **Least-privilege deployment roles** | is part of Terraform; learn its precise definition, mechanism and lifecycle, nearest alternatives, configuration interface, failure/limit, security boundary, observable evidence and production trade-off |
+
+## Practice
+
+### Practice objective
+
+Build a small, safe proof of **Terraform** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
+
+### Prerequisites and setup
 
 Use a disposable state/backend and sandbox account. Format, validate and test first; preview/plan and save the reviewed output; apply one harmless tagged resource only after checking identity and estimated cost; introduce a configuration-only diff; inspect the plan; revert it in source; and verify no drift. Destroy only the exact sandbox stack after inspecting the destroy preview and retaining no required state.
 
-Expected result: you can show the healthy evidence, reproduce a safe failure, explain why each command distinguishes one layer from another, restore the baseline, and prove cleanup. Hard extension: automate the lab from source control, add a test or alert for the injected failure, and write a five-step runbook another engineer can execute.
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
 
-For code/configuration, be ready to review an intentionally unsafe diff and improve idempotency, secret handling, timeouts, validation, logging, tests, and rollback.
+### Activity 1: establish a healthy baseline
 
-## Senior design checklist
-
-State assumptions for tenants, traffic/work units, latency and availability targets, data classification/residency, recovery, team skills and budget. Draw control/data planes and synchronous/asynchronous dependencies. Cover identity, policy, encryption/key lifecycle, delivery provenance, observability, capacity, unit cost, operational ownership, migration and exit criteria. Name the evidence that would cause you to revise the design.
-
-## Revision and practice
-
-Complete the separate [checkbox interview bank](questions-and-answers.md). Do not memorize wording: speak in the order **definition → mechanism → evidence/configuration → failure/trade-off → production example**. For procedures use **stabilize → scope → inspect → hypothesize → test → mitigate → verify → prevent**.
-
-<!-- merged-09-IAC-DELIVERY-TERRAFORM-MD:start -->
-## Practical deep dive
-
-## 1. Easy mode: desired graph plus state
-
-Terraform evaluates configuration, provider schemas and prior state, refreshes remote objects, builds a dependency graph and proposes actions. State maps resource addresses to remote object identities and stores attributes/metadata. It is not merely a cache; protect it like a sensitive database.
-
-```mermaid
-flowchart LR
-  HCL[HCL configuration] --> CORE[Terraform core]
-  VAR[variables + values] --> CORE
-  STATE[(prior state)] --> CORE
-  CORE <--> P[provider plugins]
-  P <--> API[cloud/SaaS APIs]
-  CORE --> PLAN[saved reviewed plan]
-  PLAN --> APPLY[apply]
-  APPLY --> STATE
-```
-
-Providers translate resource/data-source operations to APIs. Resources declare managed objects; data sources read external facts; variables are module inputs; locals name expressions; outputs expose module contracts. Terraform infers dependencies from references; use `depends_on` only for real hidden behavioral dependency.
-
-## 2. Production-shaped root module
-
-```hcl
-terraform {
-  required_version = "~> 1.13"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 6.0"
-    }
-  }
-
-  backend "s3" {
-    bucket       = "company-terraform-state-prod"
-    key          = "platform/inference/terraform.tfstate"
-    region       = "eu-central-1"
-    encrypt      = true
-    use_lockfile = true
-  }
-}
-
-provider "aws" {
-  region = var.region
-
-  default_tags {
-    tags = {
-      ManagedBy   = "terraform"
-      Environment = var.environment
-      Owner       = var.owner
-      CostCenter  = var.cost_center
-    }
-  }
-}
-
-variable "environment" {
-  type        = string
-  description = "Deployment environment."
-  validation {
-    condition     = contains(["dev", "stage", "prod"], var.environment)
-    error_message = "environment must be dev, stage, or prod"
-  }
-}
-
-variable "allowed_models" {
-  type = map(object({
-    min_replicas = number
-    max_replicas = number
-    gpu_class    = string
-  }))
-  validation {
-    condition     = alltrue([for m in values(var.allowed_models) : m.min_replicas >= 0 && m.max_replicas >= m.min_replicas])
-    error_message = "replica bounds are invalid"
-  }
-}
-
-locals {
-  name = "${var.environment}-inference"
-}
-
-module "network" {
-  source  = "app.terraform.io/company/vpc/aws"
-  version = "~> 4.2"
-
-  name               = local.name
-  cidr               = var.vpc_cidr
-  availability_zones = var.availability_zones
-}
-
-resource "aws_s3_bucket" "models" {
-  bucket = "${local.name}-models-${data.aws_caller_identity.current.account_id}"
-
-  lifecycle {
-    prevent_destroy = true
-    precondition {
-      condition     = var.environment != "prod" || length(var.availability_zones) >= 3
-      error_message = "production requires at least three AZs"
-    }
-  }
-}
-
-resource "aws_s3_bucket_versioning" "models" {
-  bucket = aws_s3_bucket.models.id
-  versioning_configuration { status = "Enabled" }
-}
-
-data "aws_caller_identity" "current" {}
-
-output "model_bucket" {
-  description = "Model artifact bucket name."
-  value       = aws_s3_bucket.models.id
-}
-```
-
-Version numbers are examples; verify current compatibility and commit `.terraform.lock.hcl`. Backend blocks cannot use ordinary input variables. Keep credentials outside code via OIDC/dynamic credentials.
-
-Commands:
+Run the read-oriented example first:
 
 ```bash
 terraform fmt -check -recursive
-terraform init -backend=false               # syntax/module/provider init in some CI stages
-terraform init -reconfigure
-terraform validate
-terraform plan -out=tfplan -detailed-exitcode
-terraform show -no-color tfplan
-terraform show -json tfplan > tfplan.json
-terraform apply tfplan                       # apply exactly the reviewed saved plan
-terraform output -json
+terraform validate; terraform plan
+pulumi preview --diff
+git diff --check
 ```
 
-`-detailed-exitcode`: 0 no change, 1 error, 2 change. Never run `apply` on an old plan after uncontrolled environment/state change; saved plans embed prior/config information and may contain secrets.
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
 
-## 3. Expressions: `for_each`, `count`, dynamic and types
+### Activity 2: create or review the smallest working example
 
-Prefer `for_each` with stable business keys when instances have identity; `count` addresses by index and list reordering can cause churn.
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
 
-```hcl
-resource "aws_sqs_queue" "tenant" {
-  for_each = var.tenants
+### Activity 3: controlled failure and troubleshooting
 
-  name                       = "${local.name}-${each.key}"
-  visibility_timeout_seconds = each.value.visibility_timeout
-  kms_master_key_id           = var.queue_kms_key_arn
-}
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
 
-locals {
-  queue_arns = { for name, q in aws_sqs_queue.tenant : name => q.arn }
-  prod_tenants = {
-    for k, v in var.tenants : k => v if v.production
-  }
-}
-```
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
 
-Dynamic blocks generate nested blocks, not resources; use sparingly because they obscure shape.
+### Verification
 
-```hcl
-dynamic "ingress" {
-  for_each = var.ingress_rules
-  content {
-    description = ingress.value.description
-    protocol    = ingress.value.protocol
-    from_port   = ingress.value.port
-    to_port     = ingress.value.port
-    cidr_blocks = ingress.value.cidrs
-  }
-}
-```
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
 
-Know `null` (omit/default depending on schema), unknown values during plan, sensitive marking (redacts UI but state still stores), optional object attributes, `try`/`can`, `merge`, `flatten`, `setproduct`, splats and collection conversions. Avoid `try` that hides true configuration errors.
+### Cleanup and rollback
 
-## 4. Resource lifecycle
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
 
-Default update is provider-defined in place or replace. `create_before_destroy` reduces downtime only if names/quotas/dependencies allow coexistence. `prevent_destroy` stops planned destruction but is not backup. `ignore_changes` hands ownership of named attributes elsewhere and can hide drift. `replace_triggered_by` ties replacement to managed changes.
+### Harder extension
 
-```hcl
-lifecycle {
-  create_before_destroy = true
-  ignore_changes        = [desired_capacity]
-  replace_triggered_by  = [terraform_data.ami_rollout]
-
-  postcondition {
-    condition     = self.versioning[0].enabled
-    error_message = "bucket versioning must be enabled"
-  }
-}
-```
-
-Use `-replace=ADDRESS` to request replacement in a plan; legacy `taint` mutates state and is less reviewable. Treat `-target` as exceptional recovery: it can produce incomplete convergence and requires a full plan afterward.
-
-## 5. State, locking and recovery
-
-Remote state needs encryption, access/audit, versioning, locking and backup. State often contains secret values even when marked sensitive. One state should align with ownership, change cadence and blast radius; too large serializes teams and increases impact, too fragmented creates coupling/outputs and consistency problems.
-
-```bash
-terraform state list
-terraform state show 'module.eks.aws_eks_cluster.this'
-terraform state mv 'aws_s3_bucket.old' 'module.storage.aws_s3_bucket.models'
-terraform state rm 'aws_resource.no_longer_managed'
-terraform state pull > state-backup-$(date +%Y%m%dT%H%M%S).json
-terraform force-unlock LOCK_ID
-```
-
-Before any state mutation: stop concurrent runs, back up/version state, verify workspace/account, quote addresses, preview configuration refactor, perform the smallest operation, then full refresh-only and normal plan. Never edit JSON directly. `force-unlock` only after proving the owning run is dead.
-
-State corruption/runbook: freeze applies → preserve backend versions/locks/logs → identify last good serial/lineage and real resources → restore backend version or carefully rebuild bindings/import → `plan -refresh-only` → normal plan → peer review → apply → validate. Do not choose “cloud” or “state” as truth without resource-specific ownership/risk.
-
-## 6. Import and zero-downtime refactoring
-
-Import blocks make adoption reviewable:
-
-```hcl
-import {
-  to = aws_s3_bucket.models
-  id = "prod-inference-models-123456789012"
-}
-```
-
-Import creates a binding, not correct configuration. Write config, import in a sandbox/state copy if possible, refresh-only plan, inspect every proposed update/replacement and normalize defaults.
-
-Moved blocks preserve address identity:
-
-```hcl
-moved {
-  from = aws_s3_bucket.models
-  to   = module.storage.aws_s3_bucket.models
-}
-```
-
-Removed block can stop management without destroy in supported versions:
-
-```hcl
-removed {
-  from = aws_s3_bucket.legacy
-  lifecycle { destroy = false }
-}
-```
-
-Refactor sequence: tests/current clean plan → add new module/config + moved blocks → plan must show address moves, not recreation → apply in lower environment → prod plan/apply → keep moved blocks long enough for consumers upgrading across versions.
-
-## 7. Module engineering
-
-A module should represent a cohesive capability with explicit inputs/outputs and safe opinions, not wrap every provider argument. Avoid deep nesting and passing entire provider resource objects. Document requirements, examples, upgrade notes, security/cost choices and compatibility. Pin published module versions.
-
-```text
-modules/eks-platform/
-├── README.md
-├── main.tf
-├── variables.tf
-├── outputs.tf
-├── versions.tf
-├── examples/complete/
-└── tests/platform.tftest.hcl
-```
-
-Provider aliases for multi-account/Region:
-
-```hcl
-provider "aws" {
-  alias  = "dr"
-  region = "eu-west-1"
-  assume_role { role_arn = var.dr_deployment_role_arn }
-}
-
-module "replica" {
-  source = "./modules/replica"
-  providers = { aws = aws.dr }
-}
-```
-
-Child modules declare `configuration_aliases` if they accept aliases. Provider configurations stay in root modules for reusable modules.
-
-## 8. Tests and policy
-
-Variable validation checks inputs; pre/postconditions check resource assumptions/results; check blocks can continuously assert; `terraform test` executes run/assert blocks and may create real billable resources depending on mode/provider mocking.
-
-```hcl
-# tests/platform.tftest.hcl
-mock_provider "aws" {}
-
-run "plan_secure_defaults" {
-  command = plan
-  variables {
-    environment        = "prod"
-    availability_zones = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
-  }
-
-  assert {
-    condition     = aws_s3_bucket_versioning.models.versioning_configuration[0].status == "Enabled"
-    error_message = "model bucket must have versioning"
-  }
-}
-```
-
-```bash
-terraform test
-tflint --recursive
-trivy config .
-checkov -d .
-conftest test tfplan.json
-```
-
-Layer tests: format/validate → lint/security/policy → module unit/contract → plan assertions → ephemeral integration → post-deploy/DR. Policy should explain remediation and allow reviewed/time-bound exceptions.
-
-## 9. CI/CD with OIDC
-
-```mermaid
-sequenceDiagram
-  participant PR as Pull request
-  participant CI as Ephemeral runner
-  participant IDP as CI OIDC issuer
-  participant STS as Cloud STS
-  participant TF as Terraform backend/API
-  PR->>CI: trigger pinned workflow
-  CI->>IDP: signed short-lived job token
-  CI->>STS: exchange with repo/ref/environment claims
-  STS-->>CI: short-lived least-privilege role
-  CI->>TF: lock, plan, test, policy
-  CI-->>PR: reviewed plan + evidence
-  PR->>CI: protected approval/merge
-  CI->>TF: apply saved/recreated trusted plan
-```
-
-Pipeline contract:
-
-1. Trusted pinned runner/action/tool versions; no production credentials on untrusted fork code.
-2. `fmt`, `validate`, lint/security/policy/tests.
-3. Initialize correct backend, acquire lock, plan with detailed exit, render redacted summary and store protected artifact.
-4. Human/automated approval proportional to risk; verify commit, environment and plan freshness.
-5. Apply serially with short-lived OIDC role, capture outputs/evidence.
-6. Post-deploy smoke/SLO, unlock/cleanup, scheduled drift plan and incident path.
-
-GitHub Actions sketch (pin real actions by commit SHA):
-
-```yaml
-name: terraform
-on:
-  pull_request:
-    paths: ["infra/**"]
-permissions:
-  contents: read
-  id-token: write
-jobs:
-  plan:
-    runs-on: ubuntu-latest
-    environment: prod-plan
-    concurrency: {group: terraform-prod, cancel-in-progress: false}
-    defaults: {run: {working-directory: infra/prod}}
-    steps:
-      - uses: actions/checkout@PINNED_COMMIT
-      - uses: hashicorp/setup-terraform@PINNED_COMMIT
-        with: {terraform_version: 1.13.0}
-      - uses: aws-actions/configure-aws-credentials@PINNED_COMMIT
-        with:
-          role-to-assume: arn:aws:iam::123456789012:role/terraform-plan
-          aws-region: eu-central-1
-      - run: terraform fmt -check -recursive
-      - run: terraform init -input=false
-      - run: terraform validate
-      - run: terraform test
-      - run: terraform plan -input=false -lock-timeout=5m -out=tfplan -detailed-exitcode
-```
-
-The plan command returns 2 for changes, so shell/workflow must handle it without treating it as failure while still failing on 1. Separate plan/apply roles; apply from protected branch/environment and never expose plans containing sensitive values publicly.
-
-## 10. Workspaces and environment strategy
-
-CLI workspaces are multiple state instances for one configuration/backend. They are useful for homogeneous ephemeral copies, but do not create AWS account/IAM isolation and can make accidental environment selection easy. For durable dev/stage/prod, prefer separate accounts/projects, state keys and root configurations with shared versioned modules. Minimize cross-state coupling; use provider data sources or stable service contracts rather than broad `terraform_remote_state` access.
-
-## 11. Debugging commands
-
-```bash
-TF_LOG=DEBUG TF_LOG_PATH=terraform-debug.log terraform plan
-terraform providers
-terraform providers lock -platform=linux_amd64 -platform=darwin_arm64
-terraform graph | dot -Tsvg > graph.svg
-terraform console
-terraform plan -refresh-only
-terraform plan -replace='module.nodes.aws_instance.worker["gpu-a"]'
-terraform show -json tfplan | jq '.resource_changes[] | {address,actions:.change.actions}'
-```
-
-Do not publish debug logs; providers may include secrets. Diagnose: configuration/type/unknown → provider schema/version → credentials/account/Region → API permission/quota → state lock/binding → remote drift/eventual consistency → lifecycle replacement/dependency. Minimize and reproduce with the exact versions/lock file.
-
-## 12. Code-review checklist
-
-- Correct account/Region/backend/workspace and ownership boundary?
-- Versions/lock/modules pinned and trusted?
-- Stable `for_each` keys, explicit types/validation, no hidden positional churn?
-- Plan contains replacement/deletion/sensitive/state migration? Is coexistence possible?
-- IAM/network/encryption/logging/backup/tags safe by default?
-- State/outputs expose secrets? Deployment role too broad?
-- Availability, quota, timeout, retry and cost consequences understood?
-- Tests/policy/docs/upgrade and rollback included?
-- Drift/externally managed fields deliberately owned?
-
-## 13. Hands-on labs
-
-1. Build a versioned encrypted model S3 module with tests, policy and CI plan.
-2. Create `count` resources, reorder input and observe churn; refactor to `for_each` with moved blocks.
-3. Import a hand-created resource and reach a zero-change plan without replacement.
-4. Simulate a stale lock and state-version recovery in a disposable backend.
-5. Split a monolithic state into network/platform/workload while preserving addresses and documenting contracts.
-6. Write a policy rejecting public ingress, unencrypted storage, mutable image tags and missing ownership tags.
-7. Review a malicious PR attempting OIDC/runner/`local-exec` credential exfiltration.
-8. Intentionally fail a provider call after partial apply; reason from state and remote API to convergence.
-
-## Common interview traps
-
-- `terraform validate` does not validate live permissions, quotas or production safety.
-- Sensitive values are still stored in state.
-- Workspaces are state separation, not security/account separation.
-- `ignore_changes` suppresses ownership, not drift existence.
-- `prevent_destroy` is not backup and can be removed.
-- Import binds identity; it does not generate/validate complete intent.
-- Apply rollback is not automatic transaction rollback across cloud APIs.
-- `depends_on` cannot repair a missing data-flow contract and can over-serialize/unknown values.
-- Applying a reviewed saved plan is safer only if artifact/commit/environment are protected and fresh.
-
-## Revision summary
-
-- Terraform is graph reconciliation backed by sensitive state.
-- Stable addresses and explicit lifecycle make refactoring safe.
-- Module/state boundaries follow ownership and blast radius.
-- Test code, policy and live behavior at different layers.
-- CI uses short-lived identity, protected plans, serialization and post-apply validation.
-
-
-<!-- merged-09-IAC-DELIVERY-TERRAFORM-MD:end -->
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
 
 <!-- reading-navigation:start -->
 ---

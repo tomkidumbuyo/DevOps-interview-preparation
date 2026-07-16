@@ -12,59 +12,139 @@
 
 > Interview bank: [questions-and-answers.md](questions-and-answers.md) · Official documentation: <https://huggingface.co/docs/peft/index>
 
-## Easy mode: purpose and mental model
+## Explanation
 
-Operate supervised tuning, LoRA/PEFT and preference optimization with reproducible data, checkpoints, evaluation and adapter serving.
+### What it is and why it exists
+
+**LLM fine-tuning, PEFT and adapter operations** is easiest to understand as one part of a larger path. The subject links data, model and runtime state. A versioned input becomes an artifact, a serving system turns requests into token or prediction work, and evaluation decides whether quality, safety, latency and cost are acceptable.
+
+The chapter focuses on Objective, Tokenizer/template, PEFT/LoRA, QLoRA. These are connected mechanisms, not vocabulary to memorize. Operate supervised tuning, LoRA/PEFT and preference optimization with reproducible data, checkpoints, evaluation and adapter serving The explanations below first build the simple model, then add the exact system behavior and production consequences.
+
+### History and evolution
+
+Machine-learning systems evolved from offline statistical jobs into GPU-intensive training and always-on inference platforms. Foundation models added token-based capacity, very large artifacts, probabilistic quality and new safety concerns, so model, data, prompt, runtime and evaluation revisions now have to travel as one governed release.
+
+In this chapter, **LLM fine-tuning, PEFT and adapter operations** is the next layer of that evolution. Its modern purpose is to operate supervised tuning, LoRA/PEFT and preference optimization with reproducible data, checkpoints, evaluation and adapter serving. The exact product surface may change by version, but the underlying state, request path and failure boundaries remain the durable ideas to learn.
+
+### How it works: the end-to-end path
 
 ```mermaid
 flowchart LR
-  I[identity and desired state] --> C[LLM fine-tuning, PEFT and adapter operations control plane]
-  C --> D[LLM fine-tuning, PEFT and adapter operations data plane]
-  D --> U[user/workload outcome]
-  D --> O[metrics logs traces audit]
-  O --> R[reconcile scale recover optimize]
+  A["data prompt or request"] --> B["model and platform control"]
+  B --> C["LLM fine-tuning, PEFT and adapter operations: training or inference runtime"]
+  C --> D["quality-controlled result"]
+  D -. "status and evidence" .-> B
 ```
 
-## Detailed learning notes
+The diagram is a feedback loop rather than a one-way provisioning sequence. A caller supplies identity and intent; the control plane validates and records that intent; asynchronous controllers, runtimes or managed infrastructure create the effective data plane; and status and telemetry feed the next decision. A successful API response can therefore mean only "the request was accepted," not "the workload outcome is healthy."
 
-| # | Concept | What you must be able to explain |
-|---:|---|---|
-| 1 | **Objective** | continued pretraining, SFT, reward modeling and preference optimization solve different problems/data contracts. |
-| 2 | **Tokenizer/template** | chat format and special tokens must match training and serving or quality silently collapses. |
-| 3 | **PEFT/LoRA** | low-rank adapter parameters reduce trainable state but introduce base-model/rank/target-module compatibility. |
-| 4 | **QLoRA** | quantized base weights save memory while compute dtype, quantization config and optimizer affect stability. |
-| 5 | **Dataset formatting** | prompt/completion boundaries, masks, truncation, deduplication and contamination define learning signal. |
-| 6 | **Packing** | combines short examples efficiently but requires correct loss masks and sequence-boundary handling. |
-| 7 | **Checkpoint** | adapter, optimizer, scheduler, RNG, trainer/data progress and config support restart/reproduction. |
-| 8 | **Merge versus dynamic adapter** | merged weights simplify serving while dynamic adapters improve reuse at isolation/cache complexity. |
-| 9 | **Evaluation** | task/safety/memorization and base-capability regression compare adapter with base/champion. |
-| 10 | **Lineage/license** | base model/data/adapter licenses, consent, provenance and intended-use constraints travel with release. |
+For **LLM fine-tuning, PEFT and adapter operations**, the mechanisms participating in that loop are Objective, Tokenizer/template, PEFT/LoRA, QLoRA, Dataset formatting, Packing, Checkpoint, Merge versus dynamic adapter, Evaluation, Lineage/license. Some run synchronously on the caller's request, while others converge later. This timing distinction explains many production surprises: the desired object can exist before capacity is ready, a data path can continue while its control plane is impaired, and a timeout can leave the final side effect unknown.
 
-## Architecture and lifecycle
+### Core concepts explained in detail
 
-Trace this service from request/authentication and desired configuration through provisioning, steady-state data path, scaling, change, failure, recovery and retirement. Bind every production resource to an owner, environment, data classification, source-of-truth revision, SLO, runbook, cost center and deletion/retention policy.
+#### Objective
 
-For LLM fine-tuning, PEFT and adapter operations, draw a real request/resource path and label where these mechanisms act: Objective, Tokenizer/template, PEFT/LoRA, QLoRA, Dataset formatting, Packing, Checkpoint, Merge versus dynamic adapter, Evaluation, Lineage/license. State which parts are control plane versus data plane, regional versus zonal/global, synchronous versus asynchronous, and customer versus provider responsibility.
+**What it is.** Continued pretraining, SFT, reward modeling and preference optimization solve different problems/data contracts.
 
-## Security model
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
 
-Start with the caller/workload identity and evaluate every applicable identity, resource, organization, network-endpoint, encryption-key and admission policy. Minimize public paths, long-lived credentials, wildcard actions/resources and unreviewed cross-account/tenant trust. Encrypt in transit/at rest where applicable, but include key/certificate rotation and recovery. Protect audit evidence and prevent secrets/customer content from entering command history, logs, traces or metric labels.
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
 
-## Availability and failure modes
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
 
-List dependencies and failure domains before claiming high availability. Test quota/capacity, identity/control-plane, DNS/network/TLS, configuration drift, downstream saturation, zonal/Regional/node failure and recovery from protected state. Use bounded timeout, retry budget, jitter, idempotency, backpressure, load shedding and graceful drain according to protocol. A green resource status is not a user-facing recovery check.
+#### Tokenizer/template
 
-## Performance, scaling and cost
+**What it is.** Chat format and special tokens must match training and serving or quality silently collapses.
 
-Measure workload distribution and SLI before sizing. Track rate/work units, latency distribution, errors, saturation/queue and service-specific limits. Separate replica/task scaling from infrastructure/capacity scaling and include cold-start/provisioning delay. Cost includes idle/provisioned capacity, requests/work units, storage/retention, cross-AZ/Region/egress/NAT, observability, licenses/support and failure headroom. Optimize cost per successful SLO/quality-controlled task.
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
 
-## Observability
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
 
-Correlate a request/change across user, route/resource, dependency and underlying compute/storage/network. Use stable owner/environment/region/service dimensions; put high-cardinality request/object IDs in sampled logs/traces rather than metric labels. Alert on actionable SLO burn and leading exhaustion. Monitor the telemetry path and keep a read-only diagnostic role.
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
 
-## Command lab
+#### PEFT/LoRA
 
-Run in a sandbox with the correct account/context/Region. Read and explain output before mutation.
+**What it is.** Low-rank adapter parameters reduce trainable state but introduce base-model/rank/target-module compatibility.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### QLoRA
+
+**What it is.** Quantized base weights save memory while compute dtype, quantization config and optimizer affect stability.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Dataset formatting
+
+**What it is.** Prompt/completion boundaries, masks, truncation, deduplication and contamination define learning signal.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Packing
+
+**What it is.** Combines short examples efficiently but requires correct loss masks and sequence-boundary handling.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Checkpoint
+
+**What it is.** Adapter, optimizer, scheduler, RNG, trainer/data progress and config support restart/reproduction.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Merge versus dynamic adapter
+
+**What it is.** Merged weights simplify serving while dynamic adapters improve reuse at isolation/cache complexity.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Evaluation
+
+**What it is.** Task/safety/memorization and base-capability regression compare adapter with base/champion.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+#### Lineage/license
+
+**What it is.** Base model/data/adapter licenses, consent, provenance and intended-use constraints travel with release.
+
+**Junior mental model.** An AI result is produced by a release made of several moving parts—not only model weights. Data, tokenizer, prompt/template, adapter, retrieval index, runtime, hardware and evaluator can each change behavior.
+
+**How it works.** Inputs are validated and transformed, a versioned model or pipeline performs work, and post-processing and policy produce the exposed result. Offline evaluation compares a candidate with a baseline; shadow or canary traffic supplies production evidence; lineage connects the decision back to exact artifacts and data.
+
+**What it looks like in production.** Healthy evidence combines task quality and safety with latency, token or accelerator work, failure rate and unit cost. Training-serving skew, stale or unauthorized retrieval, incompatible runtime/hardware, biased evaluators, prompt injection and silent provider/model changes are core production risks.
+
+### Worked command and configuration example
+
+The following is a diagnostic example, not an unexplained command dump. Define every uppercase placeholder first—for example `NAME`, `RESOURCE`, `PROJECT`, `REGION`, `NAMESPACE`, `URL`, `IMAGE` or `CONTAINER`—and use a sandbox or read-only production role.
 
 ```bash
 python -m pip show peft transformers accelerate
@@ -73,16 +153,57 @@ python train_lora.py --config configs/smoke.yaml
 python eval_adapter.py --base BASE_MODEL --adapter output/adapter
 ```
 
-For each command, record: identity/context, exact resource, expected healthy fields, one failing output, the next command/query, and which mutation would be reversible. Never paste secrets/tokens into committed notes or shared terminal history.
+What the example demonstrates:
 
-## Real-world exercise: easy → hard
+- `python -m pip show peft transformers accelerate` captures a read-oriented state snapshot that must be interpreted against a healthy baseline, the exact target and the next adjacent dependency.
+- `accelerate config` captures a read-oriented state snapshot that must be interpreted against a healthy baseline, the exact target and the next adjacent dependency.
+- `python train_lora.py --config configs/smoke.yaml` captures a read-oriented state snapshot that must be interpreted against a healthy baseline, the exact target and the next adjacent dependency.
+- `python eval_adapter.py --base BASE_MODEL --adapter output/adapter` captures a read-oriented state snapshot that must be interpreted against a healthy baseline, the exact target and the next adjacent dependency.
 
-1. **Easy:** inventory one healthy LLM fine-tuning, PEFT and adapter operations resource and draw identity/control/data/dependency paths.
-2. **Intermediate:** reproduce a safe configuration change with IaC, preview/diff, apply to a sandbox, verify and roll back.
-3. **Hard:** inject one policy/network/quota/capacity/dependency failure, diagnose from user symptom to root mechanism, mitigate without widening access, then add an alert/test/runbook.
-4. **Senior:** design the service for two tenants, multi-zone/Region failure, RPO/RTO, regulated data, 10× demand and a 30% cost reduction; quantify trade-offs.
+A healthy run returns the intended identity/context, exits successfully and shows the expected object or response without a new warning, retry loop or saturation signal. A failure is useful evidence: preserve the exact exit code, status/reason, timestamp and target, then inspect the immediately adjacent layer before changing anything. This makes the example part of the explanation of **LLM fine-tuning, PEFT and adapter operations**, not merely a list to copy.
 
-## Common interview traps
+### Security and trust boundaries
+
+Security begins with the actor and the exact operation, not with a network location. Human, workload, CI and service identities have different lifecycles; every hop must authenticate the relevant identity and authorize the action against the resource and current conditions. Network controls reduce reachable paths, while resource policy and application authorization decide what an already-reachable caller may do. Encryption protects data in transit or at rest, but key access, rotation, revocation and recovery are part of the same system.
+
+The safe design minimizes public paths, long-lived credentials, wildcard permissions and implicit cross-tenant trust. It also protects the evidence plane: audit logs, traces and command history must not become a second copy of secrets or customer content. A production review should be able to identify the enforcement point, default behavior, bypass path, break-glass owner and proof that revoked access actually stops working.
+
+### Reliability and failure behavior
+
+Availability is an end-to-end property. The service depends on identity, quota, API/control-plane health, DNS and network paths, capacity, downstream services and any durable state required to recover. Replicas improve availability only when they occupy independent failure domains and clients can reach a healthy replica; a managed-service label does not remove customer responsibility for configuration, load, data correctness or recovery testing.
+
+Timeouts, bounded retry budgets with jitter, idempotency, backpressure, load shedding and graceful drain control how failures spread. They must match the protocol and side-effect model. A timeout is ambiguous because the remote operation may have completed; blind retry is unsafe when the operation is not idempotent. Recovery is complete only when the original user action works and data, latency, error rate and backlog have returned to acceptable bounds.
+
+### Performance, scaling and cost
+
+Capacity planning starts with a work unit and a distribution, not an average utilization percentage. Relevant signals include request or job arrival rate, work size, latency percentiles, errors, queue age, saturation and service-specific limits. Scaling application replicas and provisioning underlying nodes, storage or provider quota are separate feedback loops with different delays. Cold starts and warm-up determine whether newly allocated capacity helps before the burst is over.
+
+Total cost includes idle headroom, request or token work, storage and retention, cross-zone or cross-Region transfer, NAT/egress, observability, licenses and recovery capacity. The useful optimization target is cost per successful SLO- or quality-controlled outcome. A cheaper configuration that increases retries, operator toil, data risk or missed objectives can raise total cost.
+
+### Observability and troubleshooting
+
+Diagnosis follows the same path as the request. First establish time, user impact, identity and exact target; then compare desired configuration with observed status and recent changes. Continue through control-plane reconciliation, network and protocol evidence, runtime state, dependencies and resource saturation. Metrics show trends, logs explain discrete events, traces connect boundaries, profiles attribute resource use and audit logs explain security decisions.
+
+The most useful next check is the one that distinguishes competing causes. A permission denial calls for policy-evaluation evidence, not a restart; a connection refusal means something different from a timeout; a pending resource with a scheduling reason differs from a running resource whose application is unready. Reversible mitigation stabilizes impact, while the durable repair updates Git, IaC, policy or the owning service and adds a regression test or alert.
+
+### What you should be able to explain
+
+Use this table only after reading the explanations above. It is a revision checklist, not a substitute for the lesson.
+
+| # | Concept | What you must be able to explain |
+|---:|---|---|
+| 1 | **Objective** | continued pretraining, SFT, reward modeling and preference optimization solve different problems/data contracts |
+| 2 | **Tokenizer/template** | chat format and special tokens must match training and serving or quality silently collapses |
+| 3 | **PEFT/LoRA** | low-rank adapter parameters reduce trainable state but introduce base-model/rank/target-module compatibility |
+| 4 | **QLoRA** | quantized base weights save memory while compute dtype, quantization config and optimizer affect stability |
+| 5 | **Dataset formatting** | prompt/completion boundaries, masks, truncation, deduplication and contamination define learning signal |
+| 6 | **Packing** | combines short examples efficiently but requires correct loss masks and sequence-boundary handling |
+| 7 | **Checkpoint** | adapter, optimizer, scheduler, RNG, trainer/data progress and config support restart/reproduction |
+| 8 | **Merge versus dynamic adapter** | merged weights simplify serving while dynamic adapters improve reuse at isolation/cache complexity |
+| 9 | **Evaluation** | task/safety/memorization and base-capability regression compare adapter with base/champion |
+| 10 | **Lineage/license** | base model/data/adapter licenses, consent, provenance and intended-use constraints travel with release |
+
+### Common interview traps
 
 - Naming a feature without explaining request/resource lifecycle or failure semantics.
 - Treating an allow, encryption checkbox, replica count or managed-service label as a complete security/reliability design.
@@ -90,9 +211,52 @@ For each command, record: identity/context, exact resource, expected healthy fie
 - Scaling the wrong layer or retrying overload/permanent errors.
 - Omitting quotas, cold start, deletion/restore, observability cost or customer/tenant boundaries.
 
-## Revision summary
+## Practice
 
-Explain LLM fine-tuning, PEFT and adapter operations in five passes: purpose/selection, mechanism/lifecycle, security/failure, operation/commands, and architecture/economics. Then complete the separate [answered question bank](questions-and-answers.md) without looking at these notes.
+### Practice objective
+
+Build a small, safe proof of **LLM fine-tuning, PEFT and adapter operations** and explain the result in your own words. The goal is not command completion; it is to connect input, internal mechanism, observable state and user outcome.
+
+### Prerequisites and setup
+
+Use a disposable local environment, sandbox account/project or isolated namespace. Confirm the effective identity and target, record the start time, and set a cost limit before creating anything.
+
+Record tool and platform versions because flags, APIs and defaults can change. Define every uppercase placeholder before use and keep secrets out of shell history and committed files.
+
+### Activity 1: establish a healthy baseline
+
+Run the read-oriented example first:
+
+```bash
+python -m pip show peft transformers accelerate
+accelerate config
+python train_lora.py --config configs/smoke.yaml
+python eval_adapter.py --base BASE_MODEL --adapter output/adapter
+```
+
+For each line, write down the layer it inspects, the expected healthy field or response, and one thing it cannot prove. The expected result is an attributable request against the intended target plus enough state to draw the path from input to outcome.
+
+### Activity 2: create or review the smallest working example
+
+Put the smallest relevant command, configuration, manifest or code sample in source control. Validate or lint it, produce a preview/diff where the tool supports one, and apply only inside the disposable boundary. Record the exact revision and resulting resource or process ID. If the topic is observational rather than configurable, save a sanitized baseline and an automated assertion instead of mutating the system.
+
+### Activity 3: controlled failure and troubleshooting
+
+Introduce one bounded failure: use a definitely nonexistent resource name, an invalid sandbox-only value, a denied test identity, a closed test port or a stopped disposable dependency. Capture the exact error and classify it as identity/policy, input/configuration, control-plane reconciliation, network/protocol, dependency or capacity. Test one discriminating hypothesis at a time; do not widen access or restart unrelated components.
+
+Expected failure evidence is a specific non-zero exit, status/reason, event or protocol response that disappears when the controlled fault is removed. If healthy and failing runs look identical, the chosen signal does not explain the phenomenon and the exercise is not complete.
+
+### Verification
+
+Repeat the original client or user-facing check, not only an administrative status command. Confirm the desired revision, data correctness where applicable, error and latency recovery, and absence of a continuing retry/backlog/saturation condition. Explain why this evidence proves recovery and what uncertainty remains.
+
+### Cleanup and rollback
+
+Revert the configuration in its source of truth and review the rollback diff before applying it. Delete only the named sandbox resources, stop disposable processes, remove temporary credentials and verify that no billable resource, volume, artifact, queue item or background job remains. Read-only activities require no infrastructure rollback, but sanitized captures must still follow retention policy.
+
+### Harder extension
+
+Automate the healthy and failing paths in CI, use short-lived identity, add one SLI/alert or policy assertion, and write a five-step runbook another engineer can execute without hidden context. Then explain how the design changes for two tenants, a zonal or dependency failure, 10× load and a strict cost or recovery target.
 
 
 ## Hands-on proof: easy → hard

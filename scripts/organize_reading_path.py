@@ -744,6 +744,15 @@ def sections_for(document: Path) -> list[StudySection]:
 
 def best_section(query: str, candidates: list[StudySection]) -> tuple[StudySection, int]:
     query_tokens = tokens(query)
+    normalized_query = normalized_context(query)
+    named_concept = ""
+    concept_match = re.search(
+        r"\bWhat is (.+?), and why does it matter\b",
+        query,
+        flags=re.I,
+    )
+    if concept_match:
+        named_concept = normalized_context(plain_heading(concept_match.group(1)))
     best = candidates[0]
     best_score = -1
     for candidate in candidates:
@@ -751,6 +760,15 @@ def best_section(query: str, candidates: list[StudySection]) -> tuple[StudySecti
         content_overlap = len(query_tokens & candidate.content_tokens)
         phrase_bonus = 0
         heading_lower = candidate.heading.lower()
+        normalized_heading = normalized_context(candidate.heading)
+        if named_concept and normalized_heading == named_concept:
+            phrase_bonus += 100
+        # A question that names a concept should link to that concept's own
+        # heading. This exact-phrase bonus prevents short terms such as
+        # "Swap" from losing to a broader nearby section such as
+        # "Virtual memory" merely because the broader body repeats "swap".
+        if normalized_heading and normalized_heading in normalized_query:
+            phrase_bonus += 20
         for token in query_tokens:
             if len(token) >= 5 and token in heading_lower:
                 phrase_bonus += 2
